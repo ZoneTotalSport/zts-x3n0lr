@@ -1,0 +1,4327 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  ZONE TOTAL SPORT - MOCKUP PRIVÉ
+  Pour changer le mot de passe :
+  cherche CORRECT_PASSWORD plus bas (1 seul endroit à modifier)
+  ============================================================
+-->
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zone Total Sport — Mockup nouvelle home (Primaire)</title>
+
+<!-- POLICES GOOGLE FONTS : Combo Luckiest Guy + Bangers + Fredoka + Quicksand + Caveat -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ============ RESET + BASE ============ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Neutres */
+    --ink: #1a1a2e;
+    --paper: #FFFEF7;
+    --cream: #FFFBE8;
+    --line: #1a1a2e;
+
+    /* PALETTE FLUO PRIMAIRE */
+    --cyan:    #00E5FF;   /* bleu cyan vif */
+    --jaune:   #FFEA00;   /* jaune fluo */
+    --orange:  #FF6B00;   /* orange fluo */
+    --vert:    #39FF14;   /* vert fluo */
+    --bleu:    #1E90FF;   /* bleu fluo */
+    --rose:    #FF2D87;   /* rose pop (bonus) */
+
+    /* Accents par métier - reflètent les chandails des personnages */
+    --ep:    #00E5FF;     /* CYAN - chandail du prof d'ÉP */
+    --sdg:   #39FF14;     /* VERT FLUO - chandail de l'éducateur SDG */
+    --camp:  #FF6B00;     /* ORANGE FLUO - chandail de l'animateur camp */
+
+    /* Variables vivantes : changent selon le métier sélectionné */
+    --accent: #1a1a2e;
+    --accent-soft: #FFFEF7;
+    --accent-tint: rgba(26,26,46,0.06);
+
+    /* FAMILLES DE POLICES */
+    --font-impact: 'Luckiest Guy', 'Impact', sans-serif;    /* Gros titres */
+    --font-bang:   'Bangers', 'Impact', cursive;             /* Sous-titres + callouts */
+    --font-fun:    'Fredoka', 'Helvetica Neue', sans-serif;  /* UI / sous-titres calmes */
+    --font-body:   'Quicksand', 'Helvetica Neue', sans-serif;/* Corps de texte */
+    --font-hand:   'Caveat', cursive;                        /* Accents manuscrits */
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.45;
+    overflow-x: hidden;
+    font-weight: 700;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* IMAGE DE FOND - VRAIES PHOTOS faded selon le métier */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url('bg-hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 0.6s ease, background-image 0.3s ease;
+    filter: saturate(0.9);
+  }
+
+  /* Voile blanc par-dessus pour adoucir et garder le contenu lisible */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg,
+      rgba(255,254,247,0.55) 0%,
+      rgba(255,254,247,0.35) 40%,
+      rgba(255,254,247,0.65) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body.metier-ep::before {
+    background-image: url('bg-ep.jpg');
+    opacity: 0.50;
+  }
+  body.metier-sdg::before {
+    background-image: url('bg-sdg.jpg');
+    opacity: 0.50;
+  }
+  body.metier-camp::before {
+    background-image: url('bg-camp.jpg');
+    opacity: 0.50;
+  }
+
+  /* Voile teinté par métier - reflète la couleur du chandail */
+  body.metier-ep::after {
+    background: linear-gradient(180deg,
+      rgba(204,250,255,0.55) 0%,
+      rgba(255,254,247,0.40) 50%,
+      rgba(204,250,255,0.55) 100%);
+  }
+  body.metier-sdg::after {
+    background: linear-gradient(180deg,
+      rgba(214,255,203,0.55) 0%,
+      rgba(255,254,247,0.40) 50%,
+      rgba(214,255,203,0.55) 100%);
+  }
+  body.metier-camp::after {
+    background: linear-gradient(180deg,
+      rgba(255,231,209,0.55) 0%,
+      rgba(255,254,247,0.40) 50%,
+      rgba(255,231,209,0.55) 100%);
+  }
+
+  /* ============ DARK NAV BAR (top) — boutons chunky 3D ============ */
+  .dark-nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: #1a1a2e;
+    padding: 14px 24px;
+    z-index: 101;
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px;
+    border-bottom: 3px solid #000;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    flex-wrap: wrap;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .dark-nav.hidden { transform: translateY(-100%); }
+
+  /* BOUTONS CHUNKY 3D — style du screenshot */
+  .dark-nav .dn-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: white;
+    text-decoration: none;
+    font-family: var(--font-impact);
+    font-size: 19px;
+    letter-spacing: 0.02em;
+    padding: 12px 24px;
+    border-radius: 16px;
+    border: 3px solid var(--ink);
+    background: #2A3447;
+    box-shadow: 0 5px 0 var(--ink), 0 8px 14px rgba(0,0,0,0.35);
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
+  }
+  .dark-nav .dn-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 0 var(--ink), 0 12px 20px rgba(0,0,0,0.45);
+  }
+  .dark-nav .dn-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--ink), 0 4px 8px rgba(0,0,0,0.3);
+  }
+  .dark-nav .dn-btn .em { font-size: 22px; line-height: 1; }
+
+  /* Bouton actif (Accueil) en cyan */
+  .dark-nav .dn-btn.active {
+    background: var(--cyan);
+    color: var(--ink);
+  }
+  /* Communauté en rose comme le screenshot */
+  .dark-nav .dn-btn.communaute {
+    background: var(--rose);
+    color: white;
+  }
+  /* Dons en jaune */
+  .dark-nav .dn-btn.dons {
+    background: var(--jaune);
+    color: var(--ink);
+  }
+  /* Salut Joey en vert */
+  .dark-nav .dn-btn.user {
+    background: var(--vert);
+    color: var(--ink);
+  }
+
+  /* ============ HEADER BANNIÈRE CYAN — sous le dark nav ============ */
+  nav.top {
+    position: fixed; top: 72px; left: 0; right: 0;
+    padding: 28px 40px 32px;
+    background: linear-gradient(180deg, #00D9FF 0%, #00C4FF 50%, #00A8E8 100%);
+    border-bottom: 6px solid #0086AD;
+    z-index: 100;
+    box-shadow: 0 12px 30px rgba(0,134,173,0.35);
+    overflow: visible;
+    min-height: 140px;
+    transition: background 0.6s ease, border-color 0.6s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+  }
+  nav.top.hidden { transform: translateY(calc(-100% - 80px)); }
+  /* Le header change de couleur quand un métier est sélectionné */
+  body.metier-ep nav.top  { background: linear-gradient(180deg, #00E5FF 0%, #00C4FF 50%, #00A8E8 100%); border-bottom-color: #0086AD; }
+  body.metier-sdg nav.top { background: linear-gradient(180deg, #5DFF3D 0%, #39FF14 50%, #1FA80B 100%); border-bottom-color: #0F7A06; }
+  body.metier-camp nav.top { background: linear-gradient(180deg, #FF8C2E 0%, #FF6B00 50%, #CC4400 100%); border-bottom-color: #8E2F00; }
+  body.metier-sdg nav.top::after { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 20' preserveAspectRatio='none'><path d='M0,4 Q150,20 300,8 T600,6 T900,10 T1200,4 L1200,20 L0,20 Z' fill='%230F7A06'/></svg>"); }
+  body.metier-camp nav.top::after { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 20' preserveAspectRatio='none'><path d='M0,4 Q150,20 300,8 T600,6 T900,10 T1200,4 L1200,20 L0,20 Z' fill='%238E2F00'/></svg>"); }
+
+  /* NOUVEAU LAYOUT : Communauté | Logo+Clock | Dons */
+  .header-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative; z-index: 2;
+  }
+  .header-row > :first-child { justify-self: end; }
+  .header-row > :last-child { justify-self: start; }
+  .header-center {
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 10px;
+  }
+
+  /* MASQUER le blue header quand un métier est sélectionné */
+  body.metier-ep nav.top,
+  body.metier-sdg nav.top,
+  body.metier-camp nav.top { display: none; }
+  /* Étoiles décoratives flottantes dans le header */
+  nav.top::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 8% 35%, rgba(255,234,0,0.55) 5px, transparent 6px),
+      radial-gradient(circle at 92% 55%, rgba(57,255,20,0.45) 6px, transparent 7px),
+      radial-gradient(circle at 28% 78%, rgba(255,45,135,0.45) 4px, transparent 5px),
+      radial-gradient(circle at 65% 20%, rgba(255,255,255,0.5) 3px, transparent 4px),
+      radial-gradient(circle at 45% 60%, rgba(255,107,0,0.4) 4px, transparent 5px);
+    background-size: 280px 280px, 320px 320px, 240px 240px, 200px 200px, 360px 360px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* Petite vague décorative sous le header */
+  nav.top::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    bottom: -18px;
+    height: 20px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 20' preserveAspectRatio='none'><path d='M0,4 Q150,20 300,8 T600,6 T900,10 T1200,4 L1200,20 L0,20 Z' fill='%230086AD'/></svg>");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  nav.top > * { position: relative; z-index: 1; }
+
+  nav.top .logo {
+    font-family: var(--font-impact);
+    font-size: 48px;
+    letter-spacing: 0.01em;
+    color: white;
+    text-shadow:
+      2px 2px 0 rgba(0,0,0,0.3),
+      4px 4px 0 rgba(0,0,0,0.18);
+    text-decoration: none;
+    line-height: 1;
+    display: block;
+  }
+  nav.top .logo .total {
+    color: #FFF000;
+    text-shadow:
+      3px 3px 0 rgba(0,0,0,0.35),
+      6px 6px 0 rgba(0,0,0,0.20);
+  }
+  nav.top .logo-sub {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #FFF000;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    line-height: 1;
+  }
+
+  /* ============ HORLOGE LIVE ============ */
+  .clock {
+    background: rgba(0,0,0,0.25);
+    color: #FFF000;
+    font-family: var(--font-impact);
+    font-size: 38px;
+    letter-spacing: 0.04em;
+    padding: 14px 26px;
+    border-radius: 18px;
+    border: 4px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+    display: flex; align-items: center; gap: 12px;
+    line-height: 1;
+  }
+  .clock .clock-icon {
+    font-size: 32px;
+    animation: tick 2s ease-in-out infinite;
+  }
+  @keyframes tick {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(10deg); }
+  }
+  .clock .clock-time {
+    font-variant-numeric: tabular-nums;
+    min-width: 130px;
+    text-align: center;
+  }
+
+  /* ============ HEADER BUTTONS - 2 SEULEMENT ============ */
+  .header-actions {
+    display: flex; align-items: center; gap: 12px;
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+  }
+
+  nav.top .nav-links { display: flex; gap: 12px; align-items: center; }
+
+  /* GROS BOUTONS NAV - chaque bouton a sa propre couleur fluo */
+  nav.top .nav-btn {
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--font-impact);
+    font-size: 19px;
+    letter-spacing: 0.02em;
+    padding: 14px 22px;
+    border-radius: 16px;
+    border: 3px solid var(--ink);
+    background: white;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  nav.top .nav-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  nav.top .nav-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  nav.top .nav-btn.cyan   { background: var(--cyan); }
+  nav.top .nav-btn.jaune  { background: var(--jaune); }
+  nav.top .nav-btn.orange { background: var(--orange); color: white; }
+  nav.top .nav-btn.vert   { background: var(--vert); }
+  nav.top .nav-btn.bleu   { background: var(--bleu); color: white; }
+  nav.top .nav-btn.rose   { background: var(--rose); color: white; }
+
+  nav.top .nav-btn .icon { font-size: 20px; }
+
+  /* Bouton hamburger pour mobile - caché en desktop */
+  nav.top .burger {
+    display: none;
+    background: var(--ink);
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  /* ============ HERO ============ */
+  section.hero {
+    min-height: 100vh;
+    padding: 340px 32px 60px;  /* dark nav 56 + cyan banner ~240 + buffer */
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--cyan);
+    color: var(--ink);
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    transform: rotate(-2deg);
+  }
+  .eyebrow .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--vert); animation: pulse 1.5s ease infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } }
+
+  h1.mega {
+    font-family: var(--font-impact);
+    font-size: clamp(38px, 5vw, 72px);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    margin-bottom: 18px;
+    max-width: 900px;
+    color: var(--ink);
+    text-shadow: 4px 4px 0 var(--jaune);
+  }
+  h1.mega .swipe {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--orange), var(--rose), var(--bleu), var(--vert), var(--cyan));
+    background-clip: text; -webkit-background-clip: text;
+    color: transparent;
+    background-size: 300% auto;
+    animation: shimmer 4s linear infinite;
+    text-shadow: none;
+  }
+  @keyframes shimmer { 0% { background-position: 0% center; } 100% { background-position: 300% center; } }
+
+  p.lede {
+    font-family: var(--font-fun);
+    font-size: clamp(20px, 2.2vw, 26px);
+    font-weight: 500;
+    max-width: 700px;
+    color: var(--ink);
+    margin-bottom: 56px;
+    line-height: 1.4;
+  }
+
+  /* ============ 3 PORTES ============ */
+  .portes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1200px;
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .porte {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: 28px;
+    padding: 36px 28px 28px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    text-align: left;
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .porte:hover {
+    transform: translate(-4px, -8px) rotate(-1deg);
+    box-shadow: 14px 14px 0 var(--ink);
+  }
+  .porte:nth-child(2):hover { transform: translate(0, -8px) rotate(1deg); }
+  .porte:nth-child(3):hover { transform: translate(4px, -8px) rotate(-1deg); }
+
+  .porte .splash {
+    position: absolute;
+    top: -30%; right: -30%;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    opacity: 0.25;
+    transition: transform 0.5s ease, opacity 0.3s ease;
+  }
+  .porte:hover .splash { transform: scale(1.5); opacity: 0.45; }
+
+  .porte[data-metier="ep"]   .splash { background: var(--cyan); }
+  .porte[data-metier="sdg"]  .splash { background: var(--vert); }
+  .porte[data-metier="camp"] .splash { background: var(--orange); }
+
+  .porte .icone {
+    font-size: 84px;
+    margin-bottom: 16px;
+    display: block;
+    transform-origin: center bottom;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    height: 220px;
+    text-align: center;
+  }
+  .porte .icone img {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(4px 6px 0 rgba(0,0,0,0.15));
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  }
+  .porte:hover .icone { transform: translateY(-6px); }
+  .porte:hover .icone img {
+    transform: scale(1.08) rotate(-3deg);
+    filter: drop-shadow(8px 10px 0 rgba(0,0,0,0.20));
+  }
+
+  .porte h3 {
+    font-family: var(--font-impact);
+    font-size: 38px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-bottom: 10px;
+    position: relative;
+    line-height: 1;
+  }
+  .porte[data-metier="ep"]   h3 { color: #0088B3; }       /* cyan foncé pour contraste */
+  .porte[data-metier="sdg"]  h3 { color: #1FA80B; }       /* vert foncé */
+  .porte[data-metier="camp"] h3 { color: var(--orange); } /* orange direct */
+
+  .porte p.role {
+    font-family: var(--font-fun);
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 24px;
+    position: relative;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .porte .tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .porte .tag {
+    background: var(--cyan);
+    border: 2px solid var(--ink);
+    color: var(--ink);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-family: var(--font-fun);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .porte .tag:nth-child(2) { background: var(--jaune); }
+  .porte .tag:nth-child(3) { background: var(--rose); color: white; }
+  .porte .tag:nth-child(4) { background: var(--vert); }
+
+  .porte .go {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 22px;
+    border-radius: 16px;
+    font-family: var(--font-impact);
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    color: white;
+    position: relative;
+    transition: gap 0.3s ease;
+    border: 3px solid var(--ink);
+  }
+  .porte[data-metier="ep"]   .go { background: var(--cyan); color: var(--ink); }
+  .porte[data-metier="sdg"]  .go { background: var(--vert); color: var(--ink); }
+  .porte[data-metier="camp"] .go { background: var(--orange); color: white; }
+
+  .porte:hover .go { letter-spacing: 0.04em; }
+  .porte .go .arrow { transition: transform 0.3s ease; font-size: 24px; }
+  .porte:hover .go .arrow { transform: translateX(8px); }
+
+  .skip-link {
+    margin-top: 16px;
+    font-size: 13px;
+    color: #777;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none; border: none;
+    font-family: inherit;
+  }
+
+  /* ============ MR ROOT MASCOT ============ */
+  .mascot {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 130px; height: 130px;
+    background: var(--cyan);
+    border: 4px solid var(--ink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 64px;
+    box-shadow: 8px 8px 0 var(--ink);
+    cursor: pointer;
+    z-index: 90;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.6s ease;
+    animation: bounce 3s ease-in-out infinite;
+    overflow: hidden;
+  }
+  .mascot img {
+    width: 130%;
+    height: auto;
+    object-fit: contain;
+    object-position: top center;
+    transform: translateY(8%);
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .mascot:hover {
+    transform: scale(1.15) rotate(10deg);
+    animation-play-state: paused;
+  }
+  .mascot .bubble {
+    position: absolute;
+    bottom: 110%; right: 0;
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 18px;
+    padding: 14px 20px 14px 14px;
+    color: var(--ink);
+    max-width: 360px;
+    width: max-content;
+    opacity: 0; pointer-events: none;
+    transform: translateY(8px) scale(0.95);
+    transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 5px 5px 0 var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .mascot .bubble-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--cyan);
+    border: 3px solid var(--ink);
+    object-fit: cover;
+    object-position: top center;
+    flex-shrink: 0;
+    box-shadow: 2px 2px 0 var(--ink);
+    overflow: hidden;
+  }
+  .mascot .bubble-text {
+    font-family: var(--font-hand);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .mascot .bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -14px; right: 28px;
+    width: 0; height: 0;
+    border: 8px solid transparent;
+    border-top-color: var(--ink);
+  }
+  .mascot:hover .bubble,
+  .mascot .bubble.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  /* Animation "pop" pour mettre l'accent sur la nouvelle citation */
+  .mascot .bubble.pop {
+    animation: bubble-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bubble-pop {
+    0%   { transform: translateY(0) scale(0.7) rotate(-3deg); }
+    60%  { transform: translateY(0) scale(1.08) rotate(2deg); }
+    100% { transform: translateY(0) scale(1) rotate(0); }
+  }
+
+  /* ============ STAGE 2 : PAGE MÉTIER ============ */
+  section.stage2 {
+    display: none;
+    padding: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    position: relative;
+    z-index: 1;
+  }
+  section.stage2.show { display: block; opacity: 1; transform: translateY(0); }
+
+  .stage2 .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+  /* ============ BANNIÈRE COMPACTE DU MÉTIER ============ */
+  .metier-banner {
+    background: var(--accent);
+    border-top: 5px solid var(--ink);
+    border-bottom: 5px solid var(--ink);
+    padding: 32px 32px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .metier-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 8% 30%, rgba(255,255,255,0.25) 6px, transparent 8px),
+      radial-gradient(circle at 92% 70%, rgba(255,255,255,0.20) 8px, transparent 10px),
+      radial-gradient(circle at 60% 20%, rgba(255,255,255,0.18) 5px, transparent 7px);
+    background-size: 320px 320px, 380px 380px, 240px 240px;
+    pointer-events: none;
+  }
+  .metier-banner-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 28px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+  .metier-banner-title h1 {
+    font-family: var(--font-impact);
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: white;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.25);
+    margin: 8px 0 0;
+  }
+  body.metier-ep .metier-banner-title h1,
+  body.metier-sdg .metier-banner-title h1 {
+    color: var(--ink);
+    text-shadow: 3px 3px 0 rgba(255,255,255,0.4);
+  }
+  .metier-banner-pill {
+    display: inline-block;
+    background: var(--ink);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+  }
+  .metier-banner-char {
+    height: 140px;
+    width: auto;
+    filter: drop-shadow(5px 8px 0 rgba(0,0,0,0.25));
+  }
+  .metier-banner .back-btn {
+    background: white;
+    border: 3px solid var(--ink);
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-family: var(--font-impact);
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    color: var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .metier-banner .back-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  @media (max-width: 800px) {
+    .metier-banner-inner { grid-template-columns: 1fr; text-align: center; }
+    .metier-banner-char { height: 120px; margin: 0 auto; }
+  }
+
+  /* ============ GROS HEADER DU MÉTIER (ancien, gardé pour ne rien casser) ============ */
+  /* Sur les pages métier : dark nav (56px) + metier-hero (qui sert de header) */
+  .metier-hero {
+    background: var(--accent);
+    padding: 110px 32px 100px;  /* 110 top = au-dessus du dark nav fixe */
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 6px solid var(--ink);
+    margin-bottom: 60px;
+  }
+  body.metier-ep .metier-hero  { color: var(--ink); }
+  body.metier-sdg .metier-hero { color: var(--ink); }
+
+  /* Décorations dans le metier-hero */
+  .metier-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 8% 25%, rgba(255,255,255,0.25) 8px, transparent 10px),
+      radial-gradient(circle at 92% 65%, rgba(255,255,255,0.20) 10px, transparent 12px),
+      radial-gradient(circle at 45% 85%, rgba(255,255,255,0.22) 7px, transparent 9px),
+      radial-gradient(circle at 70% 18%, rgba(255,255,255,0.18) 6px, transparent 8px);
+    background-size: 320px 320px, 380px 380px, 280px 280px, 240px 240px;
+    pointer-events: none;
+  }
+  /* Vague décorative en bas */
+  .metier-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 40px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40' preserveAspectRatio='none'><path d='M0,20 Q200,40 400,18 T800,15 T1200,25 L1200,40 L0,40 Z' fill='%23FFFEF7'/></svg>");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    z-index: 1;
+  }
+
+  .metier-hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .metier-hero .perso-big {
+    text-align: center;
+    position: relative;
+  }
+  .metier-hero .perso-big img {
+    max-height: 360px;
+    width: auto;
+    filter: drop-shadow(8px 12px 0 rgba(0,0,0,0.25));
+    animation: float-perso 3s ease-in-out infinite;
+  }
+  @keyframes float-perso {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .metier-hero .label-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ink);
+    color: white;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    margin-bottom: 18px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  }
+  .metier-hero h1 {
+    font-family: var(--font-impact);
+    font-size: clamp(36px, 4.5vw, 60px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  }
+  .metier-hero .baseline {
+    font-family: var(--font-fun);
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 28px;
+    line-height: 1.4;
+    opacity: 0.95;
+  }
+
+  /* Comment utiliser - 4 étapes */
+  .comment-utiliser {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 3px solid var(--ink);
+    border-radius: 18px;
+    padding: 22px 24px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.18);
+  }
+  body.metier-ep .comment-utiliser,
+  body.metier-sdg .comment-utiliser { background: rgba(255,255,255,0.4); }
+
+  .comment-utiliser h4 {
+    font-family: var(--font-bang);
+    font-size: 19px;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .comment-utiliser ol {
+    list-style: none;
+    counter-reset: step;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .comment-utiliser ol li {
+    counter-increment: step;
+    font-family: var(--font-fun);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.35;
+    padding-left: 36px;
+    position: relative;
+  }
+  .comment-utiliser ol li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: -2px;
+    width: 26px; height: 26px;
+    background: var(--ink);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-impact);
+    font-size: 14px;
+  }
+
+  /* ============ SÉRIES SPORTIVES - COLONNE FLOTTANTE À GAUCHE ============ */
+  .series-dock {
+    position: fixed;
+    top: 330px;   /* dégagement du dark nav + cyan banner */
+    left: 12px;
+    z-index: 80;
+    display: flex; flex-direction: column;
+    gap: 16px;
+    max-height: calc(100vh - 360px);
+    overflow-y: auto;
+    padding: 4px;
+  }
+  .series-dock::-webkit-scrollbar { width: 0; }
+  .series-dock { scrollbar-width: none; }
+
+  /* Quand le header se cache, les docks remontent en haut */
+  .series-dock, .apps-section {
+    transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.35s ease;
+  }
+  body.header-hidden .series-dock,
+  body.header-hidden .apps-section {
+    top: 40px;
+    max-height: calc(100vh - 70px);
+  }
+
+  /* La colonne de la boîte à outils (dé/roue/chrono/...) reste visible partout - quick access */
+  .serie-card {
+    width: 60px;
+    height: 200px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #0a0a18 100%);
+    border: 3px solid var(--ep);
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0,229,255,0.4), 0 4px 12px rgba(0,0,0,0.5);
+    cursor: pointer;
+    position: relative;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .serie-card:hover {
+    transform: translateX(4px) scale(1.05);
+    box-shadow: 0 0 28px rgba(0,229,255,0.6), 0 6px 16px rgba(0,0,0,0.5);
+  }
+  .serie-card.nba { border-color: var(--orange); box-shadow: 0 0 20px rgba(255,107,0,0.4), 0 4px 12px rgba(0,0,0,0.5); }
+  .serie-card.nba:hover { box-shadow: 0 0 28px rgba(255,107,0,0.6), 0 6px 16px rgba(0,0,0,0.5); }
+  .serie-card .league-logo {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+    border: 2px solid var(--ink);
+  }
+  .serie-card .dot-live {
+    position: absolute;
+    top: 18px; left: 12px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--rose);
+    animation: pulse 1.5s ease infinite;
+  }
+  .serie-card .label {
+    color: white;
+    font-family: var(--font-impact);
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    line-height: 1;
+    flex: 1;
+    display: flex; align-items: center;
+  }
+  .serie-card .ball {
+    position: absolute;
+    top: -10px; right: -10px;
+    font-size: 28px;
+    transform: rotate(15deg);
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.4));
+  }
+
+  /* ============ MODAL OUTILS INTERACTIFS ============ */
+  /* Permet aux <button> .app-card de se comporter comme les <a> .app-card */
+  button.app-card { font-family: inherit; cursor: pointer; }
+
+  .tool-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 250;
+    padding: 20px;
+  }
+  .tool-modal.open { display: flex; }
+  .tool-modal-inner {
+    background: linear-gradient(135deg, #FFFEF7 0%, #FFF8DC 100%);
+    max-width: 560px; width: 100%;
+    border: 5px solid var(--ink);
+    border-radius: 24px;
+    padding: 36px 28px;
+    position: relative;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 14px 14px 0 var(--ink);
+    animation: tool-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes tool-pop {
+    0%   { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .tool-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--rose);
+    color: white;
+    border: 3px solid var(--ink);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-family: var(--font-impact);
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .tool-modal-title {
+    font-family: var(--font-impact);
+    font-size: 36px;
+    text-align: center;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 24px;
+    text-shadow: 3px 3px 0 var(--cyan);
+  }
+  .tool-modal-body input,
+  .tool-modal-body textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+  }
+  .tool-modal-body textarea { min-height: 100px; resize: vertical; }
+  .tool-modal-body .tool-action-btn {
+    background: var(--vert);
+    color: var(--ink);
+    border: 3px solid var(--ink);
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-family: var(--font-impact);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    letter-spacing: 0.02em;
+  }
+  .tool-modal-body .tool-action-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 var(--ink);
+  }
+  .tool-modal-body .tool-action-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .tool-modal-body .tool-action-btn.alt { background: var(--cyan); }
+  .tool-modal-body .tool-action-btn.danger { background: var(--rose); color: white; }
+  .tool-modal-body .button-row {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    margin-top: 18px;
+  }
+
+  /* DÉ */
+  .tool-dice-display {
+    font-size: 140px;
+    text-align: center;
+    line-height: 1;
+    margin: 24px 0;
+    transition: transform 0.1s ease;
+  }
+  .tool-dice-display.rolling { animation: dice-shake 0.1s infinite; }
+  @keyframes dice-shake {
+    0%, 100% { transform: rotate(-15deg) scale(1.05); }
+    50%      { transform: rotate(15deg) scale(0.95); }
+  }
+  .tool-dice-options {
+    display: flex; justify-content: center; gap: 10px; margin-bottom: 14px;
+  }
+  .tool-dice-options button {
+    background: white; border: 2px solid var(--ink); padding: 6px 14px;
+    border-radius: 10px; cursor: pointer; font-family: var(--font-impact);
+    font-size: 14px;
+  }
+  .tool-dice-options button.active { background: var(--cyan); }
+
+  /* ROUE */
+  .tool-wheel-result {
+    font-family: var(--font-impact);
+    font-size: 48px;
+    text-align: center;
+    background: var(--jaune);
+    border: 4px solid var(--ink);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 16px 0;
+    min-height: 88px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .tool-wheel-result.spinning { animation: wheel-pulse 0.15s infinite; }
+  @keyframes wheel-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.05); }
+  }
+
+  /* CHRONO */
+  .tool-chrono-display {
+    font-family: var(--font-impact);
+    font-size: 72px;
+    text-align: center;
+    color: var(--ink);
+    background: var(--cyan);
+    border: 4px solid var(--ink);
+    border-radius: 16px;
+    padding: 18px;
+    margin: 16px 0;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  /* TIMER */
+  .tool-timer-set {
+    display: flex; gap: 12px; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .tool-timer-set label {
+    font-family: var(--font-impact); font-size: 16px;
+  }
+  .tool-timer-set input { width: 80px; text-align: center; margin: 0; }
+  .tool-timer-display {
+    font-family: var(--font-impact);
+    font-size: 80px;
+    text-align: center;
+    color: white;
+    background: var(--rose);
+    border: 4px solid var(--ink);
+    border-radius: 16px;
+    padding: 18px;
+    margin: 16px 0;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .tool-timer-display.warning { background: var(--orange); animation: timer-blink 0.5s infinite; }
+  .tool-timer-display.done { background: #d32f2f; animation: timer-blink 0.3s infinite; }
+  @keyframes timer-blink {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.03); }
+  }
+
+  /* ÉQUIPES */
+  .teams-result {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    margin-top: 16px;
+  }
+  .team-block {
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .team-block:nth-child(2n) { box-shadow: 4px 4px 0 var(--orange); }
+  .team-block:nth-child(3n) { box-shadow: 4px 4px 0 var(--vert); }
+  .team-block:nth-child(4n) { box-shadow: 4px 4px 0 var(--rose); }
+  .team-block h4 {
+    font-family: var(--font-impact);
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .team-block ul {
+    list-style: none;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .team-block li {
+    padding: 4px 0;
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+  }
+  .team-block li:last-child { border: none; }
+
+  /* MESSAGE */
+  .tool-message-display {
+    background: var(--jaune);
+    border: 4px solid var(--ink);
+    border-radius: 16px;
+    padding: 28px 22px;
+    text-align: center;
+    font-family: var(--font-impact);
+    font-size: 32px;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 18px;
+    box-shadow: 5px 5px 0 var(--ink);
+    min-height: 100px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tool-message-display.alt-color { background: var(--cyan); }
+  .tool-message-display.alt2-color { background: var(--rose); color: white; }
+
+  /* ÉCOLE */
+  .tool-school-info {
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 14px;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .tool-school-info h4 {
+    font-family: var(--font-impact);
+    font-size: 24px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .tool-school-info p {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  /* ============ MODAL SÉRIES SPORTIVES ============ */
+  .series-card { text-decoration: none; }
+
+  .series-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .series-modal.open { display: flex; }
+
+  .series-modal-inner {
+    background: linear-gradient(135deg, #0a0a18 0%, #1a1a2e 50%, #0a0a18 100%);
+    max-width: 1100px; width: 100%;
+    border: 5px solid var(--ink);
+    border-radius: 24px;
+    padding: 48px 36px;
+    position: relative;
+    max-height: 92vh;
+    overflow-y: auto;
+    color: white;
+    box-shadow: 0 0 60px rgba(0,229,255,0.25);
+  }
+  .series-modal.open .series-modal-inner {
+    animation: series-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes series-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .series-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--rose);
+    color: white;
+    border: 3px solid white;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    font-size: 20px;
+    font-family: var(--font-impact);
+    cursor: pointer;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+    z-index: 1;
+  }
+
+  .series-modal-head { text-align: center; margin-bottom: 32px; }
+  .series-badge {
+    display: inline-block;
+    background: var(--cyan); color: var(--ink);
+    padding: 8px 20px; border-radius: 999px;
+    font-family: var(--font-impact); font-size: 16px;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .series-modal-head h2 {
+    font-family: var(--font-impact);
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1; color: white;
+    margin-bottom: 8px;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+  }
+  .series-modal-head p {
+    font-family: var(--font-fun);
+    color: var(--cyan);
+    font-size: 18px;
+  }
+
+  /* Tableau des séries */
+  .series-bracket {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 700px) { .series-bracket { grid-template-columns: 1fr; } }
+
+  .conference {
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .conference-title {
+    font-family: var(--font-bang);
+    font-size: 16px;
+    color: var(--jaune);
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,234,0,0.3);
+  }
+  .matchup {
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .matchup .team-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0;
+    font-family: var(--font-body); font-weight: 700;
+    font-size: 14px;
+  }
+  .matchup .team-row.winning { color: var(--vert); }
+  .matchup .team-row .score {
+    background: var(--ink);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-family: var(--font-impact);
+    min-width: 32px;
+    text-align: center;
+  }
+  .matchup .team-row.winning .score {
+    background: var(--vert);
+    color: var(--ink);
+  }
+  .matchup-meta {
+    font-family: var(--font-fun);
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  .series-cta-row { text-align: center; }
+  .series-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--cyan); color: var(--ink);
+    padding: 14px 26px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-family: var(--font-impact); font-size: 16px;
+    letter-spacing: 0.02em;
+    border: 3px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .series-cta:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 var(--ink);
+  }
+
+  /* ============ "AUJOURD'HUI AU MENU" SECTION ============ */
+  .menu-jour {
+    background: linear-gradient(135deg, #0a0a18 0%, #1a1a2e 50%, #2a1a4e 100%);
+    color: white;
+    padding: 80px 32px;
+    margin: 60px 0;
+    position: relative;
+    overflow: hidden;
+    border-top: 6px solid var(--ink);
+    border-bottom: 6px solid var(--ink);
+  }
+  .menu-jour::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 12% 20%, rgba(255,234,0,0.15) 6px, transparent 8px),
+      radial-gradient(circle at 88% 60%, rgba(0,229,255,0.15) 8px, transparent 10px),
+      radial-gradient(circle at 50% 85%, rgba(255,45,135,0.15) 6px, transparent 8px);
+    background-size: 300px 300px, 360px 360px, 280px 280px;
+    pointer-events: none;
+  }
+  .menu-jour-inner {
+    max-width: 1280px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .menu-jour .pill-top {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--cyan), var(--rose));
+    color: white;
+    padding: 10px 24px;
+    border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 14px rgba(0,229,255,0.4);
+  }
+  .menu-jour h2 {
+    font-family: var(--font-impact);
+    font-size: clamp(32px, 4vw, 50px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+    text-align: center;
+    color: white;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+  }
+  .menu-jour-head { text-align: center; margin-bottom: 50px; }
+  .menu-jour .date {
+    font-family: var(--font-hand);
+    font-size: 22px;
+    color: var(--cyan);
+  }
+  .menu-jour-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .menu-jour-card {
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.12);
+    border-radius: 22px;
+    padding: 32px;
+    backdrop-filter: blur(8px);
+    transition: transform 0.25s ease, border-color 0.2s ease;
+  }
+  .menu-jour-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.3);
+  }
+  .menu-jour-card h3 {
+    font-family: var(--font-bang);
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .menu-jour-card.meteo h3 { color: var(--cyan); }
+  .menu-jour-card.jeu h3   { color: var(--jaune); }
+  .menu-jour-card.defi h3  { color: var(--vert); }
+
+  .menu-jour-card .meteo-temp {
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-impact);
+    font-size: 52px;
+    color: var(--cyan);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .menu-jour-card .meteo-temp .icon { font-size: 56px; }
+  .menu-jour-card .meteo-loc {
+    font-family: var(--font-fun);
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 14px;
+  }
+  .menu-jour-card .meteo-tag {
+    display: inline-block;
+    background: var(--vert);
+    color: var(--ink);
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-family: var(--font-impact);
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    margin-bottom: 18px;
+  }
+  .menu-jour-card .meteo-note {
+    font-family: var(--font-fun);
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 16px;
+  }
+  .menu-jour-card .suggestions-title {
+    font-family: var(--font-bang);
+    font-size: 14px;
+    color: var(--orange);
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  .menu-jour-card .suggestions-list {
+    list-style: none;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+  }
+  .menu-jour-card .suggestions-list li {
+    padding: 6px 0 6px 38px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+  .menu-jour-card .suggestions-list .cyc {
+    position: absolute;
+    left: 0; top: 5px;
+    font-family: var(--font-impact);
+    background: var(--cyan);
+    color: var(--ink);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  .menu-jour-card .suggestions-list li:nth-child(2) .cyc { background: var(--orange); color: white; }
+  .menu-jour-card .suggestions-list li:nth-child(3) .cyc { background: #BA68C8; color: white; }
+  .menu-jour-card .suggestions-list .name { font-weight: 700; color: white; }
+  .menu-jour-card .suggestions-list .desc { font-size: 13px; color: rgba(255,255,255,0.6); display: block; margin-top: 2px; }
+
+  /* Jeu du jour */
+  .menu-jour-card .jeu-tag {
+    display: inline-block;
+    background: var(--jaune);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .menu-jour-card .jeu-name {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-impact);
+    font-size: 38px;
+    color: var(--jaune);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .menu-jour-card .small-head {
+    font-family: var(--font-bang);
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .menu-jour-card .jeu-desc {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+  .menu-jour-card .tags-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .menu-jour-card .tags-row span {
+    background: rgba(0,229,255,0.15);
+    color: var(--cyan);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: var(--font-fun);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .menu-jour-card .voir-tous {
+    display: block;
+    background: var(--cyan);
+    color: var(--ink);
+    padding: 12px;
+    border-radius: 12px;
+    font-family: var(--font-impact);
+    font-size: 15px;
+    text-align: center;
+    text-decoration: none;
+    border: 2px solid var(--ink);
+    transition: gap 0.2s ease;
+  }
+  .menu-jour-card .voir-tous:hover { background: white; }
+
+  /* Défi du jour */
+  .menu-jour-card .defi-tag {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--rose), #B83280);
+    color: white;
+    border: 2px solid var(--ink);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .menu-jour-card .defi-name {
+    font-family: var(--font-impact);
+    font-size: 30px;
+    color: var(--rose);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .menu-jour-card .defi-box {
+    background: linear-gradient(120deg, rgba(255,45,135,0.18), rgba(186,104,200,0.18));
+    border: 2px solid rgba(255,45,135,0.4);
+    border-radius: 12px;
+    padding: 14px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: white;
+    margin-top: 8px;
+  }
+
+  /* ============ PAUSE SYNDICALE - BOUTON FLOTTANT ============ */
+  .pause-syndicale-btn {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    background: linear-gradient(135deg, var(--jaune), var(--orange));
+    color: var(--ink);
+    padding: 16px 24px;
+    border-radius: 999px;
+    border: 4px solid var(--ink);
+    font-family: var(--font-impact);
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 6px 6px 0 var(--ink), 0 8px 24px rgba(255,107,0,0.4);
+    z-index: 95;
+    display: flex; align-items: center; gap: 10px;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  }
+  .pause-syndicale-btn:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--ink), 0 10px 28px rgba(255,107,0,0.5);
+  }
+  .pause-syndicale-btn .em { font-size: 24px; }
+
+  /* Modal Pause syndicale */
+  .pause-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .pause-modal.open { display: flex; }
+  .pause-modal-inner {
+    background: linear-gradient(135deg, #FF2D87 0%, #BA68C8 100%);
+    max-width: 1200px; width: 100%;
+    border: 5px solid var(--ink);
+    border-radius: 24px;
+    padding: 48px 32px;
+    position: relative;
+    box-shadow: 14px 14px 0 var(--ink);
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+  .pause-modal-inner .close-btn {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--ink);
+    color: white;
+    border: 3px solid white;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    font-family: var(--font-impact);
+  }
+  .pause-modal-inner .pause-head {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .pause-modal-inner .pause-pill {
+    display: inline-block;
+    background: var(--jaune);
+    color: var(--ink);
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-family: var(--font-impact);
+    font-size: 18px;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    margin-bottom: 18px;
+  }
+  .pause-modal-inner h2 {
+    font-family: var(--font-impact);
+    font-size: clamp(36px, 6vw, 60px);
+    color: white;
+    line-height: 1;
+    margin-bottom: 10px;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  }
+  .pause-modal-inner .pause-sub {
+    font-family: var(--font-hand);
+    font-size: 22px;
+    color: white;
+  }
+  .pause-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+  .pause-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  }
+  .pause-card h4 {
+    font-family: var(--font-bang);
+    font-size: 18px;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pause-card.blague h4 { color: var(--rose); }
+  .pause-card.fait h4   { color: var(--orange); }
+  .pause-card.quiz h4   { color: #BA68C8; }
+  .pause-card p, .pause-card blockquote {
+    font-family: var(--font-hand);
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .pause-card .quiz-options { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .pause-card .quiz-options li {
+    background: #f3f3f7;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .pause-card .quiz-options li:hover { background: var(--cyan); color: var(--ink); }
+
+  /* ============ GROS BOUTONS ILLUSTRÉS (page métier) ============ */
+  .tools-section {
+    max-width: 1400px;
+    margin: 60px auto 80px;
+    padding: 0 32px;
+  }
+  .tools-section .tools-head {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .tools-section .tools-eyebrow {
+    display: inline-block;
+    background: var(--ink); color: white;
+    padding: 8px 20px; border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 16px; letter-spacing: 0.06em;
+    margin-bottom: 14px;
+  }
+  .tools-section h2.tools-title {
+    font-family: var(--font-impact);
+    font-size: clamp(34px, 4.5vw, 52px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    margin-bottom: 10px;
+    text-shadow: 4px 4px 0 var(--accent);
+  }
+  .tools-section p.tools-intro {
+    font-family: var(--font-fun);
+    font-size: 18px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+  @media (max-width: 1200px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 800px)  { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px)  { .tools-grid { grid-template-columns: 1fr; } }
+
+  .tool-btn {
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 16px 24px;
+    border: 4px solid var(--ink);
+    border-radius: 24px;
+    text-decoration: none;
+    color: var(--ink);
+    min-height: 190px;
+    box-shadow: 0 8px 0 var(--ink), 8px 12px 24px rgba(0,0,0,0.18);
+    cursor: pointer;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    overflow: hidden;
+    text-align: center;
+  }
+  .tool-btn:hover {
+    transform: translate(-4px, -5px);
+    box-shadow: 0 13px 0 var(--ink), 14px 18px 30px rgba(0,0,0,0.25);
+  }
+  .tool-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 4px 0 var(--ink), 4px 5px 10px rgba(0,0,0,0.15);
+  }
+
+  /* Effet brillance sur le haut */
+  .tool-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.45), transparent);
+    pointer-events: none;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .tool-btn .icon {
+    font-size: 72px;
+    line-height: 1;
+    margin-bottom: 14px;
+    filter: drop-shadow(2px 4px 0 rgba(0,0,0,0.18));
+    position: relative;
+    z-index: 1;
+  }
+  .tool-btn .label {
+    font-family: var(--font-impact);
+    font-size: 18px;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .tool-btn .desc {
+    font-family: var(--font-fun);
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.62);
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Badge HOT en haut à droite */
+  .tool-btn .hot-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--rose);
+    color: white;
+    font-family: var(--font-bang);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+    z-index: 2;
+    letter-spacing: 0.04em;
+  }
+
+  /* Badge BIENTÔT pour les apps pas encore en ligne */
+  .tool-btn .soon-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--ink);
+    color: white;
+    font-family: var(--font-bang);
+    font-size: 10px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 2px solid white;
+    box-shadow: 2px 2px 0 var(--ink);
+    z-index: 2;
+    letter-spacing: 0.05em;
+  }
+  /* Apps "BIENTÔT" : légèrement atténuées */
+  .tool-btn.soon {
+    opacity: 0.72;
+    cursor: not-allowed;
+  }
+  .tool-btn.soon:hover {
+    transform: translate(-2px, -2px);
+    opacity: 0.85;
+    box-shadow: 0 10px 0 var(--ink), 10px 14px 25px rgba(0,0,0,0.2);
+  }
+
+  /* Couleurs cycliques pour les boutons (gradient pastel + accent) */
+  .tool-btn:nth-child(7n+1) { background: linear-gradient(180deg, #B2EBF2 0%, #4DD0E1 100%); }
+  .tool-btn:nth-child(7n+2) { background: linear-gradient(180deg, #FFF59D 0%, #FFEB3B 100%); }
+  .tool-btn:nth-child(7n+3) { background: linear-gradient(180deg, #F8BBD0 0%, #F06292 100%); }
+  .tool-btn:nth-child(7n+4) { background: linear-gradient(180deg, #C5E1A5 0%, #7CB342 100%); }
+  .tool-btn:nth-child(7n+5) { background: linear-gradient(180deg, #FFCCBC 0%, #FF8A65 100%); }
+  .tool-btn:nth-child(7n+6) { background: linear-gradient(180deg, #D1C4E9 0%, #9575CD 100%); }
+  .tool-btn:nth-child(7n+7) { background: linear-gradient(180deg, #FFE0B2 0%, #FFB74D 100%); }
+
+  /* ============ APPS - COLONNE VERTICALE FLOTTANTE À DROITE ============ */
+  .apps-section {
+    /* Conteneur fixé à droite, sous le header */
+    position: fixed;
+    top: 330px;   /* dégagement du dark nav + cyan banner */
+    right: 16px;
+    z-index: 80;
+    display: flex; flex-direction: column;
+    gap: 14px;
+    max-height: calc(100vh - 360px);
+    overflow-y: auto;
+    padding: 8px 4px;
+  }
+  /* Cache la barre de scroll mais reste fonctionnelle */
+  .apps-section::-webkit-scrollbar { width: 0; }
+  .apps-section { scrollbar-width: none; }
+
+  /* On masque le titre/intro pour ce mode flottant */
+  .apps-title-block { display: none; }
+
+  .apps-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* Chaque app = icône carrée 3D avec couleur unique */
+  .app-card {
+    width: 78px;
+    height: 78px;
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 18px;
+    padding: 0;
+    text-align: center;
+    box-shadow: 0 5px 0 var(--ink), 4px 6px 14px rgba(0,0,0,0.18);
+    cursor: pointer;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    position: relative;
+    text-decoration: none;
+    color: var(--ink);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .app-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 0 8px 0 var(--ink), 7px 9px 18px rgba(0,0,0,0.25);
+  }
+  .app-card:active {
+    transform: translate(0, 3px);
+    box-shadow: 0 2px 0 var(--ink), 2px 3px 8px rgba(0,0,0,0.15);
+  }
+
+  /* Couleurs uniques par app (cycle automatique) */
+  .app-card:nth-child(7n+1) { background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 100%); }
+  .app-card:nth-child(7n+2) { background: linear-gradient(180deg, #FFF9C4 0%, #FFEB3B 100%); }
+  .app-card:nth-child(7n+3) { background: linear-gradient(180deg, #FFD6E0 0%, #FF6B9D 100%); }
+  .app-card:nth-child(7n+4) { background: linear-gradient(180deg, #E1BEE7 0%, #BA68C8 100%); }
+  .app-card:nth-child(7n+5) { background: linear-gradient(180deg, #C8E6C9 0%, #66BB6A 100%); }
+  .app-card:nth-child(7n+6) { background: linear-gradient(180deg, #FFE0B2 0%, #FFB74D 100%); }
+  .app-card:nth-child(7n+7) { background: linear-gradient(180deg, #D1C4E9 0%, #9575CD 100%); }
+
+  .app-card .app-icon {
+    font-size: 38px;
+    line-height: 1;
+    margin: 0;
+    filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.18));
+  }
+
+  /* Badge HOT en mini point */
+  .app-card .badge-hot {
+    position: absolute;
+    top: -4px; right: -4px;
+    width: 18px; height: 18px;
+    background: var(--rose);
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    font-size: 0;
+  }
+
+  /* Tooltip au survol : nom de l'app */
+  .app-card .app-name {
+    position: absolute;
+    right: 96px;
+    top: 50%;
+    transform: translateY(-50%) translateX(8px);
+    background: var(--ink);
+    color: white;
+    font-family: var(--font-impact);
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    padding: 8px 14px;
+    border-radius: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+  }
+  .app-card .app-name::after {
+    content: '';
+    position: absolute;
+    right: -8px; top: 50%;
+    transform: translateY(-50%);
+    border: 8px solid transparent;
+    border-left-color: var(--ink);
+  }
+  .app-card:hover .app-name {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  /* On cache desc et cta : pas besoin dans ce mode compact */
+  .app-card .app-desc,
+  .app-card .app-cta { display: none; }
+
+  .stage2 .header-zone {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .stage2 .header-zone .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: white;
+    padding: 12px 26px; border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 22px; letter-spacing: 0.06em;
+    margin-bottom: 20px;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  body.metier-ep .stage2 .header-zone .pill { color: var(--ink); }   /* cyan bg = ink text */
+  body.metier-sdg .stage2 .header-zone .pill { color: var(--ink); }  /* vert bg = ink text */
+  /* camp orange bg = white text par défaut (pas d'override) */
+
+  .stage2 h2 {
+    font-family: var(--font-impact);
+    font-size: clamp(44px, 7vw, 88px);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    margin-bottom: 18px;
+    color: var(--ink);
+    text-shadow: 4px 4px 0 var(--cyan);
+  }
+  .stage2 h2 span.under {
+    display: inline-block;
+    position: relative;
+    color: var(--ink);
+  }
+  .stage2 h2 span.under::after {
+    content: '';
+    position: absolute;
+    left: -6px; right: -6px; bottom: 4px;
+    height: 18px;
+    background: var(--accent);
+    opacity: 0.5;
+    z-index: -1;
+    border-radius: 6px;
+    transform: skewX(-4deg);
+  }
+  .stage2 p.intro {
+    font-family: var(--font-fun);
+    font-size: 20px;
+    color: var(--ink);
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .outils-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 80px;
+  }
+  .outil-card {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: 24px;
+    padding: 36px 24px 24px;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    overflow: hidden;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .outil-card:hover {
+    transform: translate(-3px, -6px);
+    box-shadow: 12px 12px 0 var(--ink);
+  }
+  .outil-card .num {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-impact);
+    font-size: 22px;
+    border: 3px solid var(--ink);
+  }
+  body.metier-ep .outil-card .num { color: var(--ink); }
+  body.metier-sdg .outil-card .num { color: var(--ink); }
+  /* camp orange = white text par défaut */
+
+  .outil-card .icon-big { font-size: 68px; margin-bottom: 12px; display: block; }
+  .outil-card h3 {
+    font-family: var(--font-impact);
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-bottom: 12px;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .outil-card p.desc {
+    font-family: var(--font-fun);
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 20px;
+    min-height: 56px;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+  .outil-card .open-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--accent); color: white;
+    padding: 16px;
+    border-radius: 14px;
+    font-family: var(--font-impact);
+    font-size: 18px;
+    letter-spacing: 0.03em;
+    border: 3px solid var(--ink);
+    width: 100%;
+    cursor: pointer;
+    transition: transform 0.2s ease, gap 0.3s ease, box-shadow 0.2s ease;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  body.metier-ep .outil-card .open-btn { color: var(--ink); }
+  body.metier-sdg .outil-card .open-btn { color: var(--ink); }
+  /* camp orange = white text par défaut */
+  .outil-card .open-btn:hover {
+    transform: translate(-2px, -2px);
+    gap: 14px;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .outil-card .open-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  .outil-card .meta {
+    display: flex; gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .outil-card .meta span {
+    background: var(--cyan);
+    color: var(--ink);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: var(--font-fun);
+    font-size: 11px;
+    font-weight: 700;
+    border: 2px solid var(--ink);
+  }
+  .outil-card .meta span:nth-child(2) { background: var(--jaune); }
+  .outil-card .meta span:nth-child(3) { background: var(--rose); color: white; }
+
+  /* ============ TÉMOIGNAGE ============ */
+  .temoignage {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 24px;
+    padding: 48px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: center;
+    margin-bottom: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .temoignage::before {
+    content: '"';
+    position: absolute;
+    top: -40px; left: 20px;
+    font-size: 240px;
+    color: var(--accent);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+  .temoignage .avatar {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: 900;
+    border: 4px solid var(--paper);
+    position: relative;
+    z-index: 1;
+  }
+  body.metier-ep .temoignage .avatar { color: var(--ink); }
+  body.metier-sdg .temoignage .avatar { color: var(--ink); }
+  .temoignage blockquote {
+    font-family: var(--font-hand);
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+    color: white;
+  }
+  .temoignage cite {
+    font-family: var(--font-impact);
+    font-style: normal;
+    color: var(--accent);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+  }
+  body.metier-ep .temoignage cite { color: var(--cyan); }
+  body.metier-sdg .temoignage cite { color: var(--vert); }
+  body.metier-camp .temoignage cite { color: var(--orange); }
+
+  /* ============ CTA FINAL ============ */
+  .cta-final {
+    text-align: center;
+    padding: 64px 32px;
+    background: var(--accent);
+    border-radius: 28px;
+    border: 4px solid var(--ink);
+    color: white;
+    box-shadow: 12px 12px 0 var(--ink);
+  }
+  body.metier-ep .cta-final { color: var(--ink); }
+  body.metier-sdg .cta-final { color: var(--ink); }
+  /* camp orange = white text par défaut */
+
+  .cta-final h3 {
+    font-family: var(--font-impact);
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .cta-final p {
+    font-family: var(--font-fun);
+    font-size: 18px;
+    margin-bottom: 32px;
+    opacity: 0.95;
+    font-weight: 500;
+  }
+  .cta-final .big-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: white; color: var(--ink);
+    padding: 22px 44px;
+    border-radius: 16px;
+    font-family: var(--font-impact);
+    font-size: 24px;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    transition: transform 0.2s ease, gap 0.3s ease, box-shadow 0.2s ease;
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .cta-final .big-btn:hover {
+    transform: translate(-3px, -3px);
+    gap: 18px;
+    box-shadow: 9px 9px 0 var(--ink);
+  }
+  .cta-final .big-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  /* ============ BARRE COMPTEURS ============ */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 900px;
+    margin: 48px auto 0;
+    padding: 28px 32px;
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: 24px;
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .stat .num {
+    font-family: var(--font-impact);
+    font-size: clamp(32px, 4.5vw, 52px);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .stat:nth-child(1) .num { color: var(--orange); }
+  .stat:nth-child(2) .num { color: var(--rose); }
+  .stat:nth-child(3) .num { color: var(--bleu); }
+  .stat:nth-child(4) .num { color: #1FA80B; }
+
+  .stat .label {
+    font-family: var(--font-fun);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px;
+    text-align: center;
+    font-size: 13px;
+  }
+  footer .made { opacity: 0.7; }
+
+  /* ============ TRANSITIONS ============ */
+  .color-sweep {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--accent);
+    z-index: 999;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .color-sweep.sweep { transform: scaleY(1); transform-origin: bottom; }
+  .color-sweep.sweep-out { transform: scaleY(0); transform-origin: top; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .portes, .outils-grid, .apps-grid { grid-template-columns: 1fr; }
+    .temoignage { grid-template-columns: 1fr; text-align: center; padding: 32px 20px; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+
+    /* Header mobile : Communauté/Logo/Dons en colonne */
+    nav.top { padding: 18px 16px 22px; min-height: auto; }
+    .header-row { grid-template-columns: 1fr; gap: 14px; }
+    .header-row > :first-child,
+    .header-row > :last-child { justify-self: center; }
+    nav.top .logo { font-size: 38px; text-align: center; }
+    nav.top .logo-sub { font-size: 13px; letter-spacing: 0.16em; }
+    .clock { font-size: 24px; padding: 10px 18px; }
+    .clock .clock-icon { font-size: 22px; }
+    .clock .clock-time { min-width: 100px; }
+    .nav-btn { width: 200px; justify-content: center; }
+
+    section.hero { padding: 380px 16px 40px; }
+    .stage2 { padding: 0; }
+    .metier-hero { padding: 50px 16px 70px; }
+    .metier-hero-inner { grid-template-columns: 1fr; text-align: center; padding: 0; }
+    .metier-hero .perso-big img { max-height: 240px; }
+    .comment-utiliser ol { grid-template-columns: 1fr; }
+
+    /* Apps en bas horizontal sur mobile au lieu de colonne droite */
+    .apps-section {
+      position: relative; top: auto; right: auto;
+      transform: none;
+      flex-direction: row;
+      overflow-x: auto;
+      max-height: none;
+      padding: 16px;
+      gap: 12px;
+    }
+    .apps-grid {
+      flex-direction: row;
+      gap: 12px;
+    }
+  }
+  @media (min-width: 901px) and (max-width: 1200px) {
+    .apps-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Bouton retour */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: white;
+    border: 3px solid var(--ink);
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-family: var(--font-impact);
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    margin-bottom: 32px;
+    color: var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .back-btn:hover {
+    background: var(--jaune);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .back-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  /* ============ FOOTER VIOLET PROFOND — bien séparé du reste ============ */
+  footer {
+    background: linear-gradient(180deg, #5E1A8E 0%, #3A0F5C 60%, #1F0533 100%);
+    color: white;
+    position: relative;
+    z-index: 2;
+    padding-top: 100px;
+    margin-top: 60px;
+  }
+
+  /* Vague colorée en haut du footer = séparateur visuel net */
+  footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0; right: 0;
+    height: 60px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'><path d='M0,30 Q150,5 300,30 T600,30 T900,30 T1200,25 L1200,0 L0,0 Z' fill='%23FFF000'/><path d='M0,40 Q150,15 300,40 T600,40 T900,40 T1200,35 L1200,0 L0,0 Z' fill='%23FF6B00' opacity='0.85'/><path d='M0,50 Q150,25 300,50 T600,50 T900,50 T1200,45 L1200,0 L0,0 Z' fill='%23FF2D87' opacity='0.9'/></svg>");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    z-index: 0;
+  }
+
+  /* Étoiles décoratives dans le footer violet */
+  footer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 12% 30%, rgba(255,234,0,0.22) 6px, transparent 8px),
+      radial-gradient(circle at 88% 20%, rgba(57,255,20,0.20) 8px, transparent 10px),
+      radial-gradient(circle at 50% 70%, rgba(0,229,255,0.20) 6px, transparent 8px),
+      radial-gradient(circle at 25% 85%, rgba(255,45,135,0.22) 8px, transparent 10px),
+      radial-gradient(circle at 75% 55%, rgba(255,107,0,0.18) 6px, transparent 8px);
+    background-size: 380px 380px, 420px 420px, 360px 360px, 400px 400px, 340px 340px;
+    pointer-events: none;
+    opacity: 0.9;
+    z-index: 0;
+  }
+
+  footer > * { position: relative; z-index: 1; }
+
+  /* BANDE SUPÉRIEURE : Inscription (sous la vague colorée) */
+  .foot-banner {
+    background: linear-gradient(120deg, var(--rose) 0%, var(--orange) 50%, var(--jaune) 100%);
+    padding: 36px 32px;
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+    border: 4px solid var(--ink);
+    border-radius: 20px;
+    margin: 0 32px 56px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .foot-banner h3 {
+    font-family: var(--font-impact);
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+    text-shadow: 4px 4px 0 var(--ink);
+  }
+  .foot-banner p {
+    font-family: var(--font-fun);
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.95;
+  }
+  .foot-banner form {
+    display: flex; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .foot-banner input {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 3px solid var(--ink);
+    font-family: var(--font-fun);
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 240px;
+    color: var(--ink);
+  }
+  .foot-banner button {
+    background: var(--vert);
+    color: var(--ink);
+    border: 3px solid var(--ink);
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-family: var(--font-impact);
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .foot-banner button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  /* SCORES LIVE BANDE */
+  .live-scores {
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin: 0 32px 48px;
+    flex-wrap: wrap;
+  }
+  .live-scores .live-tag {
+    background: var(--rose);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-family: var(--font-bang);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .live-scores .live-tag .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: white;
+    animation: pulse 1.5s ease infinite;
+  }
+  .live-scores .leagues {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    font-family: var(--font-fun);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .live-scores .leagues span {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: rgba(255,255,255,0.9);
+  }
+
+  /* GRILLE PRINCIPALE FOOTER */
+  .foot-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px 48px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+    gap: 36px;
+  }
+  .foot-col h4 {
+    font-family: var(--font-bang);
+    font-size: 20px;
+    color: var(--jaune);
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .foot-col ul {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .foot-col ul a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-family: var(--font-fun);
+    font-weight: 500;
+    font-size: 15px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .foot-col ul a:hover {
+    color: var(--cyan);
+    transform: translateX(4px);
+  }
+  .foot-col ul li .badge-new {
+    background: var(--vert);
+    color: var(--ink);
+    font-family: var(--font-bang);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 4px;
+  }
+  .foot-col ul li .badge-hot {
+    background: var(--orange);
+    color: white;
+    font-family: var(--font-bang);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 4px;
+  }
+
+  /* Colonne marque */
+  .foot-brand {
+    grid-row: span 1;
+  }
+  .foot-brand .logo-block {
+    font-family: var(--font-impact);
+    font-size: 30px;
+    margin-bottom: 12px;
+    color: white;
+    text-shadow: 4px 4px 0 var(--orange);
+    line-height: 1;
+  }
+  .foot-brand p.tag {
+    font-family: var(--font-hand);
+    font-size: 22px;
+    color: var(--cyan);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  .foot-brand .socials {
+    display: flex; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .foot-brand .socials a {
+    width: 44px; height: 44px;
+    background: white;
+    color: var(--ink);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    text-decoration: none;
+    border: 2px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .foot-brand .socials a:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  .foot-brand .socials a.fb:hover    { background: #1877F2; color: white; }
+  .foot-brand .socials a.ig:hover    { background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF); color: white; }
+  .foot-brand .socials a.yt:hover    { background: #FF0000; color: white; }
+  .foot-brand .socials a.tt:hover    { background: #000; color: white; }
+
+  /* PUSHCARDS : 90 cours, IA, dons */
+  .foot-pushcards {
+    max-width: 1280px;
+    margin: 0 auto 48px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .pushcard {
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 18px;
+    padding: 24px;
+    border: 3px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--orange);
+    display: flex; flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .pushcard:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--orange);
+  }
+  .pushcard:nth-child(2) { box-shadow: 6px 6px 0 var(--rose); }
+  .pushcard:nth-child(2):hover { box-shadow: 9px 9px 0 var(--rose); }
+  .pushcard:nth-child(3) { box-shadow: 6px 6px 0 var(--vert); }
+  .pushcard:nth-child(3):hover { box-shadow: 9px 9px 0 var(--vert); }
+
+  .pushcard .em { font-size: 36px; margin-bottom: 8px; }
+  .pushcard h5 {
+    font-family: var(--font-impact);
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .pushcard p {
+    font-family: var(--font-fun);
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+  .pushcard a {
+    background: var(--ink);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: var(--font-impact);
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    border: 2px solid var(--ink);
+    transition: background 0.2s ease;
+  }
+  .pushcard a:hover { background: var(--orange); }
+
+  /* QUOI DE NEUF DANS FOOTER */
+  .foot-news {
+    max-width: 1280px;
+    margin: 0 auto 36px;
+    padding: 0 32px;
+  }
+  .foot-news h4 {
+    font-family: var(--font-bang);
+    font-size: 24px;
+    color: var(--jaune);
+    letter-spacing: 0.06em;
+    margin-bottom: 18px;
+  }
+  .foot-news .news-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .foot-news .news-item {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .foot-news .news-item .date {
+    font-family: var(--font-fun);
+    font-size: 12px;
+    color: var(--cyan);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .foot-news .news-item .title {
+    font-family: var(--font-fun);
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .foot-news .news-item .desc {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.45;
+  }
+
+  /* BANDE COPYRIGHT */
+  .foot-bottom {
+    background: rgba(0,0,0,0.4);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 22px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-family: var(--font-fun);
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+  }
+  .foot-bottom .links {
+    display: flex; gap: 18px; flex-wrap: wrap;
+  }
+  .foot-bottom .links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+  }
+  .foot-bottom .links a:hover { color: var(--cyan); }
+  .foot-bottom .made {
+    font-family: var(--font-hand);
+    font-size: 17px;
+    color: var(--jaune);
+  }
+
+  /* Responsive footer */
+  @media (max-width: 900px) {
+    .foot-banner { grid-template-columns: 1fr; text-align: center; }
+    .foot-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .foot-brand { grid-column: 1 / -1; }
+    .foot-pushcards { grid-template-columns: 1fr; }
+    .foot-news .news-list { grid-template-columns: 1fr; }
+    .foot-bottom { flex-direction: column; text-align: center; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ============ PASSWORD GATE — Protection mot de passe ============ -->
+<div id="passwordGate" style="
+  position: fixed; inset: 0; z-index: 99999;
+  background: linear-gradient(135deg, #00D9FF 0%, #00C4FF 50%, #00A8E8 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Luckiest Guy', cursive;
+">
+  <div style="
+    background: white; border: 5px solid #1a1a2e; border-radius: 24px;
+    padding: 48px 36px; max-width: 460px; width: 90%;
+    box-shadow: 14px 14px 0 #1a1a2e;
+    text-align: center;
+  ">
+    <div style="font-size: 80px; margin-bottom: 8px;">🔒</div>
+    <h2 style="font-family: 'Luckiest Guy', cursive; font-size: 38px; color: #1a1a2e; margin-bottom: 8px; text-shadow: 3px 3px 0 #FFEA00;">ACCÈS PROTÉGÉ</h2>
+    <p style="font-family: 'DynaPuff', cursive; font-size: 17px; color: #555; margin-bottom: 24px;">Aperçu privé de Zone Total Sport.<br>Entre le mot de passe pour continuer.</p>
+    <input type="password" id="passwordInput" placeholder="Mot de passe" style="
+      width: 100%; padding: 14px 18px; border: 3px solid #1a1a2e;
+      border-radius: 12px; font-size: 18px; font-family: inherit;
+      text-align: center; margin-bottom: 14px; box-sizing: border-box;
+    " autofocus>
+    <button onclick="checkPassword()" style="
+      background: #FF6B00; color: white; border: 3px solid #1a1a2e;
+      padding: 14px 32px; border-radius: 14px; font-family: 'Luckiest Guy', cursive;
+      font-size: 22px; cursor: pointer; box-shadow: 5px 5px 0 #1a1a2e;
+      letter-spacing: 0.04em; width: 100%;
+    ">DÉVERROUILLER</button>
+    <div id="passwordError" style="
+      display: none; color: #FF2D87; font-family: 'DynaPuff', cursive;
+      font-weight: 700; margin-top: 14px; font-size: 16px;
+    ">❌ Mot de passe incorrect</div>
+  </div>
+</div>
+
+<script>
+  // ============ MOT DE PASSE — change-le ici ============
+  const CORRECT_PASSWORD = 'mrroot2026';
+
+  function checkPassword() {
+    const input = document.getElementById('passwordInput').value;
+    if (input === CORRECT_PASSWORD) {
+      sessionStorage.setItem('zts-unlocked', 'yes');
+      document.getElementById('passwordGate').style.display = 'none';
+    } else {
+      document.getElementById('passwordError').style.display = 'block';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
+    }
+  }
+  // Déjà déverrouillé dans cette session?
+  if (sessionStorage.getItem('zts-unlocked') === 'yes') {
+    document.getElementById('passwordGate').style.display = 'none';
+  }
+  // Touche Enter = soumet
+  document.getElementById('passwordInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') checkPassword();
+  });
+</script>
+<!-- ============ FIN PASSWORD GATE ============ -->
+
+<!-- DARK NAV BAR — toujours visible en haut -->
+<div class="dark-nav" id="darkNav">
+  <a href="#" class="dn-btn active"><span class="em">🏠</span>Accueil</a>
+  <a href="#" class="dn-btn"><span class="em">📁</span>Ressources</a>
+  <a href="https://zonetotalsport.ca/blog.html" class="dn-btn"><span class="em">✏️</span>Blog</a>
+  <a href="https://zonetotalsport.ca/aidons-nous/" class="dn-btn communaute"><span class="em">🤝</span>Communauté ▼</a>
+  <a href="#" class="dn-btn dons"><span class="em">💛</span>Dons</a>
+  <a href="#" class="dn-btn user"><span class="em">👋</span>Salut, Joey!</a>
+</div>
+
+<!-- SÉRIES SPORTIVES - colonne flottante à gauche -->
+<div class="series-dock">
+  <a class="serie-card nhl" href="#" onclick="openSeries('nhl'); return false;" title="Voir les séries LNH">
+    <span class="dot-live"></span>
+    <div class="league-logo">🏒</div>
+    <div class="label">SÉRIES LNH</div>
+  </a>
+  <a class="serie-card nba" href="#" onclick="openSeries('nba'); return false;" title="Voir les séries NBA">
+    <span class="dot-live"></span>
+    <span class="ball">🏀</span>
+    <div class="league-logo">🏀</div>
+    <div class="label">SÉRIES NBA</div>
+  </a>
+</div>
+
+<!-- MODAL SÉRIES -->
+<div class="series-modal" id="seriesModal" onclick="if(event.target===this) this.classList.remove('open')">
+  <div class="series-modal-inner">
+    <button class="series-close" onclick="document.getElementById('seriesModal').classList.remove('open')">✕</button>
+    <div class="series-modal-head">
+      <span class="series-badge" id="seriesBadge">🏒 LNH</span>
+      <h2 id="seriesTitle">Séries éliminatoires LNH 2026</h2>
+      <p id="seriesSubtitle">Coupe Stanley · Tour final</p>
+    </div>
+
+    <div class="series-content" id="seriesContent">
+      <!-- Injecté en JS -->
+    </div>
+
+    <div class="series-cta-row">
+      <a id="seriesExtLink" href="https://www.nhl.com/fr/playoffs" target="_blank" rel="noopener" class="series-cta">
+        Voir le tableau complet sur le site officiel →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER BANNIÈRE : juste Logo + Clock + Sous-titre centré -->
+<nav class="top" id="topNav">
+  <div class="header-row" id="navLinks">
+    <!-- CENTRÉ : Logo + Clock + Sub-title -->
+    <div class="header-center" style="grid-column: 1 / -1;">
+      <a href="#" class="logo">ZONE <span class="total">TOTAL</span> SPORT</a>
+      <div class="clock">
+        <span class="clock-icon">🕐</span>
+        <span class="clock-time" id="clockTime">--:--:--</span>
+      </div>
+      <div class="logo-sub">Pédagogie Primaire</div>
+    </div>
+  </div>
+  <button class="burger" id="burger" aria-label="Menu" style="display: none;">☰</button>
+</nav>
+
+<!-- HERO STAGE 1 : SÉLECTEUR 3 PORTES -->
+<section class="hero" id="stage1">
+  <span class="eyebrow"><span class="dot"></span> +500 jeux · 100% gratuit · primaire</span>
+  <h1 class="mega">Faire bouger les enfants,<br><span class="swipe">c'est notre mission!</span></h1>
+  <p class="lede">Une plateforme. Trois métiers. Choisis le tien et reçois exactement ce qu'il te faut — pour des journées qui roulent au primaire.</p>
+
+  <div class="portes">
+
+    <!-- PORTE ÉP -->
+    <div class="porte" data-metier="ep" onclick="choisirMetier('ep')">
+      <div class="splash"></div>
+      <span class="icone"><img src="perso-ep.png" alt="Prof d'éducation physique"></span>
+      <h3>Éducation physique</h3>
+      <p class="role">Profs d'ÉP du primaire : cours béton, alignés PFEQ, prêts dès lundi matin.</p>
+      <div class="tags">
+        <span class="tag">SAÉ</span>
+        <span class="tag">PFEQ</span>
+        <span class="tag">Évaluation</span>
+        <span class="tag">Gymnase</span>
+      </div>
+      <div class="go">
+        <span>C'est parti!</span>
+        <span class="arrow">→</span>
+      </div>
+    </div>
+
+    <!-- PORTE SDG -->
+    <div class="porte" data-metier="sdg" onclick="choisirMetier('sdg')">
+      <div class="splash"></div>
+      <span class="icone"><img src="perso-sdg.png" alt="Éducateur service de garde"></span>
+      <h3>Service de garde</h3>
+      <p class="role">Éducatrices qui animent 30 jeunes au primaire : routines, jeux, journées péda.</p>
+      <div class="tags">
+        <span class="tag">Routines</span>
+        <span class="tag">Jeux calmes</span>
+        <span class="tag">Pluie</span>
+        <span class="tag">SOS conflits</span>
+      </div>
+      <div class="go">
+        <span>On y va!</span>
+        <span class="arrow">→</span>
+      </div>
+    </div>
+
+    <!-- PORTE CAMP -->
+    <div class="porte" data-metier="camp" onclick="choisirMetier('camp')">
+      <div class="splash"></div>
+      <span class="icone"><img src="perso-camp.png" alt="Animateur camp de jour"></span>
+      <h3>Camps de jour</h3>
+      <p class="role">Coordos & moniteurs : grands jeux, thèmes, plein air et plan B météo.</p>
+      <div class="tags">
+        <span class="tag">Grands jeux</span>
+        <span class="tag">Thèmes</span>
+        <span class="tag">Plein air</span>
+        <span class="tag">Plan B</span>
+      </div>
+      <div class="go">
+        <span>En avant!</span>
+        <span class="arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="num" data-target="500">0</div><div class="label">Jeux & fiches</div></div>
+    <div class="stat"><div class="num" data-target="150">0</div><div class="label">SAÉ PFEQ</div></div>
+    <div class="stat"><div class="num" data-target="2300">0</div><div class="label">Pros inscrits</div></div>
+    <div class="stat"><div class="num">100%</div><div class="label">Gratuit, à vie</div></div>
+  </div>
+</section>
+
+<!-- SECTION AUJOURD'HUI AU MENU (adaptée par métier via JS) -->
+<section class="menu-jour" id="menuJour">
+  <div class="menu-jour-inner">
+    <div class="menu-jour-head">
+      <span class="pill-top">✨ AUJOURD'HUI AU MENU</span>
+      <h2 id="menuJourTitre">Ton cours ÉPS prêt en 30 secondes</h2>
+      <div class="date" id="menuJourDate">Dimanche 24 mai</div>
+    </div>
+
+    <div class="menu-jour-grid">
+
+      <!-- MÉTÉO & PLAN -->
+      <div class="menu-jour-card meteo">
+        <h3>☁️ MÉTÉO & PLAN</h3>
+        <div class="meteo-temp"><span class="icon">🌧️</span>10°C</div>
+        <div class="meteo-loc">Bruine · Saint-Jean-sur-Richelieu</div>
+        <div class="meteo-tag" id="meteoTag">EXTÉRIEUR</div>
+        <div class="meteo-note" id="meteoNote">Temps idéal dehors</div>
+        <div class="suggestions-title" id="suggTitle">★ SUGGESTIONS PAR CYCLE</div>
+        <ul class="suggestions-list" id="suggList">
+          <!-- Injecté en JS selon métier -->
+        </ul>
+      </div>
+
+      <!-- JEU DU JOUR -->
+      <div class="menu-jour-card jeu">
+        <h3>🎮 JEU DU JOUR</h3>
+        <span class="jeu-tag" id="jeuTag">🏫 POUR LE GYMNASE</span>
+        <div class="jeu-name"><span>🏐</span><span id="jeuName">KINBALL</span></div>
+        <div class="small-head">COMMENT JOUER</div>
+        <p class="jeu-desc" id="jeuDesc">Trois équipes de 4 joueurs avec un ballon géant. Une équipe nomme une couleur et frappe le ballon. L'équipe nommée doit l'attraper avant qu'il touche le sol.</p>
+        <div class="tags-row" id="jeuTags">
+          <span>Équipe</span><span>2e-3e cycle</span><span>Ballon géant</span>
+        </div>
+        <a href="#" class="voir-tous" id="voirTous">VOIR 150 AUTRES JEUX →</a>
+      </div>
+
+      <!-- DÉFI DU JOUR -->
+      <div class="menu-jour-card defi">
+        <h3>💪 DÉFI DU JOUR</h3>
+        <span class="defi-tag" id="defiTag">🏫 EN CLASSE & 🏠 À LA MAISON</span>
+        <div class="defi-name" id="defiName">COMPLIMENT CHAÎNE</div>
+        <p style="font-family: var(--font-body); color: rgba(255,255,255,0.85); font-size: 15px; margin-bottom: 12px;" id="defiDesc">Chacun complimente son voisin. Le voisin continue.</p>
+        <div class="small-head">À FAIRE AUJOURD'HUI</div>
+        <div class="defi-box" id="defiBox">Cercle de fin : un compliment de droite à gauche.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STAGE 2 : PAGE MÉTIER (menu_jour est déjà au-dessus, hors stage2) -->
+<section class="stage2" id="stage2">
+
+  <!-- BANNIÈRE COMPACTE du métier : back button + nom du métier + petit personnage -->
+  <div class="metier-banner">
+    <div class="metier-banner-inner">
+      <button class="back-btn" onclick="retourSelecteur()">← Changer</button>
+      <div class="metier-banner-title">
+        <span class="metier-banner-pill" id="pill-metier">Zone ÉP</span>
+        <h1 id="titre-metier">Ton gym, tes règles.</h1>
+      </div>
+      <img class="metier-banner-char" id="perso-big-img" src="perso-ep.png" alt="">
+    </div>
+  </div>
+
+  <!-- Spacers retirés -->
+  <span id="baseline-metier" style="display:none;"></span>
+  <ul id="comment-utiliser-list" style="display:none;"></ul>
+
+  <!-- GROSSE GRILLE DE BOUTONS ILLUSTRÉS -->
+  <section class="tools-section">
+    <div class="tools-head">
+      <span class="tools-eyebrow">★ TES OUTILS</span>
+      <h2 class="tools-title" id="tools-title">Tout ce dont tu as besoin</h2>
+      <p class="tools-intro">Clique sur un outil — il s'ouvre en moins de 2 secondes.</p>
+    </div>
+    <div class="tools-grid" id="tools-grid">
+      <!-- Injecté en JS -->
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="temoignage" id="temoignage">
+      <!-- Injecté en JS -->
+    </div>
+
+    <div class="cta-final">
+      <h3 id="cta-titre">Rejoins la Zone</h3>
+      <p id="cta-sous">30 secondes. Aucune carte de crédit. Aucun spam.</p>
+      <a href="#" class="big-btn">Continuer avec Google <span>→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- APPS FLOTTANTES À DROITE (toujours visibles) -->
+<section class="apps-section" id="appsSection">
+  <div class="apps-grid" id="apps-grid">
+    <!-- Injecté en JS au chargement et au changement de métier -->
+  </div>
+</section>
+
+<!-- MODAL OUTILS INTERACTIFS (dé, roue, chrono, etc.) -->
+<div class="tool-modal" id="toolModal" onclick="if(event.target===this) closeTool()">
+  <div class="tool-modal-inner">
+    <button class="tool-close" onclick="closeTool()">✕</button>
+    <h2 class="tool-modal-title" id="toolModalTitle">Outil</h2>
+    <div class="tool-modal-body" id="toolModalBody"></div>
+  </div>
+</div>
+
+<!-- BOUTON PAUSE SYNDICALE -->
+<button class="pause-syndicale-btn" onclick="document.getElementById('pauseModal').classList.add('open')">
+  <span class="em">☕</span> PAUSE SYNDICALE
+</button>
+
+<!-- MODAL PAUSE SYNDICALE -->
+<div class="pause-modal" id="pauseModal" onclick="if(event.target===this) this.classList.remove('open')">
+  <div class="pause-modal-inner">
+    <button class="close-btn" onclick="document.getElementById('pauseModal').classList.remove('open')">✕</button>
+    <div class="pause-head">
+      <span class="pause-pill">☕ PAUSE SYNDICALE</span>
+      <h2>Prends 30 secondes pour toi</h2>
+      <div class="pause-sub">Une citation, une question. Un nouveau défi chaque jour.</div>
+    </div>
+    <div class="pause-grid">
+      <div class="pause-card blague">
+        <h4>😂 BLAGUE DU JOUR</h4>
+        <p>« Qu'est-ce qu'un haltère déprimé? Un poids mort. »</p>
+      </div>
+      <div class="pause-card fait">
+        <h4>📜 FAIT HISTORIQUE</h4>
+        <p>Les Avalanche du Colorado en route vers la Coupe Stanley — Patrick Roy et Joe Sakic mènent le Colorado à la Coupe. Roy gagne son 3e Conn Smythe.</p>
+        <div style="margin-top: 12px; font-family: var(--font-impact); color: var(--rose);">📅 2001</div>
+      </div>
+      <div class="pause-card quiz">
+        <h4>🧠 QUIZ SPORTIF</h4>
+        <p style="font-size: 18px; margin-bottom: 8px;">Record du saut en longueur masculin?</p>
+        <ul class="quiz-options">
+          <li>8,50 m</li>
+          <li>8,95 m</li>
+          <li>9,20 m</li>
+          <li>9,50 m</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MASCOTTE FLOTTANTE -->
+<div class="mascot" id="mascot">
+  <span id="mascot-emoji"><img src="perso-ep.png" alt="Mr. Root"></span>
+  <div class="bubble" id="mascot-bubble">
+    <img class="bubble-avatar" id="bubble-avatar" src="perso-ep.png" alt="">
+    <div class="bubble-text" id="bubble-text">Salut! Clique-moi pour une dose de motivation!</div>
+  </div>
+</div>
+
+<!-- TRANSITION SWEEP -->
+<div class="color-sweep" id="sweep"></div>
+
+<!-- ============ FOOTER RICHE ============ -->
+<footer>
+
+  <!-- BANDE INSCRIPTION -->
+  <div class="foot-banner">
+    <div>
+      <h3>REJOINS LA ZONE!</h3>
+      <p>Gratuit pour toujours · 30 secondes · aucune carte de crédit</p>
+    </div>
+    <form onsubmit="event.preventDefault(); alert('Merci! On t\'envoie ton lien magique 🎉');">
+      <input type="email" placeholder="ton@courriel.ca" required>
+      <button type="submit">M'INSCRIRE!</button>
+    </form>
+  </div>
+
+  <!-- SCORES LIVE -->
+  <div class="live-scores">
+    <span class="live-tag"><span class="dot"></span>SCORES EN DIRECT</span>
+    <div class="leagues">
+      <span>🏒 LNH</span>
+      <span>🏀 NBA</span>
+      <span>🏈 NFL</span>
+      <span>⚾ MLB</span>
+      <span>⚽ MLS</span>
+      <span>🏈 NCAA</span>
+    </div>
+  </div>
+
+  <!-- PUSHCARDS : 90 cours, Aidons-nous, dons -->
+  <div class="foot-pushcards">
+    <div class="pushcard">
+      <span class="em">🎒</span>
+      <h5>90 COURS MATERNELLE</h5>
+      <p>Web-app gratuite, 90 séances clé en main, prêtes dès lundi. 4-6 ans, motricité, coopération.</p>
+      <a href="https://zonetotalsport.ca/apps/cours-maternelle/" target="_blank" rel="noopener">OBTENIR L'ACCÈS →</a>
+    </div>
+    <div class="pushcard">
+      <span class="em">🤝</span>
+      <h5>AIDONS-NOUS</h5>
+      <p>Forum pour profs ÉPS, éducatrices SDG et animateurs de camp. Partage tes trucs, pose tes questions.</p>
+      <a href="https://zonetotalsport.ca/aidons-nous/" target="_blank" rel="noopener">REJOINDRE →</a>
+    </div>
+    <div class="pushcard">
+      <span class="em">💛</span>
+      <h5>SOUTIENS LA ZONE</h5>
+      <p>100% gratuit, sans pub. Un petit don aide à garder les outils accessibles à tous les profs.</p>
+      <a href="#">FAIRE UN DON →</a>
+    </div>
+  </div>
+
+  <!-- GRILLE LIENS -->
+  <div class="foot-grid">
+
+    <div class="foot-col foot-brand">
+      <div class="logo-block">⚡ ZONE TOTAL SPORT</div>
+      <p class="tag">Faire bouger les enfants,<br>c'est notre mission!</p>
+      <div class="socials">
+        <a href="https://www.facebook.com/zonetotalsportparMr.Roots/" class="fb" title="Facebook">f</a>
+        <a href="https://www.instagram.com/zonetotalsportparmrroots/" class="ig" title="Instagram">◉</a>
+        <a href="https://www.youtube.com/@zonetotalsportparMrRoots" class="yt" title="YouTube">▶</a>
+        <a href="https://www.tiktok.com/@zonetotalsport" class="tt" title="TikTok">♪</a>
+      </div>
+      <div style="font-family: var(--font-fun); font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500;">
+        2 300+ pros inscrits · 500+ jeux · 150+ SAÉ
+      </div>
+    </div>
+
+    <div class="foot-col">
+      <h4>POUR QUI?</h4>
+      <ul>
+        <li><a href="#"><span>🏃</span>Éducation physique</a></li>
+        <li><a href="#"><span>🧸</span>Service de garde</a></li>
+        <li><a href="#"><span>🏕️</span>Camps de jour</a></li>
+        <li><a href="#"><span>🤝</span>Communauté Aidons-nous</a></li>
+      </ul>
+    </div>
+
+    <div class="foot-col">
+      <h4>RESSOURCES</h4>
+      <ul>
+        <li><a href="#">Banque de jeux <span class="badge-hot">500+</span></a></li>
+        <li><a href="#">SAÉ PFEQ</a></li>
+        <li><a href="#">Générateur de jeux IA</a></li>
+        <li><a href="#">90 cours maternelle <span class="badge-new">NEW</span></a></li>
+        <li><a href="https://zonetotalsport.ca/blog.html">Blog ÉPS</a></li>
+        <li><a href="https://zonetotalsport.ca/repertoire.html">Répertoire mondial</a></li>
+      </ul>
+    </div>
+
+    <div class="foot-col">
+      <h4>OUTILS</h4>
+      <ul>
+        <li><a href="#">Intervention Groupe <span class="badge-new">NEW</span></a></li>
+        <li><a href="https://zonetotalsport.ca/apps/planificateur/">Planificateur EPS</a></li>
+        <li><a href="https://zonetotalsport.ca/apps/transitions/">Boîte à outils</a></li>
+        <li><a href="https://zonetotalsport.ca/apps/scoreboard/">Tableau indicateur</a></li>
+        <li><a href="#">Tableau blanc TNI</a></li>
+        <li><a href="#">Grille horaire</a></li>
+        <li><a href="#">Carnet de notes</a></li>
+      </ul>
+    </div>
+
+    <div class="foot-col">
+      <h4>EXTRAS</h4>
+      <ul>
+        <li><a href="#">☕ Pause ÉPS du jour</a></li>
+        <li><a href="https://zonetotalsport.ca/avis.html">★ Avis & témoignages</a></li>
+        <li><a href="https://suppleance.zonetotalsport.ca">🦺 Ma Suppléance</a></li>
+        <li><a href="#">💡 Suggérer une idée</a></li>
+        <li><a href="#">📤 Partager le site</a></li>
+        <li><a href="#">📬 Contact</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- QUOI DE NEUF -->
+  <div class="foot-news">
+    <h4>★ QUOI DE NEUF?</h4>
+    <div class="news-list">
+      <div class="news-item">
+        <div class="date">2 mai 2026</div>
+        <div class="title">🛡️ Intervention Groupe — le couteau suisse ÉPS</div>
+        <div class="desc">PWA tout-en-un : 60 jeux inclusifs, SOS crise, planificateur, dessin terrain. Fonctionne hors ligne!</div>
+      </div>
+      <div class="news-item">
+        <div class="date">29 avril 2026</div>
+        <div class="title">📖 50 jeunes, un gymnase — l'art de maîtriser!</div>
+        <div class="desc">Stratégies concrètes : gestion de groupe, transitions, énergie. Pour profs ÉP, SDG et camps.</div>
+      </div>
+      <div class="news-item">
+        <div class="date">18 avril 2026</div>
+        <div class="title">🤝 Aidons-nous — la communauté d'entraide</div>
+        <div class="desc">Forum type Facebook pour profs ÉPS, éducatrices SDG et animateurs de camp. Optimisé TBI!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANDE LANGUES / COPYRIGHT -->
+  <div class="foot-bottom">
+    <div>© 2026 Zone Total Sport · Tous droits réservés</div>
+    <div class="links">
+      <a href="#">FR</a>
+      <a href="#">EN</a>
+      <a href="#">中</a>
+      <a href="#">ES</a>
+      <span style="opacity:0.3;">|</span>
+      <a href="https://zonetotalsport.ca/politique.html">Politique de confidentialité</a>
+      <a href="#">À propos</a>
+    </div>
+    <div class="made">Fait avec 💛 au Québec</div>
+  </div>
+
+</footer>
+
+<script>
+
+  // ============ CONFIG DES 3 MÉTIERS ============
+  const METIERS = {
+    ep: {
+      nom: 'Zone ÉP',
+      color: '#00E5FF',
+      colorSoft: '#CCFAFF',
+      colorTint: 'rgba(0,229,255,0.18)',
+      mascot: 'perso-ep.png',
+      mascotMsg: 'Yo coach! Ton gym t\'attend!',
+      titre: 'Ton gym, tes règles.',
+      baseline: 'Tout ce qu\'il te faut pour tes cours d\'ÉP au primaire — alignés PFEQ, testés au gymnase, prêts dès lundi.',
+      cta: 'Rejoins 2300+ profs d\'ÉP',
+      ctaSub: 'Accès illimité à 500+ jeux, SAÉ et outils. Gratuit à vie!',
+      commentUtiliser: [
+        'Choisis une app dans la grille ci-dessous',
+        'Elle s\'ouvre en moins de 2 secondes',
+        'Aucun compte requis pour commencer',
+        'Sauvegarde locale automatique'
+      ],
+      apps: [
+        { icon: '📅', name: 'Planificateur EPS', desc: 'Calendrier scolaire complet', url: 'https://zonetotalsport.ca/apps/planificateur/', hot: true },
+        { icon: '🏀', name: 'Tableau indicateur', desc: 'Scoreboard 3 sports', url: 'https://zonetotalsport.ca/apps/scoreboard/', hot: true },
+        { icon: '🧰', name: 'Boîte à outils', desc: 'Signaux, chrono, équipes', url: 'https://zonetotalsport.ca/apps/transitions/' },
+        { icon: '🎒', name: '90 cours maternelle', desc: 'Web-app clé en main', url: 'https://zonetotalsport.ca/apps/cours-maternelle/', hot: true },
+        { icon: '🦺', name: 'Ma Suppléance', desc: 'Plans pour suppléants', url: 'https://suppleance.zonetotalsport.ca/' },
+        { icon: '🌍', name: 'Répertoire mondial', desc: 'Profs ÉP du monde', url: 'https://zonetotalsport.ca/repertoire.html' },
+        { icon: '✏️', name: 'Blog ÉPS', desc: '23+ articles pratiques', url: 'https://zonetotalsport.ca/blog.html' },
+        { icon: '🎮', name: 'Banque de jeux', desc: '500+ jeux avec fiches PDF', soon: true },
+        { icon: '🤖', name: 'Générateur SAÉ IA', desc: 'SAÉ PFEQ en 10 sec', soon: true },
+        { icon: '📊', name: 'Carnet Léger', desc: 'Évaluation & présences', soon: true },
+        { icon: '📋', name: 'Banque d\'éducatifs', desc: 'Fiches techniques', soon: true },
+        { icon: '🗓️', name: 'Grille horaire', desc: 'Spécialistes & locaux', soon: true },
+        { icon: '🖍️', name: 'Tableau blanc TNI', desc: 'Dessin & projection', soon: true },
+        { icon: '🤸', name: 'Échauffements', desc: '50+ routines par âge', soon: true },
+        { icon: '🏅', name: 'Olympiades scolaires', desc: 'Calendrier & épreuves', soon: true }
+      ],
+      temoignage: {
+        initiale: 'MC',
+        nom: 'Marie-Claude — Prof d\'ÉP, Laval',
+        quote: 'Je planifie 5 cours en 20 minutes le dimanche soir. Avant, ça me prenait 3 heures. Game changer.'
+      }
+    },
+
+    sdg: {
+      nom: 'Zone SDG',
+      color: '#39FF14',
+      colorSoft: '#D6FFCB',
+      colorTint: 'rgba(57,255,20,0.18)',
+      mascot: 'perso-sdg.png',
+      mascotMsg: 'Allô! Prête pour ta journée?',
+      titre: 'Ta journée bien outillée.',
+      baseline: 'Tout pour animer 30 jeunes au primaire — routines, transitions, SOS conflits et journées péda clé en main.',
+      cta: 'Rejoins les éducatrices SDG',
+      ctaSub: 'Solutions concrètes pour 30 jeunes, peu de matériel et plein de bruit. Gratuit!',
+      commentUtiliser: [
+        'Pige une app selon ton besoin du moment',
+        'Tout fonctionne hors ligne (zéro stress)',
+        'Adapté aux 5-12 ans, prêt à projeter',
+        'Aucun compte requis pour commencer'
+      ],
+      apps: [
+        { icon: '🧰', name: 'Boîte transitions', desc: 'Signaux, chrono, équipes', url: 'https://zonetotalsport.ca/apps/transitions/', hot: true },
+        { icon: '🏀', name: 'Tableau indicateur', desc: 'Pour grands jeux', url: 'https://zonetotalsport.ca/apps/scoreboard/' },
+        { icon: '🎒', name: '90 cours maternelle', desc: 'Idéal SDG maternelle', url: 'https://zonetotalsport.ca/apps/cours-maternelle/', hot: true },
+        { icon: '✏️', name: 'Blog ÉPS', desc: 'Articles gestion groupe', url: 'https://zonetotalsport.ca/blog.html' },
+        { icon: '🤝', name: 'Communauté SDG', desc: 'Forum Aidons-nous', url: 'https://zonetotalsport.ca/aidons-nous/' },
+        { icon: '🛡️', name: 'SOS Intervention', desc: '100 solutions de crise', soon: true },
+        { icon: '🎲', name: 'Jeux sans matériel', desc: '200+ jeux zéro prep', soon: true },
+        { icon: '🌧️', name: 'Plan B météo', desc: 'Activités selon météo', soon: true },
+        { icon: '🎵', name: 'Musique ambiance', desc: 'Playlists par moment', soon: true },
+        { icon: '✅', name: 'Carnet présences', desc: 'Appel en 30 sec', soon: true },
+        { icon: '🎨', name: 'Journée péda', desc: 'Planif clé en main', soon: true },
+        { icon: '🖍️', name: 'Tableau blanc TNI', desc: 'Dessin & projection', soon: true },
+        { icon: '📚', name: 'Banque d\'activités', desc: 'Bricolage, sciences', soon: true },
+        { icon: '📖', name: 'Histoires à raconter', desc: '100+ contes courts', soon: true },
+        { icon: '🎤', name: 'Comptines & chansons', desc: 'Banque audio + paroles', soon: true },
+        { icon: '🧩', name: 'Énigmes & devinettes', desc: 'Casse-tête par âge', soon: true }
+      ],
+      temoignage: {
+        initiale: 'JL',
+        nom: 'Julie L. — Éducatrice SDG, Trois-Rivières',
+        quote: 'La journée pédagogique de septembre, plus jamais le stress. J\'ouvre l\'app et on est partis!'
+      }
+    },
+
+    camp: {
+      nom: 'Zone Camp',
+      color: '#FF6B00',
+      colorSoft: '#FFE7D1',
+      colorTint: 'rgba(255,107,0,0.18)',
+      mascot: 'perso-camp.png',
+      mascotMsg: 'Hé moniteur! On part en mission?',
+      titre: 'Des étés mémorables.',
+      baseline: 'Grands jeux, journées thématiques, tournois et plans B météo — tout pour animer un été complet sans s\'épuiser.',
+      cta: 'Rejoins les coordos & moniteurs',
+      ctaSub: 'Tout pour planifier un été complet sans s\'épuiser. Gratuit à vie!',
+      commentUtiliser: [
+        'Choisis un grand jeu ou crée le tien (IA)',
+        'Imprime/projette la fiche en un clic',
+        'Chrono, équipes et musique en bonus',
+        'Fonctionne hors ligne, partout au camp'
+      ],
+      apps: [
+        { icon: '⚡', name: 'Boîte à outils camp', desc: 'Chrono, équipes, musique', url: 'https://zonetotalsport.ca/apps/transitions/', hot: true },
+        { icon: '🎯', name: 'Tableau indicateur', desc: 'Tournois & scoreboard', url: 'https://zonetotalsport.ca/apps/scoreboard/' },
+        { icon: '📅', name: 'Planificateur camp', desc: 'Adapté pour l\'été', url: 'https://zonetotalsport.ca/apps/planificateur/' },
+        { icon: '✏️', name: 'Blog ÉPS', desc: 'Stratégies grand groupe', url: 'https://zonetotalsport.ca/blog.html' },
+        { icon: '🤝', name: 'Communauté Camp', desc: 'Forum Aidons-nous', url: 'https://zonetotalsport.ca/aidons-nous/' },
+        { icon: '🏆', name: 'Grands jeux & thèmes', desc: '50+ jeux clé en main', soon: true },
+        { icon: '🤖', name: 'Générateur IA thématique', desc: 'Journée complète en 10 sec', soon: true },
+        { icon: '🎤', name: 'Chansons de camp', desc: '80+ chansons + paroles', soon: true },
+        { icon: '🧩', name: 'Énigmes & devinettes', desc: '150+ casse-tête par âge', soon: true },
+        { icon: '📣', name: 'Cris de ralliement', desc: 'Chants d\'équipe & rythmes', soon: true },
+        { icon: '🌦️', name: 'Plan B météo', desc: 'Activités selon météo', soon: true },
+        { icon: '🎵', name: 'Musique camp', desc: 'Playlists par moment', soon: true },
+        { icon: '📋', name: 'Carnet groupes', desc: 'Allergies & contacts', soon: true },
+        { icon: '🎨', name: 'Bricolage à la carte', desc: '150+ idées créatives', soon: true },
+        { icon: '🔥', name: 'Cérémonies & rituels', desc: 'Ouverture, feu de camp', soon: true },
+        { icon: '🌙', name: 'Jeux de soirée', desc: 'Pour camps avec dodo', soon: true }
+      ],
+      temoignage: {
+        initiale: 'AB',
+        nom: 'Alex B. — Coordo camp de jour, Sherbrooke',
+        quote: 'L\'été passé j\'ai formé 12 moniteurs avec la plateforme. Game changer total!'
+      }
+    }
+  };
+
+  // ============ OUTILS DE LA BOÎTE À OUTILS (colonne flottante toujours visible) ============
+  // Chaque outil ouvre un modal fonctionnel (pas un lien externe)
+  const APPS_DEFAULT = [
+    { icon: '🎲', name: 'Dé',        tool: 'dice' },
+    { icon: '🎡', name: 'Roue',      tool: 'wheel' },
+    { icon: '⏱️', name: 'Chrono',    tool: 'chrono' },
+    { icon: '⏲️', name: 'Minuteur',  tool: 'timer' },
+    { icon: '👥', name: 'Équipes',   tool: 'teams' },
+    { icon: '📝', name: 'Message',   tool: 'message' },
+    { icon: '🏫', name: 'Mon école', tool: 'school' }
+  ];
+
+  function renderApps(apps) {
+    const grid = document.getElementById('apps-grid');
+    grid.innerHTML = apps.map(app => {
+      // Outil interactif (modal) ou lien externe
+      if (app.tool) {
+        return `
+          <button type="button" class="app-card" onclick="openTool('${app.tool}')">
+            ${app.hot ? '<span class="badge-hot"></span>' : ''}
+            <span class="app-icon">${app.icon}</span>
+            <span class="app-name">${app.name}</span>
+          </button>
+        `;
+      }
+      const href = app.url || '#';
+      const target = app.url ? ' target="_blank" rel="noopener"' : '';
+      return `
+        <a href="${href}"${target} class="app-card">
+          ${app.hot ? '<span class="badge-hot"></span>' : ''}
+          <span class="app-icon">${app.icon}</span>
+          <span class="app-name">${app.name}</span>
+        </a>
+      `;
+    }).join('');
+  }
+  // Init au chargement
+  renderApps(APPS_DEFAULT);
+
+  // Rendu des GROS BOUTONS ILLUSTRÉS dans Stage 2
+  function renderToolsGrid(apps) {
+    const grid = document.getElementById('tools-grid');
+    if (!grid) return;
+    grid.innerHTML = apps.map(app => {
+      const href = app.url || '#';
+      const target = app.url ? ' target="_blank" rel="noopener"' : '';
+      const cls = app.soon ? 'tool-btn soon' : 'tool-btn';
+      const badge = app.soon
+        ? '<span class="soon-badge">BIENTÔT</span>'
+        : (app.hot ? '<span class="hot-badge">★ HOT</span>' : '');
+      return `
+        <a href="${href}"${target} class="${cls}">
+          ${badge}
+          <span class="icon">${app.icon}</span>
+          <div class="label">${app.name}</div>
+          <div class="desc">${app.desc || ''}</div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  // ============ CONTENU "AUJOURD'HUI AU MENU" PAR DÉFAUT + PAR MÉTIER ============
+  const MENU_JOUR = {
+    default: {
+      titre: 'Choisis ton métier pour ton menu du jour',
+      meteoTag: 'EXTÉRIEUR',
+      meteoNote: 'Temps idéal dehors',
+      suggTitle: '★ AUJOURD\'HUI ON A POUR TOI',
+      suggList: [
+        { cyc: 'ÉP', name: 'Banque de 500 jeux', desc: 'Filtrable par âge, matériel et compétence.' },
+        { cyc: 'SDG', name: 'SOS Intervention', desc: '100 solutions pour gérer une crise.' },
+        { cyc: 'CDJ', name: 'Grands jeux d\'été', desc: '50+ thèmes clé en main pour ton camp.' }
+      ],
+      jeuTag: '🏫 POUR TOUS',
+      jeuName: 'KINBALL',
+      jeuDesc: 'Trois équipes de 4 joueurs avec un ballon géant. Une équipe nomme une couleur et frappe le ballon. L\'équipe nommée doit l\'attraper avant qu\'il touche le sol.',
+      jeuTags: ['Équipe', 'Tous cycles', 'Ballon géant'],
+      defiTag: '🌟 DÉFI UNIVERSEL',
+      defiName: 'COMPLIMENT CHAÎNE',
+      defiDesc: 'Chacun complimente son voisin. Le voisin continue.',
+      defiBox: 'Cercle de fin : un compliment de droite à gauche.'
+    },
+    ep: {
+      titre: 'Ton cours ÉPS prêt en 30 secondes',
+      meteoTag: 'EXTÉRIEUR',
+      meteoNote: 'Temps idéal dehors',
+      suggTitle: '★ SUGGESTIONS PAR CYCLE',
+      suggList: [
+        { cyc: '1ER', name: 'Parcours cônes fous', desc: 'Slalom, sauts, courses entre 8-10 cônes colorés.' },
+        { cyc: '2E',  name: 'Chasse au trésor sportive', desc: 'Indices qui mènent à des défis physiques à chaque station.' },
+        { cyc: '3E',  name: 'Kin-ball modifié', desc: '3 équipes, gros ballon, stratégie coopérative.' }
+      ],
+      jeuTag: '🏫 POUR LE GYMNASE',
+      jeuName: 'KINBALL',
+      jeuDesc: 'Trois équipes de 4 joueurs avec un ballon géant. Une équipe nomme une couleur et frappe le ballon. L\'équipe nommée doit l\'attraper avant qu\'il touche le sol.',
+      jeuTags: ['Équipe', '2e-3e cycle', 'Ballon géant'],
+      defiTag: '🏫 EN CLASSE & 🏠 À LA MAISON',
+      defiName: 'COMPLIMENT CHAÎNE',
+      defiDesc: 'Chacun complimente son voisin. Le voisin continue.',
+      defiBox: 'Cercle de fin : un compliment de droite à gauche.'
+    },
+    sdg: {
+      titre: 'Ta journée SDG prête en 30 secondes',
+      meteoTag: 'INTÉRIEUR',
+      meteoNote: 'Plan B activé · pluie battante',
+      suggTitle: '★ SUGGESTIONS PAR GROUPE D\'ÂGE',
+      suggList: [
+        { cyc: '5-6',  name: 'Coin lecture animé', desc: 'Histoires interactives avec marionnettes ou mimes.' },
+        { cyc: '7-9',  name: 'Atelier bricolage', desc: 'Création libre avec matériaux recyclés. 45 min.' },
+        { cyc: '10-12', name: 'Tournoi société', desc: 'Jeux de plateau en équipes mixtes. Bonus stratégique.' }
+      ],
+      jeuTag: '🧸 POUR LE LOCAL SDG',
+      jeuName: 'LOUP-GAROU',
+      jeuDesc: 'Jeu de société sans matériel. Les villageois doivent démasquer les loups-garous avant qu\'ils ne dévorent tout le village. Ambiance et stratégie.',
+      jeuTags: ['Sans matériel', '8 ans +', 'Groupe 8-30'],
+      defiTag: '🧸 EN CERCLE',
+      defiName: 'MERCI EN CHAÎNE',
+      defiDesc: 'Chaque enfant dit merci pour quelque chose à son voisin.',
+      defiBox: 'Termine par un applaudissement collectif pour clôturer la journée.'
+    },
+    camp: {
+      titre: 'Ta journée camp prête en 30 secondes',
+      meteoTag: 'EXTÉRIEUR',
+      meteoNote: '☀️ Idéal pour grand jeu',
+      suggTitle: '★ SUGGESTIONS PAR ÂGE',
+      suggList: [
+        { cyc: '6-8',  name: 'Course aux trésors', desc: 'Indices simples, équipes de 4, parcours autour du camp.' },
+        { cyc: '9-11', name: 'Capture du drapeau', desc: 'Classique en 2 équipes. Stratégie + course.' },
+        { cyc: '12+',  name: 'Olympiades thématiques', desc: 'Épreuves variées avec système de points.' }
+      ],
+      jeuTag: '🏕️ POUR LE TERRAIN',
+      jeuName: 'CAPTURE DRAPEAU',
+      jeuDesc: 'Deux équipes, deux drapeaux à protéger ou capturer. Stratégie d\'équipe, course folle, prison à délivrer. Le classique des camps!',
+      jeuTags: ['Équipes', 'Plein air', '8 ans +'],
+      defiTag: '🏕️ CERCLE DE FEU',
+      defiName: 'LE PLUS BEAU MOMENT',
+      defiDesc: 'Chacun nomme son meilleur moment de la journée.',
+      defiBox: 'On termine en chantant la chanson du camp tous ensemble.'
+    }
+  };
+
+  function renderMenuJour(key) {
+    const m = MENU_JOUR[key] || MENU_JOUR.default;
+    document.getElementById('menuJourTitre').textContent = m.titre;
+    document.getElementById('meteoTag').textContent = m.meteoTag;
+    document.getElementById('meteoNote').textContent = m.meteoNote;
+    document.getElementById('suggTitle').textContent = m.suggTitle;
+    document.getElementById('suggList').innerHTML = m.suggList.map(s =>
+      `<li><span class="cyc">${s.cyc}</span><span class="name">${s.name}</span><span class="desc">— ${s.desc}</span></li>`
+    ).join('');
+    document.getElementById('jeuTag').textContent = m.jeuTag;
+    document.getElementById('jeuName').textContent = m.jeuName;
+    document.getElementById('jeuDesc').textContent = m.jeuDesc;
+    document.getElementById('jeuTags').innerHTML = m.jeuTags.map(t => `<span>${t}</span>`).join('');
+    document.getElementById('defiTag').textContent = m.defiTag;
+    document.getElementById('defiName').textContent = m.defiName;
+    document.getElementById('defiDesc').textContent = m.defiDesc;
+    document.getElementById('defiBox').textContent = m.defiBox;
+
+    // Date du jour
+    const now = new Date();
+    const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    const months = ['jan','fév','mars','avr','mai','juin','juil','août','sept','oct','nov','déc'];
+    document.getElementById('menuJourDate').textContent = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
+  }
+  renderMenuJour('default');
+
+  // ============ ANIMATIONS COUNTERS ============
+  function animateCounters() {
+    document.querySelectorAll('.stat .num[data-target]').forEach(el => {
+      const target = parseInt(el.dataset.target);
+      const duration = 1400;
+      const start = performance.now();
+      const startVal = 0;
+      function tick(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const val = Math.floor(startVal + (target - startVal) * eased);
+        el.textContent = val.toLocaleString('fr-CA') + (target >= 500 ? '+' : '+');
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+  // Lance au chargement
+  setTimeout(animateCounters, 400);
+
+  // ============ CHOISIR UN MÉTIER ============
+  function choisirMetier(key) {
+    const m = METIERS[key];
+    const sweep = document.getElementById('sweep');
+
+    // Set la couleur du sweep AVANT l'animation
+    sweep.style.background = m.color;
+
+    // Animation : sweep monte
+    sweep.classList.add('sweep');
+
+    setTimeout(() => {
+      // Reset complet : on enlève toutes les classes métier avant d'ajouter la nouvelle
+      document.body.classList.remove('metier-ep', 'metier-sdg', 'metier-camp', 'header-hidden');
+      document.body.classList.add(`metier-${key}`);
+
+      // Couleurs CSS — toutes les variables remises à jour
+      document.documentElement.style.setProperty('--accent', m.color);
+      document.documentElement.style.setProperty('--accent-soft', m.colorSoft);
+      document.documentElement.style.setProperty('--accent-tint', m.colorTint);
+
+      // Cache hero
+      document.getElementById('stage1').style.display = 'none';
+
+      // === HEADER MÉTIER ===
+      document.getElementById('pill-metier').textContent = m.nom;
+      document.getElementById('titre-metier').textContent = m.titre;
+      document.getElementById('baseline-metier').textContent = m.baseline;
+
+      // Personnage grand format dans le header
+      document.getElementById('perso-big-img').src = m.mascot;
+
+      // Comment utiliser (4 étapes)
+      document.getElementById('comment-utiliser-list').innerHTML =
+        m.commentUtiliser.map(step => `<li>${step}</li>`).join('');
+
+      // Titre apps (cet élément a été retiré du HTML — protection au cas où)
+      const appsTitleEl = document.getElementById('apps-title');
+      if (appsTitleEl) {
+        appsTitleEl.innerHTML = `Tes 9 outils <span style="color: var(--accent);">essentiels</span>`;
+      }
+
+      // === CTA FINAL ===
+      document.getElementById('cta-titre').textContent = m.cta;
+      document.getElementById('cta-sous').textContent = m.ctaSub;
+
+      // === MASCOTTE FLOTTANTE ===
+      const mascotEmoji = document.getElementById('mascot-emoji');
+      mascotEmoji.innerHTML = `<img src="${m.mascot}" alt="">`;
+      const bub = document.getElementById('mascot-bubble');
+      const bubAvatar = document.getElementById('bubble-avatar');
+      const bubText = document.getElementById('bubble-text');
+      // Met à jour l'avatar dans la bulle pour matcher le métier
+      bubAvatar.src = m.mascot;
+      bubAvatar.style.background = m.color;
+      bub.dataset.defaultMsg = m.mascotMsg + ' Clique-moi!';
+      bubText.textContent = bub.dataset.defaultMsg;
+
+      // === GROSSE GRILLE DE BOUTONS ILLUSTRÉS ===
+      renderToolsGrid(m.apps);
+
+      // === MENU DU JOUR ADAPTÉ AU MÉTIER ===
+      renderMenuJour(key);
+
+      // === TÉMOIGNAGE ===
+      document.getElementById('temoignage').innerHTML = `
+        <div class="avatar">${m.temoignage.initiale}</div>
+        <div>
+          <blockquote>${m.temoignage.quote}</blockquote>
+          <cite>${m.temoignage.nom}</cite>
+        </div>
+      `;
+
+      // Affiche stage 2
+      const s2 = document.getElementById('stage2');
+      s2.classList.add('show');
+
+      // Sweep redescend
+      setTimeout(() => {
+        sweep.classList.remove('sweep');
+        sweep.classList.add('sweep-out');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }, 80);
+
+      // Reset sweep
+      setTimeout(() => {
+        sweep.classList.remove('sweep-out');
+      }, 600);
+
+    }, 380);
+  }
+
+  // ============ RETOUR ============
+  function retourSelecteur() {
+    const sweep = document.getElementById('sweep');
+    sweep.style.background = '#161616';
+    sweep.classList.add('sweep');
+
+    setTimeout(() => {
+      // Reset complet de toutes les classes métier
+      document.body.classList.remove('metier-ep', 'metier-sdg', 'metier-camp', 'header-hidden');
+
+      // Couleurs CSS remises aux valeurs par défaut
+      document.documentElement.style.setProperty('--accent', '#00E5FF');
+      document.documentElement.style.setProperty('--accent-soft', '#CCFAFF');
+      document.documentElement.style.setProperty('--accent-tint', 'rgba(0,229,255,0.14)');
+
+      document.getElementById('stage2').classList.remove('show');
+      document.getElementById('stage1').style.display = 'flex';
+
+      // Au retour : on remet le personnage ÉP par défaut (pas l'éclair)
+      document.getElementById('mascot-emoji').innerHTML = '<img src="perso-ep.png" alt="Mr. Root">';
+      const bubReset = document.getElementById('mascot-bubble');
+      const bubAvatarReset = document.getElementById('bubble-avatar');
+      const bubTextReset = document.getElementById('bubble-text');
+      bubAvatarReset.src = 'perso-ep.png';
+      bubAvatarReset.style.background = 'var(--cyan)';
+      bubReset.dataset.defaultMsg = 'Salut! Clique-moi pour une dose de motivation!';
+      bubTextReset.textContent = bubReset.dataset.defaultMsg;
+
+      // Reset apps et menu du jour
+      renderApps(APPS_DEFAULT);
+      renderMenuJour('default');
+
+      window.scrollTo({ top: 0, behavior: 'instant' });
+
+      setTimeout(() => {
+        sweep.classList.remove('sweep');
+        sweep.classList.add('sweep-out');
+      }, 80);
+
+      setTimeout(() => {
+        sweep.classList.remove('sweep-out');
+        animateCounters();
+      }, 600);
+    }, 380);
+  }
+
+  // ============ MOUSE FOLLOWING MASCOT ============
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  // ============ MR ROOT MOTIVATEUR : citations aléatoires au clic ============
+  const QUOTES = {
+    general: [
+      "T'es plus fort•e que tu penses! 💪",
+      "Une journée à la fois, une bouchée à la fois.",
+      "Ton sourire change la journée d'un enfant. 😊",
+      "Respire. T'as ça dans le sang.",
+      "Y'a pas de prof parfait, juste des profs qui essaient.",
+      "Bois ton café. Le reste va suivre. ☕",
+      "Tu fais une VRAIE différence.",
+      "Lâche pas, t'es presque rendu•e!",
+      "Les enfants vont se souvenir de toi. Toujours.",
+      "Crois en toi, eux ils croient déjà en toi.",
+      "Champion•ne!",
+      "Tu changes des vies sans même t'en rendre compte.",
+      "Une crise à la fois. Tu vas y arriver.",
+      "T'as fait du beau travail aujourd'hui.",
+      "Petite victoire = grande victoire.",
+      "Demain est un autre jour. Repose-toi.",
+      "T'es pas seul•e. On est plein•e•s à t'admirer.",
+      "Le chaos d'aujourd'hui = le souvenir de demain.",
+      "Tu mérites ton café. Et ton vin du vendredi. 🍷"
+    ],
+    ep: [
+      "Coach, tu rocks! 🏃",
+      "Le gymnase est ton royaume.",
+      "Ton sifflet est magique. ⚽",
+      "Tes élèves bougent grâce à toi!",
+      "PFEQ ou pas, tu trouves toujours.",
+      "Un cours à la fois, coach!",
+      "L'éducation physique c'est de l'éducation à VIE."
+    ],
+    sdg: [
+      "30 jeunes, ton équipe! 🧸",
+      "T'as l'énergie qu'il faut, fais-toi confiance.",
+      "Les transitions, t'es champion•ne!",
+      "Un peu de chaos, beaucoup de bonheur.",
+      "Ta patience est un superpouvoir. ✨",
+      "Tu rends leur journée scolaire complète."
+    ],
+    camp: [
+      "L'été, c'est ta saison! ☀️",
+      "Tu crées des souvenirs d'enfance.",
+      "Le camp, c'est de la magie pure. 🏕️",
+      "Sors la crème solaire et go!",
+      "Ces grands jeux-là, c'est TOI qui les fais vivre.",
+      "Tu es le héros de leur été."
+    ]
+  };
+
+  function getRandomQuote() {
+    // Mix : 60% chance d'avoir une citation du métier actuel, 40% générale
+    let metierKey = null;
+    if (document.body.classList.contains('metier-ep'))   metierKey = 'ep';
+    if (document.body.classList.contains('metier-sdg'))  metierKey = 'sdg';
+    if (document.body.classList.contains('metier-camp')) metierKey = 'camp';
+
+    const pool = (metierKey && Math.random() < 0.6)
+      ? QUOTES[metierKey]
+      : QUOTES.general;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  let bubbleTimer = null;
+  document.getElementById('mascot').addEventListener('click', (e) => {
+    const mascotEl = document.getElementById('mascot');
+    const bubbleEl = document.getElementById('mascot-bubble');
+    const textEl   = document.getElementById('bubble-text');
+
+    // Citation au hasard
+    textEl.textContent = getRandomQuote();
+
+    // Animation pop
+    bubbleEl.classList.remove('pop');
+    bubbleEl.classList.add('show');
+    void bubbleEl.offsetWidth;
+    bubbleEl.classList.add('pop');
+
+    // Saut de la mascotte
+    mascotEl.style.transform = 'scale(1.18) rotate(-8deg)';
+    setTimeout(() => mascotEl.style.transform = '', 400);
+
+    // Auto-hide après 5 secondes
+    if (bubbleTimer) clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(() => {
+      bubbleEl.classList.remove('show', 'pop');
+      textEl.textContent = bubbleEl.dataset.defaultMsg || 'Salut! Clique-moi pour une dose de motivation!';
+    }, 5000);
+  });
+
+  // Message par défaut
+  document.getElementById('mascot-bubble').dataset.defaultMsg = 'Salut! Clique-moi pour une dose de motivation!';
+
+  // ============ OUTILS INTERACTIFS (DÉ, ROUE, CHRONO, etc.) ============
+  const TOOLS = {
+    dice: {
+      title: '🎲 DÉ',
+      render: () => `
+        <div class="tool-dice-options">
+          <button onclick="setDiceMax(6)" class="active" id="dice6">D6</button>
+          <button onclick="setDiceMax(10)" id="dice10">D10</button>
+          <button onclick="setDiceMax(20)" id="dice20">D20</button>
+        </div>
+        <div class="tool-dice-display" id="diceDisplay">?</div>
+        <div class="button-row">
+          <button class="tool-action-btn" onclick="rollDice()">LANCER!</button>
+        </div>
+      `
+    },
+    wheel: {
+      title: '🎡 ROUE DES NOMS',
+      render: () => `
+        <label style="font-family: var(--font-impact); font-size: 14px; display: block; margin-bottom: 6px;">NOMS (1 PAR LIGNE)</label>
+        <textarea id="wheelNames" placeholder="Léa\nThomas\nSarah\nLucas\nMaxime\nEmma">Léa\nThomas\nSarah\nLucas\nMaxime\nEmma</textarea>
+        <div class="tool-wheel-result" id="wheelResult">—</div>
+        <div class="button-row">
+          <button class="tool-action-btn" onclick="spinWheel()">TOURNER!</button>
+        </div>
+      `
+    },
+    chrono: {
+      title: '⏱️ CHRONO',
+      render: () => `
+        <div class="tool-chrono-display" id="chronoDisplay">00:00.0</div>
+        <div class="button-row">
+          <button class="tool-action-btn" onclick="chronoBegin()">START</button>
+          <button class="tool-action-btn alt" onclick="chronoPause()">STOP</button>
+          <button class="tool-action-btn danger" onclick="chronoZero()">RESET</button>
+        </div>
+      `
+    },
+    timer: {
+      title: '⏲️ MINUTEUR',
+      render: () => `
+        <div class="tool-timer-set">
+          <label>MIN <input type="number" id="timerMin" value="5" min="0" max="60"></label>
+          <label>SEC <input type="number" id="timerSec" value="0" min="0" max="59"></label>
+        </div>
+        <div class="tool-timer-display" id="timerDisplay">05:00</div>
+        <div class="button-row">
+          <button class="tool-action-btn" onclick="timerLaunch()">GO!</button>
+          <button class="tool-action-btn danger" onclick="timerHalt()">STOP</button>
+        </div>
+      `
+    },
+    teams: {
+      title: '👥 ÉQUIPES',
+      render: () => `
+        <label style="font-family: var(--font-impact); font-size: 14px; display: block;">NOMS (1 PAR LIGNE)</label>
+        <textarea id="teamNames" placeholder="Tape les noms ici">Léa\nThomas\nSarah\nLucas\nMaxime\nEmma\nHugo\nZoé</textarea>
+        <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+          <label style="font-family: var(--font-impact); font-size: 14px;">NB ÉQUIPES:</label>
+          <input type="number" id="teamCount" value="2" min="2" max="8" style="width: 80px; margin: 0;">
+        </div>
+        <div class="button-row">
+          <button class="tool-action-btn" onclick="generateTeams()">GÉNÉRER!</button>
+        </div>
+        <div class="teams-result" id="teamsResult"></div>
+      `
+    },
+    message: {
+      title: '📝 MESSAGE DU JOUR',
+      render: () => `
+        <div class="tool-message-display" id="messageDisplay">Bienvenue au cours d'éducation physique! 🏃</div>
+        <label style="font-family: var(--font-impact); font-size: 14px; display: block;">MODIFIER LE MESSAGE</label>
+        <textarea id="messageEdit">Bienvenue au cours d'éducation physique! 🏃</textarea>
+        <div class="button-row">
+          <button class="tool-action-btn" onclick="updateMessage('jaune')">JAUNE</button>
+          <button class="tool-action-btn alt" onclick="updateMessage('cyan')">CYAN</button>
+          <button class="tool-action-btn danger" onclick="updateMessage('rose')">ROSE</button>
+        </div>
+      `
+    },
+    school: {
+      title: '🏫 MON ÉCOLE',
+      render: () => {
+        const saved = JSON.parse(localStorage.getItem('zts-school') || '{}');
+        return `
+          <label style="font-family: var(--font-impact); font-size: 14px;">NOM DE L'ÉCOLE</label>
+          <input id="schoolName" placeholder="Ex. École des Découvreurs" value="${saved.name || ''}">
+          <label style="font-family: var(--font-impact); font-size: 14px;">VILLE</label>
+          <input id="schoolCity" placeholder="Ex. Saint-Jean-sur-Richelieu" value="${saved.city || ''}">
+          <label style="font-family: var(--font-impact); font-size: 14px;">CYCLE PRINCIPAL</label>
+          <input id="schoolCycle" placeholder="Ex. 1er-2e-3e cycle" value="${saved.cycle || ''}">
+          <div class="button-row">
+            <button class="tool-action-btn" onclick="saveSchool()">SAUVEGARDER</button>
+          </div>
+          <div class="tool-school-info" id="schoolInfo" style="${saved.name ? '' : 'display:none;'}">
+            <h4 id="schoolDisplayName">${saved.name || ''}</h4>
+            <p id="schoolDisplayCity">📍 ${saved.city || ''}</p>
+            <p id="schoolDisplayCycle">🎯 ${saved.cycle || ''}</p>
+          </div>
+        `;
+      }
+    }
+  };
+
+  function openTool(key) {
+    const t = TOOLS[key];
+    if (!t) return;
+    document.getElementById('toolModalTitle').textContent = t.title;
+    document.getElementById('toolModalBody').innerHTML = t.render();
+    document.getElementById('toolModal').classList.add('open');
+  }
+
+  function closeTool() {
+    document.getElementById('toolModal').classList.remove('open');
+    // Stop tous les timers en cours
+    if (window._chronoInterval) clearInterval(window._chronoInterval);
+    if (window._timerInterval) clearInterval(window._timerInterval);
+  }
+
+  // ===== DÉ =====
+  let _diceMax = 6;
+  function setDiceMax(n) {
+    _diceMax = n;
+    document.querySelectorAll('.tool-dice-options button').forEach(b => b.classList.remove('active'));
+    document.getElementById('dice' + n).classList.add('active');
+  }
+  function rollDice() {
+    const d = document.getElementById('diceDisplay');
+    d.classList.add('rolling');
+    let count = 0;
+    const iv = setInterval(() => {
+      d.textContent = Math.floor(Math.random() * _diceMax) + 1;
+      count++;
+      if (count > 12) {
+        clearInterval(iv);
+        d.classList.remove('rolling');
+      }
+    }, 80);
+  }
+
+  // ===== ROUE =====
+  function spinWheel() {
+    const names = document.getElementById('wheelNames').value.split('\n').map(n => n.trim()).filter(n => n);
+    if (!names.length) { alert('Ajoute au moins un nom!'); return; }
+    const r = document.getElementById('wheelResult');
+    r.classList.add('spinning');
+    let count = 0;
+    const iv = setInterval(() => {
+      r.textContent = names[Math.floor(Math.random() * names.length)];
+      count++;
+      if (count > 18) {
+        clearInterval(iv);
+        r.classList.remove('spinning');
+      }
+    }, 90);
+  }
+
+  // ===== CHRONO =====
+  let _chronoStart = 0, _chronoElapsed = 0;
+  function chronoUpdate() {
+    _chronoElapsed = Date.now() - _chronoStart;
+    const t = Math.floor(_chronoElapsed / 100) / 10;
+    const m = Math.floor(t / 60);
+    const s = (t % 60).toFixed(1);
+    const el = document.getElementById('chronoDisplay');
+    if (el) el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(4,'0')}`;
+  }
+  function chronoBegin() {
+    if (window._chronoInterval) return;
+    _chronoStart = Date.now() - _chronoElapsed;
+    window._chronoInterval = setInterval(chronoUpdate, 100);
+  }
+  function chronoPause() {
+    clearInterval(window._chronoInterval);
+    window._chronoInterval = null;
+  }
+  function chronoZero() {
+    chronoPause();
+    _chronoElapsed = 0;
+    chronoUpdate();
+    const el = document.getElementById('chronoDisplay');
+    if (el) el.textContent = '00:00.0';
+  }
+
+  // ===== TIMER =====
+  let _timerRemaining = 0;
+  function timerLaunch() {
+    const min = parseInt(document.getElementById('timerMin').value) || 0;
+    const sec = parseInt(document.getElementById('timerSec').value) || 0;
+    _timerRemaining = min * 60 + sec;
+    if (window._timerInterval) clearInterval(window._timerInterval);
+    timerUpdate();
+    window._timerInterval = setInterval(() => {
+      _timerRemaining--;
+      timerUpdate();
+      if (_timerRemaining <= 0) {
+        clearInterval(window._timerInterval);
+        window._timerInterval = null;
+        const d = document.getElementById('timerDisplay');
+        if (d) { d.textContent = '⏰ FINI!'; d.classList.add('done'); }
+      }
+    }, 1000);
+  }
+  function timerHalt() {
+    clearInterval(window._timerInterval);
+    window._timerInterval = null;
+  }
+  function timerUpdate() {
+    const m = Math.floor(_timerRemaining / 60);
+    const s = _timerRemaining % 60;
+    const d = document.getElementById('timerDisplay');
+    if (!d) return;
+    d.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    d.classList.toggle('warning', _timerRemaining > 0 && _timerRemaining <= 10);
+    d.classList.toggle('done', _timerRemaining <= 0);
+  }
+
+  // ===== ÉQUIPES =====
+  function generateTeams() {
+    const names = document.getElementById('teamNames').value.split('\n').map(n => n.trim()).filter(n => n);
+    const count = Math.max(2, Math.min(8, parseInt(document.getElementById('teamCount').value) || 2));
+    if (!names.length) { alert('Ajoute des noms!'); return; }
+    // Shuffle Fisher-Yates
+    for (let i = names.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [names[i], names[j]] = [names[j], names[i]];
+    }
+    const teams = Array.from({length: count}, () => []);
+    names.forEach((n, i) => teams[i % count].push(n));
+    document.getElementById('teamsResult').innerHTML = teams.map((team, i) => `
+      <div class="team-block">
+        <h4>Équipe ${i + 1}</h4>
+        <ul>${team.map(n => `<li>${n}</li>`).join('')}</ul>
+      </div>
+    `).join('');
+  }
+
+  // ===== MESSAGE =====
+  function updateMessage(color) {
+    const text = document.getElementById('messageEdit').value;
+    const d = document.getElementById('messageDisplay');
+    d.textContent = text;
+    d.classList.remove('alt-color', 'alt2-color');
+    if (color === 'cyan') d.classList.add('alt-color');
+    if (color === 'rose') d.classList.add('alt2-color');
+  }
+
+  // ===== ÉCOLE =====
+  function saveSchool() {
+    const data = {
+      name: document.getElementById('schoolName').value.trim(),
+      city: document.getElementById('schoolCity').value.trim(),
+      cycle: document.getElementById('schoolCycle').value.trim()
+    };
+    if (!data.name) { alert('Mets au moins un nom d\'école!'); return; }
+    localStorage.setItem('zts-school', JSON.stringify(data));
+    document.getElementById('schoolDisplayName').textContent = data.name;
+    document.getElementById('schoolDisplayCity').textContent = '📍 ' + data.city;
+    document.getElementById('schoolDisplayCycle').textContent = '🎯 ' + data.cycle;
+    document.getElementById('schoolInfo').style.display = 'block';
+  }
+
+  // ============ SÉRIES SPORTIVES - MODAL CONTENU ============
+  const SERIES_DATA = {
+    nhl: {
+      badge: '🏒 LNH',
+      title: 'Séries éliminatoires LNH 2026',
+      subtitle: 'En route vers la Coupe Stanley',
+      externalUrl: 'https://www.nhl.com/fr/playoffs',
+      bracket: [
+        {
+          conference: 'EST · Finale d\'association',
+          matchups: [
+            { teamA: 'Panthers de la Floride', scoreA: 3, teamB: 'Hurricanes de la Caroline', scoreB: 2, meta: 'Série 3-2 · Match 6 ce soir' }
+          ]
+        },
+        {
+          conference: 'OUEST · Finale d\'association',
+          matchups: [
+            { teamA: 'Stars de Dallas', scoreA: 2, teamB: 'Oilers d\'Edmonton', scoreB: 3, meta: 'Série 3-2 · Match 6 ce soir' }
+          ]
+        },
+        {
+          conference: 'EST · 2e tour (terminé)',
+          matchups: [
+            { teamA: 'Panthers', scoreA: 4, teamB: 'Maple Leafs', scoreB: 1, meta: 'Série gagnée 4-1' },
+            { teamA: 'Hurricanes', scoreA: 4, teamB: 'Capitals', scoreB: 2, meta: 'Série gagnée 4-2' }
+          ]
+        },
+        {
+          conference: 'OUEST · 2e tour (terminé)',
+          matchups: [
+            { teamA: 'Stars', scoreA: 4, teamB: 'Jets', scoreB: 2, meta: 'Série gagnée 4-2' },
+            { teamA: 'Oilers', scoreA: 4, teamB: 'Knights', scoreB: 1, meta: 'Série gagnée 4-1' }
+          ]
+        }
+      ]
+    },
+    nba: {
+      badge: '🏀 NBA',
+      title: 'Playoffs NBA 2026',
+      subtitle: 'Larry O\'Brien Trophy en jeu',
+      externalUrl: 'https://www.nba.com/playoffs',
+      bracket: [
+        {
+          conference: 'EST · Finale d\'association',
+          matchups: [
+            { teamA: 'Boston Celtics', scoreA: 2, teamB: 'Cleveland Cavaliers', scoreB: 3, meta: 'Série 3-2 · Match 6 ce soir' }
+          ]
+        },
+        {
+          conference: 'OUEST · Finale d\'association',
+          matchups: [
+            { teamA: 'Denver Nuggets', scoreA: 3, teamB: 'OKC Thunder', scoreB: 2, meta: 'Série 3-2 · Match 6 ce soir' }
+          ]
+        },
+        {
+          conference: 'EST · Demi-finale (terminé)',
+          matchups: [
+            { teamA: 'Celtics', scoreA: 4, teamB: 'Knicks', scoreB: 1, meta: 'Série gagnée 4-1' },
+            { teamA: 'Cavaliers', scoreA: 4, teamB: 'Pacers', scoreB: 3, meta: 'Série gagnée 4-3' }
+          ]
+        },
+        {
+          conference: 'OUEST · Demi-finale (terminé)',
+          matchups: [
+            { teamA: 'Nuggets', scoreA: 4, teamB: 'Timberwolves', scoreB: 2, meta: 'Série gagnée 4-2' },
+            { teamA: 'Thunder', scoreA: 4, teamB: 'Mavericks', scoreB: 2, meta: 'Série gagnée 4-2' }
+          ]
+        }
+      ]
+    }
+  };
+
+  function openSeries(league) {
+    const data = SERIES_DATA[league];
+    if (!data) return;
+
+    document.getElementById('seriesBadge').textContent = data.badge;
+    document.getElementById('seriesTitle').textContent = data.title;
+    document.getElementById('seriesSubtitle').textContent = data.subtitle;
+    document.getElementById('seriesExtLink').href = data.externalUrl;
+
+    const content = document.getElementById('seriesContent');
+    content.innerHTML = `
+      <div class="series-bracket">
+        ${data.bracket.map(conf => `
+          <div class="conference">
+            <div class="conference-title">${conf.conference}</div>
+            ${conf.matchups.map(m => {
+              const aWins = m.scoreA > m.scoreB;
+              return `
+                <div class="matchup">
+                  <div class="team-row${aWins ? ' winning' : ''}">
+                    <span>${m.teamA}</span>
+                    <span class="score">${m.scoreA}</span>
+                  </div>
+                  <div class="team-row${!aWins ? ' winning' : ''}">
+                    <span>${m.teamB}</span>
+                    <span class="score">${m.scoreB}</span>
+                  </div>
+                  <div class="matchup-meta">${m.meta}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    document.getElementById('seriesModal').classList.add('open');
+  }
+
+  // ============ MENU BURGER MOBILE ============
+  document.getElementById('burger').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+
+  // ============ HORLOGE LIVE ============
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    const clockEl = document.getElementById('clockTime');
+    if (clockEl) clockEl.textContent = `${h}:${m}:${s}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // ============ SCROLL : HIDE HEADER ON SCROLL DOWN / SHOW ON SCROLL UP ============
+  let lastScroll = window.pageYOffset;
+  let ticking = false;
+
+  function handleScroll() {
+    const currentScroll = window.pageYOffset;
+    const darkNav = document.getElementById('darkNav');
+    const topNav  = document.getElementById('topNav');
+
+    // Tolérance : ignorer les micro-scrolls
+    if (Math.abs(currentScroll - lastScroll) < 8) {
+      ticking = false;
+      return;
+    }
+
+    if (currentScroll > lastScroll && currentScroll > 120) {
+      // Scroll vers le bas - on cache
+      darkNav?.classList.add('hidden');
+      topNav?.classList.add('hidden');
+      document.body.classList.add('header-hidden');
+    } else {
+      // Scroll vers le haut - on montre
+      darkNav?.classList.remove('hidden');
+      topNav?.classList.remove('hidden');
+      document.body.classList.remove('header-hidden');
+    }
+
+    lastScroll = currentScroll;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(handleScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // ============ TITRE QUI BOUGE TOUS LES X SECS ============
+  const titreSwipe = document.querySelector('.mega .swipe');
+  setInterval(() => {
+    if (titreSwipe) {
+      titreSwipe.style.transform = 'scale(1.08) rotate(-2deg)';
+      setTimeout(() => titreSwipe.style.transform = '', 250);
+    }
+  }, 6000);
+
+</script>
+
+</body>
+</html>
