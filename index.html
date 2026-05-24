@@ -392,7 +392,7 @@
   /* ============ HERO ============ */
   section.hero {
     min-height: 100vh;
-    padding: 340px 32px 60px;  /* dark nav 56 + cyan banner ~240 + buffer */
+    padding: 460px 32px 60px;  /* dark nav 56 + cyan banner ~360 + buffer */
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center;
     position: relative;
@@ -595,7 +595,7 @@
     width: 130px; height: 130px;
     background: var(--cyan);
     border: 4px solid var(--ink);
-    border-radius: 50%;
+    border-radius: 22px;
     display: flex; align-items: center; justify-content: center;
     font-size: 64px;
     box-shadow: 8px 8px 0 var(--ink);
@@ -606,11 +606,11 @@
     overflow: hidden;
   }
   .mascot img {
-    width: 130%;
+    width: 110%;
     height: auto;
     object-fit: contain;
     object-position: top center;
-    transform: translateY(8%);
+    transform: translateY(6%);
   }
   @keyframes bounce {
     0%, 100% { transform: translateY(0); }
@@ -641,7 +641,7 @@
   .mascot .bubble-avatar {
     width: 64px;
     height: 64px;
-    border-radius: 50%;
+    border-radius: 14px;
     background: var(--cyan);
     border: 3px solid var(--ink);
     object-fit: cover;
@@ -2398,7 +2398,7 @@
     .clock .clock-time { min-width: 100px; }
     .nav-btn { width: 200px; justify-content: center; }
 
-    section.hero { padding: 380px 16px 40px; }
+    section.hero { padding: 480px 16px 40px; }
     .stage2 { padding: 0; }
     .metier-hero { padding: 50px 16px 70px; }
     .metier-hero-inner { grid-template-columns: 1fr; text-align: center; padding: 0; }
