@@ -2903,7 +2903,7 @@
 
 <!-- DARK NAV BAR — toujours visible en haut -->
 <div class="dark-nav" id="darkNav">
-  <a href="#" class="dn-btn active"><span class="em">🏠</span>Accueil</a>
+  <a href="#" class="dn-btn active" onclick="event.preventDefault(); if(document.body.className.match(/metier-/)) retourSelecteur(); window.scrollTo({top:0,behavior:'smooth'});"><span class="em">🏠</span>Accueil</a>
   <a href="#" class="dn-btn"><span class="em">📁</span>Ressources</a>
   <a href="https://zonetotalsport.ca/blog.html" class="dn-btn"><span class="em">✏️</span>Blog</a>
   <a href="https://zonetotalsport.ca/aidons-nous/" class="dn-btn communaute"><span class="em">🤝</span>Communauté ▼</a>
