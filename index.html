@@ -231,7 +231,10 @@
   .header-center {
     text-align: center;
     display: flex; flex-direction: column; align-items: center;
-    gap: 10px;
+    gap: 14px;
+    width: 100%;
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
   }
 
   /* MASQUER le blue header quand un métier est sélectionné */
@@ -271,7 +274,7 @@
 
   nav.top .logo {
     font-family: var(--font-impact);
-    font-size: 48px;
+    font-size: 92px;
     letter-spacing: 0.01em;
     color: white;
     text-shadow:
@@ -291,7 +294,7 @@
     display: block;
     font-family: var(--font-body);
     font-weight: 900;
-    font-size: 18px;
+    font-size: 24px;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: #FFF000;
@@ -304,7 +307,7 @@
     background: rgba(0,0,0,0.25);
     color: #FFF000;
     font-family: var(--font-impact);
-    font-size: 38px;
+    font-size: 52px;
     letter-spacing: 0.04em;
     padding: 14px 26px;
     border-radius: 18px;
@@ -851,6 +854,19 @@
     letter-spacing: 0.06em;
     margin-bottom: 18px;
     box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  }
+  .metier-howto {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.5;
+    color: rgba(0,0,0,0.78);
+    margin-top: 14px;
+    max-width: 720px;
+    background: rgba(255,255,255,0.65);
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    padding: 12px 18px;
+    box-shadow: 4px 4px 0 var(--ink);
   }
   .metier-hero h1 {
     font-family: var(--font-impact);
@@ -3067,45 +3083,28 @@
 <!-- STAGE 2 : PAGE MÉTIER (menu_jour est déjà au-dessus, hors stage2) -->
 <section class="stage2" id="stage2">
 
-  <!-- BANNIÈRE COMPACTE du métier : back button + nom du métier + petit personnage -->
+  <!-- BANNIÈRE COMPACTE du métier : back button + nom du métier + mode d'emploi + petit personnage -->
   <div class="metier-banner">
     <div class="metier-banner-inner">
       <button class="back-btn" onclick="retourSelecteur()">← Changer</button>
       <div class="metier-banner-title">
         <span class="metier-banner-pill" id="pill-metier">Zone ÉP</span>
         <h1 id="titre-metier">Ton gym, tes règles.</h1>
+        <p class="metier-howto" id="metier-howto">Choisis un outil ci-dessous — chaque bouton ouvre une app prête à l'emploi. Les outils marqués « bientôt » arrivent sous peu.</p>
       </div>
       <img class="metier-banner-char" id="perso-big-img" src="perso-ep.png" alt="">
     </div>
   </div>
 
-  <!-- Spacers retirés -->
   <span id="baseline-metier" style="display:none;"></span>
   <ul id="comment-utiliser-list" style="display:none;"></ul>
 
-  <!-- GROSSE GRILLE DE BOUTONS ILLUSTRÉS -->
+  <!-- GROSSE GRILLE DE BOUTONS ILLUSTRÉS (seul contenu) -->
   <section class="tools-section">
-    <div class="tools-head">
-      <span class="tools-eyebrow">★ TES OUTILS</span>
-      <h2 class="tools-title" id="tools-title">Tout ce dont tu as besoin</h2>
-      <p class="tools-intro">Clique sur un outil — il s'ouvre en moins de 2 secondes.</p>
-    </div>
     <div class="tools-grid" id="tools-grid">
       <!-- Injecté en JS -->
     </div>
   </section>
-
-  <div class="container">
-    <div class="temoignage" id="temoignage">
-      <!-- Injecté en JS -->
-    </div>
-
-    <div class="cta-final">
-      <h3 id="cta-titre">Rejoins la Zone</h3>
-      <p id="cta-sous">30 secondes. Aucune carte de crédit. Aucun spam.</p>
-      <a href="#" class="big-btn">Continuer avec Google <span>→</span></a>
-    </div>
-  </div>
 </section>
 
 <!-- APPS FLOTTANTES À DROITE (toujours visibles) -->
@@ -3674,6 +3673,8 @@
       document.getElementById('pill-metier').textContent = m.nom;
       document.getElementById('titre-metier').textContent = m.titre;
       document.getElementById('baseline-metier').textContent = m.baseline;
+      const howtoEl = document.getElementById('metier-howto');
+      if (howtoEl) howtoEl.textContent = m.baseline + ' Clique sur un outil pour l\'ouvrir. Les boutons marqués « bientôt » sont en chantier.';
 
       // Personnage grand format dans le header
       document.getElementById('perso-big-img').src = m.mascot;
@@ -3688,9 +3689,11 @@
         appsTitleEl.innerHTML = `Tes 9 outils <span style="color: var(--accent);">essentiels</span>`;
       }
 
-      // === CTA FINAL ===
-      document.getElementById('cta-titre').textContent = m.cta;
-      document.getElementById('cta-sous').textContent = m.ctaSub;
+      // === CTA FINAL (retiré du HTML) ===
+      const ctaT = document.getElementById('cta-titre');
+      const ctaS = document.getElementById('cta-sous');
+      if (ctaT) ctaT.textContent = m.cta;
+      if (ctaS) ctaS.textContent = m.ctaSub;
 
       // === MASCOTTE FLOTTANTE ===
       const mascotEmoji = document.getElementById('mascot-emoji');
@@ -3710,8 +3713,9 @@
       // === MENU DU JOUR ADAPTÉ AU MÉTIER ===
       renderMenuJour(key);
 
-      // === TÉMOIGNAGE ===
-      document.getElementById('temoignage').innerHTML = `
+      // === TÉMOIGNAGE (retiré du HTML) ===
+      const temEl = document.getElementById('temoignage');
+      if (temEl) temEl.innerHTML = `
         <div class="avatar">${m.temoignage.initiale}</div>
         <div>
           <blockquote>${m.temoignage.quote}</blockquote>
@@ -4228,30 +4232,9 @@
     document.getElementById('seriesExtLink').href = data.externalUrl;
 
     const content = document.getElementById('seriesContent');
+    const appPath = league === 'nhl' ? 'apps-nhl/index.html' : 'apps-nba/index.html';
     content.innerHTML = `
-      <div class="series-bracket">
-        ${data.bracket.map(conf => `
-          <div class="conference">
-            <div class="conference-title">${conf.conference}</div>
-            ${conf.matchups.map(m => {
-              const aWins = m.scoreA > m.scoreB;
-              return `
-                <div class="matchup">
-                  <div class="team-row${aWins ? ' winning' : ''}">
-                    <span>${m.teamA}</span>
-                    <span class="score">${m.scoreA}</span>
-                  </div>
-                  <div class="team-row${!aWins ? ' winning' : ''}">
-                    <span>${m.teamB}</span>
-                    <span class="score">${m.scoreB}</span>
-                  </div>
-                  <div class="matchup-meta">${m.meta}</div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        `).join('')}
-      </div>
+      <iframe src="${appPath}" style="width:100%; height:78vh; border:4px solid var(--ink); border-radius:16px; background:#fff;" loading="lazy"></iframe>
     `;
 
     document.getElementById('seriesModal').classList.add('open');
