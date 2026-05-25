@@ -2011,6 +2011,24 @@
   .app-card:nth-child(7n+6) { background: linear-gradient(180deg, #FFE0B2 0%, #FFB74D 100%); }
   .app-card:nth-child(7n+7) { background: linear-gradient(180deg, #D1C4E9 0%, #9575CD 100%); }
 
+  /* Background contextuel par corps de métier — réutilise les fonds existants */
+  /* ÉP = gymnase, SDG = cafétéria/classe, Camp = terrain modules */
+  body.metier-ep .app-card {
+    background-image: linear-gradient(rgba(0,229,255,0.85), rgba(0,196,255,0.85)), url('bg-ep.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  body.metier-sdg .app-card {
+    background-image: linear-gradient(rgba(93,255,61,0.85), rgba(57,255,20,0.85)), url('bg-sdg.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  body.metier-camp .app-card {
+    background-image: linear-gradient(rgba(255,140,46,0.85), rgba(255,107,0,0.85)), url('bg-camp.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+
   .app-card .app-icon {
     font-size: 38px;
     line-height: 1;
@@ -3357,6 +3375,7 @@
         'Sauvegarde locale automatique'
       ],
       apps: [
+        // ===== ACTIVES =====
         { icon: '📅', name: 'Planificateur EPS', desc: 'Calendrier scolaire complet', url: 'https://zonetotalsport.ca/apps/planificateur/', hot: true },
         { icon: '🏀', name: 'Tableau indicateur', desc: 'Scoreboard 3 sports', url: 'https://zonetotalsport.ca/apps/scoreboard/', hot: true },
         { icon: '🧰', name: 'Boîte à outils', desc: 'Signaux, chrono, équipes', url: 'https://zonetotalsport.ca/apps/transitions/' },
@@ -3364,14 +3383,22 @@
         { icon: '🦺', name: 'Ma Suppléance', desc: 'Plans pour suppléants', url: 'https://suppleance.zonetotalsport.ca/' },
         { icon: '🌍', name: 'Répertoire mondial', desc: 'Profs ÉP du monde', url: 'https://zonetotalsport.ca/repertoire.html' },
         { icon: '✏️', name: 'Blog ÉPS', desc: '23+ articles pratiques', url: 'https://zonetotalsport.ca/blog.html' },
+        { icon: '🤝', name: 'Communauté ÉPS', desc: 'Forum Aidons-nous', url: 'https://zonetotalsport.ca/aidons-nous/' },
+        // ===== EXCLUSIVES ÉP (SOON) =====
         { icon: '🎮', name: 'Banque de jeux', desc: '500+ jeux avec fiches PDF', soon: true },
         { icon: '🤖', name: 'Générateur SAÉ IA', desc: 'SAÉ PFEQ en 10 sec', soon: true },
         { icon: '📊', name: 'Carnet Léger', desc: 'Évaluation & présences', soon: true },
         { icon: '📋', name: 'Banque d\'éducatifs', desc: 'Fiches techniques', soon: true },
         { icon: '🗓️', name: 'Grille horaire', desc: 'Spécialistes & locaux', soon: true },
-        { icon: '🖍️', name: 'Tableau blanc TNI', desc: 'Dessin & projection', soon: true },
+        // ===== UNIVERSELLES (SOON) =====
         { icon: '🤸', name: 'Échauffements', desc: '50+ routines par âge', soon: true },
-        { icon: '🏅', name: 'Olympiades scolaires', desc: 'Calendrier & épreuves', soon: true }
+        { icon: '🏅', name: 'Olympiades scolaires', desc: 'Calendrier & épreuves', soon: true },
+        { icon: '🌧️', name: 'Plan B météo', desc: 'Activités selon météo', soon: true },
+        { icon: '🎵', name: 'Musique', desc: 'Playlists par moment', soon: true },
+        { icon: '🖍️', name: 'Tableau blanc TNI', desc: 'Dessin & projection', soon: true },
+        { icon: '🧩', name: 'Énigmes & devinettes', desc: 'Casse-tête par âge', soon: true },
+        // ===== ÉP + SDG (SOON) =====
+        { icon: '🎤', name: 'Comptines & chansons', desc: 'Banque audio + paroles', soon: true }
       ],
       temoignage: {
         initiale: 'MC',
@@ -3398,22 +3425,33 @@
         'Aucun compte requis pour commencer'
       ],
       apps: [
-        { icon: '🧰', name: 'Boîte transitions', desc: 'Signaux, chrono, équipes', url: 'https://zonetotalsport.ca/apps/transitions/', hot: true },
-        { icon: '🏀', name: 'Tableau indicateur', desc: 'Pour grands jeux', url: 'https://zonetotalsport.ca/apps/scoreboard/' },
+        // ===== ACTIVES =====
+        { icon: '🧰', name: 'Boîte transitions', desc: 'Signaux, chrono, équipes pour animer 30 jeunes', url: 'https://zonetotalsport.ca/apps/transitions/', hot: true },
+        { icon: '🏀', name: 'Tableau indicateur', desc: 'Pour grands jeux SDG', url: 'https://zonetotalsport.ca/apps/scoreboard/' },
+        { icon: '📅', name: 'Planificateur SDG', desc: 'Programmation hebdomadaire et journées péda', url: 'https://zonetotalsport.ca/apps/planificateur/', new: true },
         { icon: '🎒', name: '90 cours maternelle', desc: 'Idéal SDG maternelle', url: 'https://zonetotalsport.ca/apps/cours-maternelle/', hot: true },
-        { icon: '✏️', name: 'Blog ÉPS', desc: 'Articles gestion groupe', url: 'https://zonetotalsport.ca/blog.html' },
-        { icon: '🤝', name: 'Communauté SDG', desc: 'Forum Aidons-nous', url: 'https://zonetotalsport.ca/aidons-nous/' },
-        { icon: '🛡️', name: 'SOS Intervention', desc: '100 solutions de crise', soon: true },
-        { icon: '🎲', name: 'Jeux sans matériel', desc: '200+ jeux zéro prep', soon: true },
-        { icon: '🌧️', name: 'Plan B météo', desc: 'Activités selon météo', soon: true },
-        { icon: '🎵', name: 'Musique ambiance', desc: 'Playlists par moment', soon: true },
-        { icon: '✅', name: 'Carnet présences', desc: 'Appel en 30 sec', soon: true },
-        { icon: '🎨', name: 'Journée péda', desc: 'Planif clé en main', soon: true },
-        { icon: '🖍️', name: 'Tableau blanc TNI', desc: 'Dessin & projection', soon: true },
-        { icon: '📚', name: 'Banque d\'activités', desc: 'Bricolage, sciences', soon: true },
-        { icon: '📖', name: 'Histoires à raconter', desc: '100+ contes courts', soon: true },
-        { icon: '🎤', name: 'Comptines & chansons', desc: 'Banque audio + paroles', soon: true },
-        { icon: '🧩', name: 'Énigmes & devinettes', desc: 'Casse-tête par âge', soon: true }
+        { icon: '✏️', name: 'Blog ÉPS', desc: 'Articles gestion grand groupe', url: 'https://zonetotalsport.ca/blog.html' },
+        { icon: '🤝', name: 'Communauté SDG', desc: 'Forum Aidons-nous entre éducatrices', url: 'https://zonetotalsport.ca/aidons-nous/' },
+        // ===== EXCLUSIVES SDG (SOON) =====
+        { icon: '🎲', name: 'Jeux sans matériel', desc: '200+ jeux zéro prep pour la cour', soon: true },
+        // ===== SDG + CAMP (SOON) =====
+        { icon: '🛡️', name: 'SOS Intervention', desc: '100 solutions concrètes de crise', soon: true },
+        { icon: '✅', name: 'Carnet présences', desc: 'Appel des groupes en 30 sec', soon: true },
+        { icon: '🎨', name: 'Journée péda', desc: 'Planif clé en main pour journées spéciales', soon: true },
+        { icon: '📚', name: 'Banque d\'activités créatives', desc: 'Bricolage, sciences, ateliers calme', soon: true },
+        { icon: '📖', name: 'Histoires à raconter', desc: '100+ contes courts à lire au groupe', soon: true },
+        { icon: '🤖', name: 'Générateur IA thématique', desc: 'Journée thématique sur mesure en 10 sec', soon: true, new: true },
+        { icon: '📣', name: 'Cris de ralliement', desc: 'Chants pour rassembler le groupe', soon: true, new: true },
+        { icon: '📋', name: 'Carnet groupes', desc: 'Allergies, contacts, infos par enfant', soon: true, new: true },
+        // ===== ÉP + SDG (SOON) =====
+        { icon: '🎤', name: 'Comptines & chansons', desc: 'Banque audio + paroles pour les petits', soon: true },
+        // ===== UNIVERSELLES (SOON) =====
+        { icon: '🌧️', name: 'Plan B météo', desc: 'Activités intérieures quand ça brasse dehors', soon: true },
+        { icon: '🎵', name: 'Musique ambiance', desc: 'Playlists par moment de journée', soon: true },
+        { icon: '🖍️', name: 'Tableau blanc TNI', desc: 'Activités projetées en local', soon: true },
+        { icon: '🧩', name: 'Énigmes & devinettes', desc: 'Casse-tête par âge pour temps calmes', soon: true },
+        { icon: '🤸', name: 'Échauffements', desc: 'Réveils énergiques pour grand groupe', soon: true, new: true },
+        { icon: '🏅', name: 'Olympiades SDG', desc: 'Journée spéciale clé en main', soon: true, new: true }
       ],
       temoignage: {
         initiale: 'JL',
@@ -3440,22 +3478,32 @@
         'Fonctionne hors ligne, partout au camp'
       ],
       apps: [
-        { icon: '⚡', name: 'Boîte à outils camp', desc: 'Chrono, équipes, musique', url: 'https://zonetotalsport.ca/apps/transitions/', hot: true },
-        { icon: '🎯', name: 'Tableau indicateur', desc: 'Tournois & scoreboard', url: 'https://zonetotalsport.ca/apps/scoreboard/' },
-        { icon: '📅', name: 'Planificateur camp', desc: 'Adapté pour l\'été', url: 'https://zonetotalsport.ca/apps/planificateur/' },
-        { icon: '✏️', name: 'Blog ÉPS', desc: 'Stratégies grand groupe', url: 'https://zonetotalsport.ca/blog.html' },
-        { icon: '🤝', name: 'Communauté Camp', desc: 'Forum Aidons-nous', url: 'https://zonetotalsport.ca/aidons-nous/' },
-        { icon: '🏆', name: 'Grands jeux & thèmes', desc: '50+ jeux clé en main', soon: true },
-        { icon: '🤖', name: 'Générateur IA thématique', desc: 'Journée complète en 10 sec', soon: true },
-        { icon: '🎤', name: 'Chansons de camp', desc: '80+ chansons + paroles', soon: true },
+        // ===== ACTIVES =====
+        { icon: '⚡', name: 'Boîte à outils camp', desc: 'Chrono, équipes, musique pour grands jeux', url: 'https://zonetotalsport.ca/apps/transitions/', hot: true },
+        { icon: '🎯', name: 'Tableau indicateur', desc: 'Tournois & scoreboard camp', url: 'https://zonetotalsport.ca/apps/scoreboard/' },
+        { icon: '📅', name: 'Planificateur camp', desc: 'Adapté pour l\'été et les semaines thématiques', url: 'https://zonetotalsport.ca/apps/planificateur/' },
+        { icon: '✏️', name: 'Blog ÉPS', desc: 'Stratégies grand groupe & animation', url: 'https://zonetotalsport.ca/blog.html' },
+        { icon: '🤝', name: 'Communauté Camp', desc: 'Forum Aidons-nous entre coordos & monos', url: 'https://zonetotalsport.ca/aidons-nous/' },
+        // ===== EXCLUSIVES CAMP (SOON) =====
+        { icon: '🏆', name: 'Grands jeux & thèmes', desc: '50+ jeux clé en main pour journée complète', soon: true, hot: true },
+        { icon: '🎤', name: 'Chansons de camp', desc: '80+ chansons + paroles pour autobus & feu', soon: true },
+        { icon: '🔥', name: 'Cérémonies & rituels', desc: 'Ouverture, feu de camp, fermeture', soon: true },
+        { icon: '🌙', name: 'Jeux de soirée', desc: 'Pour camps avec dodo & soirées thématiques', soon: true },
+        // ===== SDG + CAMP (SOON) =====
+        { icon: '🤖', name: 'Générateur IA thématique', desc: 'Journée complète sur mesure en 10 sec', soon: true },
+        { icon: '📣', name: 'Cris de ralliement', desc: 'Chants d\'équipe & rythmes mémorables', soon: true },
+        { icon: '📋', name: 'Carnet groupes', desc: 'Allergies, contacts, infos par campeur', soon: true },
+        { icon: '🎨', name: 'Banque d\'activités créatives', desc: '150+ bricolages & ateliers', soon: true },
+        { icon: '✅', name: 'Carnet présences', desc: 'Appel des groupes en 30 sec', soon: true, new: true },
+        { icon: '🛡️', name: 'SOS Intervention', desc: '100 solutions concrètes de crise', soon: true, new: true },
+        { icon: '📖', name: 'Histoires à raconter', desc: '100+ contes pour temps calme & dodo', soon: true, new: true },
+        // ===== UNIVERSELLES (SOON) =====
+        { icon: '🌦️', name: 'Plan B météo', desc: 'Activités intérieures pluie & canicule', soon: true },
+        { icon: '🎵', name: 'Musique camp', desc: 'Chansons + ambiance grand jeu', soon: true },
         { icon: '🧩', name: 'Énigmes & devinettes', desc: '150+ casse-tête par âge', soon: true },
-        { icon: '📣', name: 'Cris de ralliement', desc: 'Chants d\'équipe & rythmes', soon: true },
-        { icon: '🌦️', name: 'Plan B météo', desc: 'Activités selon météo', soon: true },
-        { icon: '🎵', name: 'Musique camp', desc: 'Playlists par moment', soon: true },
-        { icon: '📋', name: 'Carnet groupes', desc: 'Allergies & contacts', soon: true },
-        { icon: '🎨', name: 'Bricolage à la carte', desc: '150+ idées créatives', soon: true },
-        { icon: '🔥', name: 'Cérémonies & rituels', desc: 'Ouverture, feu de camp', soon: true },
-        { icon: '🌙', name: 'Jeux de soirée', desc: 'Pour camps avec dodo', soon: true }
+        { icon: '🖍️', name: 'Tableau blanc TNI', desc: 'Pour journées intérieures pluie/canicule', soon: true, new: true },
+        { icon: '🤸', name: 'Échauffements', desc: 'Routines matinales avant les activités camp', soon: true, new: true },
+        { icon: '🏅', name: 'Olympiades de camp', desc: 'Tournoi inter-groupes clé en main', soon: true, new: true }
       ],
       temoignage: {
         initiale: 'AB',
