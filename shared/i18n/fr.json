@@ -1,0 +1,50 @@
+{
+  "nav.home": "Accueil",
+  "nav.resources": "Ressources",
+  "nav.blog": "Blog",
+  "nav.community": "Communauté",
+  "nav.donate": "Dons",
+  "nav.greeting": "Salut, Joey!",
+
+  "brand.name": "ZONE TOTAL SPORT",
+  "brand.tagline": "Faire bouger les enfants, c'est notre mission!",
+  "brand.sub": "Pédagogie Primaire",
+
+  "subnav.back_metier": "← Retour au métier",
+  "subnav.back_home": "← Accueil",
+
+  "lang.fr": "FR",
+  "lang.en": "EN",
+
+  "metier.ep": "Éducation physique",
+  "metier.sdg": "Service de garde",
+  "metier.camp": "Camps de jour",
+
+  "tag.new": "Nouveau",
+  "tag.ia": "IA",
+  "tag.pro": "Pro",
+  "tag.soon": "Bientôt",
+
+  "footer.col.forwho": "Pour qui",
+  "footer.col.resources": "Ressources",
+  "footer.col.tools": "Outils",
+  "footer.col.extras": "Extras",
+  "footer.forwho.ep": "Profs d'éducation physique",
+  "footer.forwho.sdg": "Éducatrices de service de garde",
+  "footer.forwho.camp": "Animateurs de camp",
+  "footer.resources.blog": "Blog",
+  "footer.resources.community": "Communauté",
+  "footer.resources.repertoire": "Répertoire mondial",
+  "footer.resources.reviews": "Avis & témoignages",
+  "footer.tools.planner": "Planificateur",
+  "footer.tools.scoreboard": "Tableau indicateur",
+  "footer.tools.toolbox": "Boîte à outils",
+  "footer.tools.maternelle": "90 cours maternelle",
+  "footer.extras.donate": "Faire un don",
+  "footer.extras.about": "À propos",
+  "footer.extras.contact": "Contact",
+  "footer.rights": "© 2026 Zone Total Sport — 100% gratuit, sans publicité.",
+
+  "soon.badge": "Bientôt",
+  "soon.note": "Cette app arrive sous peu."
+}

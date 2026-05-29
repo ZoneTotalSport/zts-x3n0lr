@@ -1,0 +1,288 @@
+/* ============================================================
+   ZONE TOTAL SPORT — DESIGN SYSTEM PARTAGÉ  (zts.css)
+   Source de vérité visuelle. Home + toutes les apps consomment
+   ce fichier. AUCUNE app ne définit son style en solo.
+   Identité validée : Pop Art / néobrutaliste ludique, fluo
+   par métier, contours noirs épais, ombres décalées (sticker).
+   ============================================================ */
+
+/* ---------- POLICES (servies depuis apps-nhl/fonts/) ---------- */
+@font-face { font-family:'LuckiestGuy'; src:url('../apps-nhl/fonts/LuckiestGuy-Regular.ttf') format('truetype'); font-display:swap; }
+@font-face { font-family:'Kranky'; src:url('../apps-nhl/fonts/Kranky-Regular.ttf') format('truetype'); font-display:swap; }
+@font-face { font-family:'GloriaHallelujah'; src:url('../apps-nhl/fonts/GloriaHallelujah-Regular.ttf') format('truetype'); font-display:swap; }
+@font-face { font-family:'SwankyMooMoo'; src:url('../apps-nhl/fonts/SwankyandMooMoo-Regular.ttf') format('truetype'); font-display:swap; }
+
+/* ============ DESIGN TOKENS ============ */
+:root {
+  /* — Neutres — */
+  --zts-noir:  #1A1A2E;   /* contours + texte (alias brief : --zts-noir) */
+  --ink:       #1A1A2E;
+  --paper:     #FFFEF7;
+  --cream:     #FFFBE8;
+  --zts-creme: #FFFBE8;
+
+  /* — Palette fluo primaire (validée) — */
+  --cyan:   #00E5FF;
+  --jaune:  #FFEA00;
+  --orange: #FF6B00;
+  --vert:   #39FF14;
+  --bleu:   #1E90FF;
+  --rose:   #FF2D87;
+  --violet: #8B5CF6;
+
+  /* — Accents par métier (= couleur du chandail du perso) — */
+  --ep:   #00E5FF;  /* cyan  */
+  --sdg:  #39FF14;  /* vert  */
+  --camp: #FF6B00;  /* orange */
+
+  /* — Variable vivante : pilotée par body[data-metier] — */
+  --metier:      var(--zts-noir);
+  --metier-soft: var(--paper);
+  --metier-tint: rgba(26,26,46,0.06);
+
+  /* — Familles de polices — */
+  --font-impact: 'Luckiest Guy','LuckiestGuy','Impact',sans-serif; /* gros titres */
+  --font-bang:   'Bangers','Impact',cursive;                       /* callouts */
+  --font-fun:    'Fredoka','Helvetica Neue',sans-serif;            /* sous-titres UI */
+  --font-body:   'Quicksand','Helvetica Neue',sans-serif;          /* corps */
+  --font-hand:   'Caveat','GloriaHallelujah',cursive;              /* manuscrit */
+
+  /* — Contours + ombre BD (sticker) — */
+  --bord:      3px solid var(--zts-noir);
+  --bord-gros: 4px solid var(--zts-noir);
+  --ombre:     4px 4px 0 var(--zts-noir);
+  --ombre-xl:  6px 6px 0 var(--zts-noir);
+
+  /* — Échelle rayons — */
+  --r-1: 10px;  --r-2: 16px;  --r-3: 22px;  --r-4: 28px;  --r-pill: 999px;
+
+  /* — Échelle espacements — */
+  --space-1: 4px; --space-2: 8px;  --space-3: 14px; --space-4: 22px;
+  --space-5: 34px; --space-6: 52px; --space-7: 80px;
+
+  /* — Échelle typo (clamp = lisible mobile → TNI) — */
+  --fs-1: clamp(13px,1.6vw,15px);
+  --fs-2: clamp(15px,1.9vw,18px);
+  --fs-3: clamp(18px,2.4vw,22px);
+  --fs-4: clamp(22px,3.2vw,30px);
+  --fs-5: clamp(30px,5vw,46px);
+  --fs-6: clamp(40px,7vw,72px);
+}
+
+/* — Thématisation par métier : attribut data-metier sur <html> OU <body> — */
+[data-metier="ep"]   { --metier: var(--ep); }
+[data-metier="sdg"]  { --metier: var(--sdg); }
+[data-metier="camp"] { --metier: var(--camp); }
+
+/* ============ RESET + BASE ============ */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.45;
+  font-weight:700;
+  overflow-x:hidden;
+  min-height:100vh;
+  position:relative;
+}
+img { max-width:100%; display:block; }
+a { color:inherit; }
+
+/* ============ HEADER PARTAGÉ (.zts-header) ============ */
+.zts-header {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  background:var(--zts-noir);
+  border-bottom:var(--bord-gros);
+  box-shadow:0 6px 20px rgba(0,0,0,.4);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:var(--space-3);
+  padding:12px clamp(14px,3vw,28px);
+  flex-wrap:wrap;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.zts-header.hidden { transform:translateY(-100%); }
+.zts-header__brand {
+  display:flex; align-items:baseline; gap:8px;
+  font-family:var(--font-impact); color:#fff;
+  font-size:clamp(20px,2.6vw,28px); letter-spacing:.02em;
+  text-decoration:none; white-space:nowrap;
+}
+.zts-header__brand .total { color:var(--jaune); }
+.zts-header__nav { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+/* Boutons chunky 3D — composant partagé */
+.zts-btn {
+  display:inline-flex; align-items:center; gap:9px;
+  font-family:var(--font-impact); font-size:var(--fs-2);
+  letter-spacing:.02em; color:#fff; text-decoration:none; cursor:pointer;
+  padding:11px 22px; border-radius:var(--r-2);
+  border:var(--bord); background:#2A3447;
+  box-shadow:0 5px 0 var(--zts-noir),0 8px 14px rgba(0,0,0,.35);
+  transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s ease;
+}
+.zts-btn:hover  { transform:translateY(-3px); box-shadow:0 8px 0 var(--zts-noir),0 12px 20px rgba(0,0,0,.45); }
+.zts-btn:active { transform:translateY(2px); box-shadow:0 2px 0 var(--zts-noir),0 4px 8px rgba(0,0,0,.3); }
+.zts-btn .em { font-size:1.15em; line-height:1; }
+.zts-btn--primary   { background:var(--cyan);   color:var(--ink); }
+.zts-btn--metier    { background:var(--metier); color:var(--ink); }
+.zts-btn--communaute{ background:var(--rose);   color:#fff; }
+.zts-btn--dons      { background:var(--jaune);  color:var(--ink); }
+.zts-btn--user      { background:var(--vert);   color:var(--ink); }
+.zts-btn--ghost     { background:transparent;   color:#fff; box-shadow:0 5px 0 rgba(0,0,0,.4); }
+.zts-btn[disabled],.zts-btn.is-soon {
+  opacity:.55; cursor:not-allowed; filter:grayscale(.4);
+  box-shadow:0 4px 0 var(--zts-noir);
+}
+
+/* Toggle langue FR/EN */
+.zts-lang {
+  display:inline-flex; border:var(--bord); border-radius:var(--r-pill);
+  overflow:hidden; font-family:var(--font-impact); background:#fff;
+  box-shadow:var(--ombre);
+}
+.zts-lang button {
+  border:0; background:transparent; cursor:pointer;
+  padding:7px 14px; font-family:inherit; font-size:var(--fs-1);
+  color:var(--ink); letter-spacing:.04em;
+}
+.zts-lang button.active { background:var(--metier); color:var(--ink); }
+
+/* Sous-nav « retour » des apps */
+.zts-subnav {
+  display:flex; gap:10px; flex-wrap:wrap;
+  padding:10px clamp(14px,3vw,28px);
+  margin-top:calc(var(--zts-header-h,64px));
+}
+.zts-subnav a {
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-fun); font-weight:700; text-decoration:none;
+  font-size:var(--fs-1); color:var(--ink);
+  padding:7px 14px; border:var(--bord); border-radius:var(--r-pill);
+  background:#fff; box-shadow:var(--ombre);
+}
+.zts-subnav a:hover { transform:translate(-2px,-2px); box-shadow:var(--ombre-xl); }
+
+/* ============ CARTE APP PARTAGÉE (.zts-app-card) ============ */
+.zts-grid {
+  display:grid; gap:var(--space-4);
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));
+}
+.zts-app-card {
+  position:relative; display:flex; flex-direction:column; gap:8px;
+  text-align:left; text-decoration:none; cursor:pointer;
+  background:#fff; color:var(--ink);
+  border:var(--bord-gros); border-radius:var(--r-3);
+  box-shadow:var(--ombre-xl);
+  padding:var(--space-4);
+  transition:transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .16s ease;
+}
+.zts-app-card:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--zts-noir); }
+.zts-app-card:active{ transform:translate(0,3px); box-shadow:2px 2px 0 var(--zts-noir); }
+.zts-app-card__icon { font-size:clamp(34px,5vw,46px); line-height:1; }
+.zts-app-card__name { font-family:var(--font-impact); font-size:var(--fs-3); letter-spacing:.01em; }
+.zts-app-card__desc { font-family:var(--font-body); font-size:var(--fs-1); opacity:.85; }
+.zts-app-card.is-soon { opacity:.78; }
+
+/* Tags / badges */
+.zts-tag {
+  position:absolute; top:-12px; right:14px;
+  font-family:var(--font-impact); font-size:var(--fs-1);
+  padding:4px 12px; border:var(--bord); border-radius:var(--r-pill);
+  box-shadow:var(--ombre); letter-spacing:.03em;
+}
+.zts-tag--new  { background:var(--vert);   color:var(--ink); }
+.zts-tag--ia   { background:var(--violet); color:#fff; }
+.zts-tag--pro  { background:var(--jaune);  color:var(--ink); }
+.zts-tag--soon { background:#e6e6ef;       color:var(--ink); }
+
+/* ============ BANNIÈRE MÉTIER ============ */
+.zts-metier-banner {
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-4);
+  background:var(--metier); color:var(--ink);
+  border:var(--bord-gros); border-radius:var(--r-4);
+  box-shadow:var(--ombre-xl); padding:var(--space-5);
+}
+.zts-metier-banner h1 { font-family:var(--font-impact); font-size:var(--fs-5); }
+.zts-metier-banner__pill {
+  display:inline-block; font-family:var(--font-bang); font-size:var(--fs-2);
+  background:#fff; color:var(--ink); padding:4px 16px;
+  border:var(--bord); border-radius:var(--r-pill); box-shadow:var(--ombre);
+}
+
+/* ============ BARRE DE STATS (compteurs animés) ============ */
+.zts-stats { display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; }
+.zts-stat {
+  background:#fff; border:var(--bord-gros); border-radius:var(--r-2);
+  box-shadow:var(--ombre); padding:var(--space-3) var(--space-4); text-align:center;
+}
+.zts-stat__num { font-family:var(--font-impact); font-size:var(--fs-5); color:var(--metier); }
+.zts-stat__lbl { font-family:var(--font-fun); font-size:var(--fs-1); opacity:.8; }
+
+/* ============ MODALE PARTAGÉE (.zts-modal) ============ */
+.zts-modal {
+  position:fixed; inset:0; z-index:500; display:none;
+  align-items:center; justify-content:center; padding:20px;
+  background:rgba(26,26,46,.6);
+}
+.zts-modal.open { display:flex; }
+.zts-modal__inner {
+  position:relative; width:min(640px,100%); max-height:90vh; overflow:auto;
+  background:var(--paper); color:var(--ink);
+  border:var(--bord-gros); border-radius:var(--r-4); box-shadow:10px 10px 0 var(--zts-noir);
+  padding:var(--space-6) var(--space-5);
+  animation:zts-pop .2s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes zts-pop { from{transform:scale(.85);opacity:0;} to{transform:scale(1);opacity:1;} }
+.zts-modal__close {
+  position:absolute; top:14px; right:14px;
+  width:42px; height:42px; border:var(--bord); border-radius:50%;
+  background:var(--rose); color:#fff; font-size:20px; cursor:pointer;
+  box-shadow:var(--ombre); line-height:1;
+}
+.zts-modal__close:hover { transform:scale(1.08); }
+.zts-modal__title { font-family:var(--font-impact); font-size:var(--fs-4); margin-bottom:var(--space-3); }
+
+/* ============ FOOTER PARTAGÉ (.zts-footer) ============ */
+.zts-footer {
+  position:relative; margin-top:var(--space-7);
+  background:var(--violet); color:#fff;
+  border-top:var(--bord-gros);
+  padding:var(--space-6) clamp(16px,4vw,48px) var(--space-5);
+}
+.zts-footer__grid {
+  display:grid; gap:var(--space-5);
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  max-width:1200px; margin:0 auto;
+}
+.zts-footer__col h5 { font-family:var(--font-impact); font-size:var(--fs-3); margin-bottom:var(--space-3); color:var(--jaune); }
+.zts-footer__col a { display:block; text-decoration:none; color:#fff; opacity:.92; margin:6px 0; font-family:var(--font-body); }
+.zts-footer__col a:hover { opacity:1; text-decoration:underline; }
+.zts-footer__socials { display:flex; gap:10px; margin-top:var(--space-3); }
+.zts-footer__socials a {
+  width:40px; height:40px; display:grid; place-items:center;
+  border:var(--bord); border-radius:50%; background:#fff; color:var(--ink);
+  font-family:var(--font-impact); box-shadow:var(--ombre);
+}
+.zts-footer__bottom {
+  max-width:1200px; margin:var(--space-5) auto 0; padding-top:var(--space-4);
+  border-top:2px solid rgba(255,255,255,.25);
+  font-family:var(--font-body); font-size:var(--fs-1); opacity:.85; text-align:center;
+}
+
+/* ============ UTILITAIRES ============ */
+.zts-container { max-width:1200px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+.zts-hidden { display:none !important; }
+[hidden] { display:none !important; }
+
+/* Accessibilité : focus visible + cibles tactiles */
+:where(a,button,input,textarea,select):focus-visible {
+  outline:3px solid var(--cyan); outline-offset:2px;
+}
+.zts-btn, .zts-app-card, .zts-modal__close, .zts-lang button { min-height:44px; }
+
+/* Respect du reduce-motion */
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
+}
