@@ -2855,6 +2855,18 @@
     .foot-bottom { flex-direction: column; text-align: center; }
   }
 
+  /* ===== Toggle langue FR/EN (dark-nav) ===== */
+  .dark-nav .zts-lang {
+    display: inline-flex; border: 3px solid var(--ink); border-radius: 999px;
+    overflow: hidden; background: #fff; box-shadow: 0 4px 0 var(--ink);
+  }
+  .dark-nav .zts-lang button {
+    border: 0; background: transparent; cursor: pointer;
+    font-family: var(--font-impact); font-size: 15px; letter-spacing: 0.04em;
+    color: var(--ink); padding: 8px 14px; line-height: 1;
+  }
+  .dark-nav .zts-lang button.active { background: var(--cyan); color: var(--ink); }
+
 </style>
 </head>
 <body>
@@ -2873,9 +2885,9 @@
     text-align: center;
   ">
     <div style="font-size: 80px; margin-bottom: 8px;">🔒</div>
-    <h2 style="font-family: 'Luckiest Guy', cursive; font-size: 38px; color: #1a1a2e; margin-bottom: 8px; text-shadow: 3px 3px 0 #FFEA00;">ACCÈS PROTÉGÉ</h2>
-    <p style="font-family: 'DynaPuff', cursive; font-size: 17px; color: #555; margin-bottom: 24px;">Aperçu privé de Zone Total Sport.<br>Entre le mot de passe pour continuer.</p>
-    <input type="password" id="passwordInput" placeholder="Mot de passe" style="
+    <h2 style="font-family: 'Luckiest Guy', cursive; font-size: 38px; color: #1a1a2e; margin-bottom: 8px; text-shadow: 3px 3px 0 #FFEA00;" data-i18n="gate.title">ACCÈS PROTÉGÉ</h2>
+    <p style="font-family: 'DynaPuff', cursive; font-size: 17px; color: #555; margin-bottom: 24px;" data-i18n="gate.sub">Aperçu privé de Zone Total Sport.<br>Entre le mot de passe pour continuer.</p>
+    <input type="password" id="passwordInput" data-i18n-attr="placeholder:gate.ph" placeholder="Mot de passe" style="
       width: 100%; padding: 14px 18px; border: 3px solid #1a1a2e;
       border-radius: 12px; font-size: 18px; font-family: inherit;
       text-align: center; margin-bottom: 14px; box-sizing: border-box;
@@ -2885,11 +2897,11 @@
       padding: 14px 32px; border-radius: 14px; font-family: 'Luckiest Guy', cursive;
       font-size: 22px; cursor: pointer; box-shadow: 5px 5px 0 #1a1a2e;
       letter-spacing: 0.04em; width: 100%;
-    ">DÉVERROUILLER</button>
+    " data-i18n="gate.btn">DÉVERROUILLER</button>
     <div id="passwordError" style="
       display: none; color: #FF2D87; font-family: 'DynaPuff', cursive;
       font-weight: 700; margin-top: 14px; font-size: 16px;
-    ">❌ Mot de passe incorrect</div>
+    " data-i18n="gate.err">❌ Mot de passe incorrect</div>
   </div>
 </div>
 
@@ -2921,26 +2933,30 @@
 
 <!-- DARK NAV BAR — toujours visible en haut -->
 <div class="dark-nav" id="darkNav">
-  <a href="#" class="dn-btn active" onclick="event.preventDefault(); if(document.body.className.match(/metier-/)) retourSelecteur(); window.scrollTo({top:0,behavior:'smooth'});"><span class="em">🏠</span>Accueil</a>
-  <a href="#" class="dn-btn"><span class="em">📁</span>Ressources</a>
+  <a href="#" class="dn-btn active" onclick="event.preventDefault(); if(document.body.className.match(/metier-/)) retourSelecteur(); window.scrollTo({top:0,behavior:'smooth'});"><span class="em">🏠</span><span data-i18n="nav.home">Accueil</span></a>
+  <a href="#" class="dn-btn"><span class="em">📁</span><span data-i18n="nav.resources">Ressources</span></a>
   <a href="https://zonetotalsport.ca/blog.html" class="dn-btn"><span class="em">✏️</span>Blog</a>
-  <a href="https://zonetotalsport.ca/aidons-nous/" class="dn-btn communaute"><span class="em">🤝</span>Communauté ▼</a>
-  <a href="#" class="dn-btn dons"><span class="em">💛</span>Dons</a>
-  <a href="#" class="dn-btn user"><span class="em">👋</span>Salut, Joey!</a>
+  <a href="https://zonetotalsport.ca/aidons-nous/" class="dn-btn communaute"><span class="em">🤝</span><span data-i18n="nav.community">Communauté ▼</span></a>
+  <a href="#" class="dn-btn dons"><span class="em">💛</span><span data-i18n="nav.donate">Dons</span></a>
+  <a href="#" class="dn-btn user"><span class="em">👋</span><span data-i18n="nav.greeting">Salut, Joey!</span></a>
+  <div class="zts-lang" role="group" aria-label="Langue / Language">
+    <button type="button" data-lang="fr" data-i18n="lang.fr">FR</button>
+    <button type="button" data-lang="en" data-i18n="lang.en">EN</button>
+  </div>
 </div>
 
 <!-- SÉRIES SPORTIVES - colonne flottante à gauche -->
 <div class="series-dock">
-  <a class="serie-card nhl" href="#" onclick="openSeries('nhl'); return false;" title="Voir les séries LNH">
+  <a class="serie-card nhl" href="#" onclick="openSeries('nhl'); return false;" data-i18n-attr="title:series.see_nhl" title="Voir les séries LNH">
     <span class="dot-live"></span>
     <div class="league-logo">🏒</div>
-    <div class="label">SÉRIES LNH</div>
+    <div class="label" data-i18n="series.nhl_label">SÉRIES LNH</div>
   </a>
-  <a class="serie-card nba" href="#" onclick="openSeries('nba'); return false;" title="Voir les séries NBA">
+  <a class="serie-card nba" href="#" onclick="openSeries('nba'); return false;" data-i18n-attr="title:series.see_nba" title="Voir les séries NBA">
     <span class="dot-live"></span>
     <span class="ball">🏀</span>
     <div class="league-logo">🏀</div>
-    <div class="label">SÉRIES NBA</div>
+    <div class="label" data-i18n="series.nba_label">SÉRIES NBA</div>
   </a>
 </div>
 
@@ -2950,8 +2966,8 @@
     <button class="series-close" onclick="document.getElementById('seriesModal').classList.remove('open')">✕</button>
     <div class="series-modal-head">
       <span class="series-badge" id="seriesBadge">🏒 LNH</span>
-      <h2 id="seriesTitle">Séries éliminatoires LNH 2026</h2>
-      <p id="seriesSubtitle">Coupe Stanley · Tour final</p>
+      <h2 id="seriesTitle" data-i18n="series.title_init">Séries éliminatoires LNH 2026</h2>
+      <p id="seriesSubtitle" data-i18n="series.sub_init">Coupe Stanley · Tour final</p>
     </div>
 
     <div class="series-content" id="seriesContent">
@@ -2959,7 +2975,7 @@
     </div>
 
     <div class="series-cta-row">
-      <a id="seriesExtLink" href="https://www.nhl.com/fr/playoffs" target="_blank" rel="noopener" class="series-cta">
+      <a id="seriesExtLink" href="https://www.nhl.com/fr/playoffs" target="_blank" rel="noopener" class="series-cta" data-i18n="series.ext">
         Voir le tableau complet sur le site officiel →
       </a>
     </div>
@@ -2976,7 +2992,7 @@
         <span class="clock-icon">🕐</span>
         <span class="clock-time" id="clockTime">--:--:--</span>
       </div>
-      <div class="logo-sub">Pédagogie Primaire</div>
+      <div class="logo-sub" data-i18n="brand.sub">Pédagogie Primaire</div>
     </div>
   </div>
   <button class="burger" id="burger" aria-label="Menu" style="display: none;">☰</button>
@@ -2984,26 +3000,26 @@
 
 <!-- HERO STAGE 1 : SÉLECTEUR 3 PORTES -->
 <section class="hero" id="stage1">
-  <span class="eyebrow"><span class="dot"></span> +500 jeux · 100% gratuit · primaire</span>
-  <h1 class="mega">Faire bouger les enfants,<br><span class="swipe">c'est notre mission!</span></h1>
-  <p class="lede">Une plateforme. Trois métiers. Choisis le tien et reçois exactement ce qu'il te faut — pour des journées qui roulent au primaire.</p>
+  <span class="eyebrow"><span class="dot"></span> <span data-i18n="hero.eyebrow">+500 jeux · 100% gratuit · primaire</span></span>
+  <h1 class="mega"><span data-i18n="hero.title1">Faire bouger les enfants,</span><br><span class="swipe" data-i18n="hero.title2">c'est notre mission!</span></h1>
+  <p class="lede" data-i18n="hero.lede">Une plateforme. Trois métiers. Choisis le tien et reçois exactement ce qu'il te faut — pour des journées qui roulent au primaire.</p>
 
   <div class="portes">
 
     <!-- PORTE ÉP -->
     <div class="porte" data-metier="ep" onclick="choisirMetier('ep')">
       <div class="splash"></div>
-      <span class="icone"><img src="perso-ep.png" alt="Prof d'éducation physique"></span>
-      <h3>Éducation physique</h3>
-      <p class="role">Profs d'ÉP du primaire : cours béton, alignés PFEQ, prêts dès lundi matin.</p>
+      <span class="icone"><img src="perso-ep.png" data-i18n-attr="alt:porte.ep.alt" alt="Prof d'éducation physique"></span>
+      <h3 data-i18n="metier.ep">Éducation physique</h3>
+      <p class="role" data-i18n="porte.ep.role">Profs d'ÉP du primaire : cours béton, alignés PFEQ, prêts dès lundi matin.</p>
       <div class="tags">
         <span class="tag">SAÉ</span>
         <span class="tag">PFEQ</span>
-        <span class="tag">Évaluation</span>
-        <span class="tag">Gymnase</span>
+        <span class="tag" data-i18n="tag.evaluation">Évaluation</span>
+        <span class="tag" data-i18n="tag.gymnase">Gymnase</span>
       </div>
       <div class="go">
-        <span>C'est parti!</span>
+        <span data-i18n="porte.ep.cta">C'est parti!</span>
         <span class="arrow">→</span>
       </div>
     </div>
@@ -3011,17 +3027,17 @@
     <!-- PORTE SDG -->
     <div class="porte" data-metier="sdg" onclick="choisirMetier('sdg')">
       <div class="splash"></div>
-      <span class="icone"><img src="perso-sdg.png" alt="Éducateur service de garde"></span>
-      <h3>Service de garde</h3>
-      <p class="role">Éducatrices qui animent 30 jeunes au primaire : routines, jeux, journées péda.</p>
+      <span class="icone"><img src="perso-sdg.png" data-i18n-attr="alt:porte.sdg.alt" alt="Éducateur service de garde"></span>
+      <h3 data-i18n="metier.sdg">Service de garde</h3>
+      <p class="role" data-i18n="porte.sdg.role">Éducatrices qui animent 30 jeunes au primaire : routines, jeux, journées péda.</p>
       <div class="tags">
-        <span class="tag">Routines</span>
-        <span class="tag">Jeux calmes</span>
-        <span class="tag">Pluie</span>
-        <span class="tag">SOS conflits</span>
+        <span class="tag" data-i18n="tag.routines">Routines</span>
+        <span class="tag" data-i18n="tag.jeux_calmes">Jeux calmes</span>
+        <span class="tag" data-i18n="tag.pluie">Pluie</span>
+        <span class="tag" data-i18n="tag.sos">SOS conflits</span>
       </div>
       <div class="go">
-        <span>On y va!</span>
+        <span data-i18n="porte.sdg.cta">On y va!</span>
         <span class="arrow">→</span>
       </div>
     </div>
@@ -3029,17 +3045,17 @@
     <!-- PORTE CAMP -->
     <div class="porte" data-metier="camp" onclick="choisirMetier('camp')">
       <div class="splash"></div>
-      <span class="icone"><img src="perso-camp.png" alt="Animateur camp de jour"></span>
-      <h3>Camps de jour</h3>
-      <p class="role">Coordos & moniteurs : grands jeux, thèmes, plein air et plan B météo.</p>
+      <span class="icone"><img src="perso-camp.png" data-i18n-attr="alt:porte.camp.alt" alt="Animateur camp de jour"></span>
+      <h3 data-i18n="metier.camp">Camps de jour</h3>
+      <p class="role" data-i18n="porte.camp.role">Coordos & moniteurs : grands jeux, thèmes, plein air et plan B météo.</p>
       <div class="tags">
-        <span class="tag">Grands jeux</span>
-        <span class="tag">Thèmes</span>
-        <span class="tag">Plein air</span>
-        <span class="tag">Plan B</span>
+        <span class="tag" data-i18n="tag.grands_jeux">Grands jeux</span>
+        <span class="tag" data-i18n="tag.themes">Thèmes</span>
+        <span class="tag" data-i18n="tag.plein_air">Plein air</span>
+        <span class="tag" data-i18n="tag.planb">Plan B</span>
       </div>
       <div class="go">
-        <span>En avant!</span>
+        <span data-i18n="porte.camp.cta">En avant!</span>
         <span class="arrow">→</span>
       </div>
     </div>
@@ -3047,10 +3063,10 @@
   </div>
 
   <div class="stats-bar">
-    <div class="stat"><div class="num" data-target="500">0</div><div class="label">Jeux & fiches</div></div>
-    <div class="stat"><div class="num" data-target="150">0</div><div class="label">SAÉ PFEQ</div></div>
-    <div class="stat"><div class="num" data-target="2300">0</div><div class="label">Pros inscrits</div></div>
-    <div class="stat"><div class="num">100%</div><div class="label">Gratuit, à vie</div></div>
+    <div class="stat"><div class="num" data-target="500">0</div><div class="label" data-i18n="stat.games">Jeux & fiches</div></div>
+    <div class="stat"><div class="num" data-target="150">0</div><div class="label" data-i18n="stat.sae">SAÉ PFEQ</div></div>
+    <div class="stat"><div class="num" data-target="2300">0</div><div class="label" data-i18n="stat.pros">Pros inscrits</div></div>
+    <div class="stat"><div class="num">100%</div><div class="label" data-i18n="stat.free">Gratuit, à vie</div></div>
   </div>
 </section>
 
@@ -3058,7 +3074,7 @@
 <section class="menu-jour" id="menuJour">
   <div class="menu-jour-inner">
     <div class="menu-jour-head">
-      <span class="pill-top">✨ AUJOURD'HUI AU MENU</span>
+      <span class="pill-top" data-i18n="menu.pill">✨ AUJOURD'HUI AU MENU</span>
       <h2 id="menuJourTitre">Ton cours ÉPS prêt en 30 secondes</h2>
       <div class="date" id="menuJourDate">Dimanche 24 mai</div>
     </div>
@@ -3067,9 +3083,9 @@
 
       <!-- MÉTÉO & PLAN -->
       <div class="menu-jour-card meteo">
-        <h3>☁️ MÉTÉO & PLAN</h3>
+        <h3 data-i18n="menu.meteo_head">☁️ MÉTÉO & PLAN</h3>
         <div class="meteo-temp"><span class="icon">🌧️</span>10°C</div>
-        <div class="meteo-loc">Bruine · Saint-Jean-sur-Richelieu</div>
+        <div class="meteo-loc" data-i18n="menu.meteo_loc">Bruine · Saint-Jean-sur-Richelieu</div>
         <div class="meteo-tag" id="meteoTag">EXTÉRIEUR</div>
         <div class="meteo-note" id="meteoNote">Temps idéal dehors</div>
         <div class="suggestions-title" id="suggTitle">★ SUGGESTIONS PAR CYCLE</div>
@@ -3080,24 +3096,24 @@
 
       <!-- JEU DU JOUR -->
       <div class="menu-jour-card jeu">
-        <h3>🎮 JEU DU JOUR</h3>
+        <h3 data-i18n="menu.jeu_head">🎮 JEU DU JOUR</h3>
         <span class="jeu-tag" id="jeuTag">🏫 POUR LE GYMNASE</span>
         <div class="jeu-name"><span>🏐</span><span id="jeuName">KINBALL</span></div>
-        <div class="small-head">COMMENT JOUER</div>
+        <div class="small-head" data-i18n="menu.how_to_play">COMMENT JOUER</div>
         <p class="jeu-desc" id="jeuDesc">Trois équipes de 4 joueurs avec un ballon géant. Une équipe nomme une couleur et frappe le ballon. L'équipe nommée doit l'attraper avant qu'il touche le sol.</p>
         <div class="tags-row" id="jeuTags">
           <span>Équipe</span><span>2e-3e cycle</span><span>Ballon géant</span>
         </div>
-        <a href="#" class="voir-tous" id="voirTous">VOIR 150 AUTRES JEUX →</a>
+        <a href="#" class="voir-tous" id="voirTous" data-i18n="menu.see_games">VOIR 150 AUTRES JEUX →</a>
       </div>
 
       <!-- DÉFI DU JOUR -->
       <div class="menu-jour-card defi">
-        <h3>💪 DÉFI DU JOUR</h3>
+        <h3 data-i18n="menu.defi_head">💪 DÉFI DU JOUR</h3>
         <span class="defi-tag" id="defiTag">🏫 EN CLASSE & 🏠 À LA MAISON</span>
         <div class="defi-name" id="defiName">COMPLIMENT CHAÎNE</div>
         <p style="font-family: var(--font-body); color: rgba(255,255,255,0.85); font-size: 15px; margin-bottom: 12px;" id="defiDesc">Chacun complimente son voisin. Le voisin continue.</p>
-        <div class="small-head">À FAIRE AUJOURD'HUI</div>
+        <div class="small-head" data-i18n="menu.todo">À FAIRE AUJOURD'HUI</div>
         <div class="defi-box" id="defiBox">Cercle de fin : un compliment de droite à gauche.</div>
       </div>
 
@@ -3111,7 +3127,7 @@
   <!-- BANNIÈRE COMPACTE du métier : back button + nom du métier + mode d'emploi + petit personnage -->
   <div class="metier-banner">
     <div class="metier-banner-inner">
-      <button class="back-btn" onclick="retourSelecteur()">← Changer</button>
+      <button class="back-btn" onclick="retourSelecteur()" data-i18n="metier.change">← Changer</button>
       <div class="metier-banner-title">
         <span class="metier-banner-pill" id="pill-metier">Zone ÉP</span>
         <h1 id="titre-metier">Ton gym, tes règles.</h1>
@@ -3150,7 +3166,7 @@
 
 <!-- BOUTON PAUSE SYNDICALE -->
 <button class="pause-syndicale-btn" onclick="document.getElementById('pauseModal').classList.add('open')">
-  <span class="em">☕</span> PAUSE SYNDICALE
+  <span class="em">☕</span> <span data-i18n="pause.label">PAUSE SYNDICALE</span>
 </button>
 
 <!-- MODAL PAUSE SYNDICALE -->
@@ -3158,23 +3174,23 @@
   <div class="pause-modal-inner">
     <button class="close-btn" onclick="document.getElementById('pauseModal').classList.remove('open')">✕</button>
     <div class="pause-head">
-      <span class="pause-pill">☕ PAUSE SYNDICALE</span>
-      <h2>Prends 30 secondes pour toi</h2>
-      <div class="pause-sub">Une citation, une question. Un nouveau défi chaque jour.</div>
+      <span class="pause-pill">☕ <span data-i18n="pause.label">PAUSE SYNDICALE</span></span>
+      <h2 data-i18n="pause.title">Prends 30 secondes pour toi</h2>
+      <div class="pause-sub" data-i18n="pause.sub">Une citation, une question. Un nouveau défi chaque jour.</div>
     </div>
     <div class="pause-grid">
       <div class="pause-card blague">
-        <h4>😂 BLAGUE DU JOUR</h4>
-        <p>« Qu'est-ce qu'un haltère déprimé? Un poids mort. »</p>
+        <h4 data-i18n="pause.joke_head">😂 BLAGUE DU JOUR</h4>
+        <p data-i18n="pause.joke">« Qu'est-ce qu'un haltère déprimé? Un poids mort. »</p>
       </div>
       <div class="pause-card fait">
-        <h4>📜 FAIT HISTORIQUE</h4>
-        <p>Les Avalanche du Colorado en route vers la Coupe Stanley — Patrick Roy et Joe Sakic mènent le Colorado à la Coupe. Roy gagne son 3e Conn Smythe.</p>
+        <h4 data-i18n="pause.fact_head">📜 FAIT HISTORIQUE</h4>
+        <p data-i18n="pause.fact">Les Avalanche du Colorado en route vers la Coupe Stanley — Patrick Roy et Joe Sakic mènent le Colorado à la Coupe. Roy gagne son 3e Conn Smythe.</p>
         <div style="margin-top: 12px; font-family: var(--font-impact); color: var(--rose);">📅 2001</div>
       </div>
       <div class="pause-card quiz">
-        <h4>🧠 QUIZ SPORTIF</h4>
-        <p style="font-size: 18px; margin-bottom: 8px;">Record du saut en longueur masculin?</p>
+        <h4 data-i18n="pause.quiz_head">🧠 QUIZ SPORTIF</h4>
+        <p style="font-size: 18px; margin-bottom: 8px;" data-i18n="pause.quiz_q">Record du saut en longueur masculin?</p>
         <ul class="quiz-options">
           <li>8,50 m</li>
           <li>8,95 m</li>
@@ -3204,18 +3220,18 @@
   <!-- BANDE INSCRIPTION -->
   <div class="foot-banner">
     <div>
-      <h3>REJOINS LA ZONE!</h3>
-      <p>Gratuit pour toujours · 30 secondes · aucune carte de crédit</p>
+      <h3 data-i18n="foot.join_title">REJOINS LA ZONE!</h3>
+      <p data-i18n="foot.join_sub">Gratuit pour toujours · 30 secondes · aucune carte de crédit</p>
     </div>
-    <form onsubmit="event.preventDefault(); alert('Merci! On t\'envoie ton lien magique 🎉');">
-      <input type="email" placeholder="ton@courriel.ca" required>
-      <button type="submit">M'INSCRIRE!</button>
+    <form onsubmit="event.preventDefault(); alert(t('foot.signup_alert'));">
+      <input type="email" data-i18n-attr="placeholder:foot.email_ph" placeholder="ton@courriel.ca" required>
+      <button type="submit" data-i18n="foot.signup">M'INSCRIRE!</button>
     </form>
   </div>
 
   <!-- SCORES LIVE -->
   <div class="live-scores">
-    <span class="live-tag"><span class="dot"></span>SCORES EN DIRECT</span>
+    <span class="live-tag"><span class="dot"></span><span data-i18n="foot.live">SCORES EN DIRECT</span></span>
     <div class="leagues">
       <span>🏒 LNH</span>
       <span>🏀 NBA</span>
@@ -3230,21 +3246,21 @@
   <div class="foot-pushcards">
     <div class="pushcard">
       <span class="em">🎒</span>
-      <h5>90 COURS MATERNELLE</h5>
-      <p>Web-app gratuite, 90 séances clé en main, prêtes dès lundi. 4-6 ans, motricité, coopération.</p>
-      <a href="https://zonetotalsport.ca/apps/cours-maternelle/" target="_blank" rel="noopener">OBTENIR L'ACCÈS →</a>
+      <h5 data-i18n="foot.pc1_title">90 COURS MATERNELLE</h5>
+      <p data-i18n="foot.pc1_desc">Web-app gratuite, 90 séances clé en main, prêtes dès lundi. 4-6 ans, motricité, coopération.</p>
+      <a href="https://zonetotalsport.ca/apps/cours-maternelle/" target="_blank" rel="noopener" data-i18n="foot.pc1_cta">OBTENIR L'ACCÈS →</a>
     </div>
     <div class="pushcard">
       <span class="em">🤝</span>
-      <h5>AIDONS-NOUS</h5>
-      <p>Forum pour profs ÉPS, éducatrices SDG et animateurs de camp. Partage tes trucs, pose tes questions.</p>
-      <a href="https://zonetotalsport.ca/aidons-nous/" target="_blank" rel="noopener">REJOINDRE →</a>
+      <h5 data-i18n="foot.pc2_title">AIDONS-NOUS</h5>
+      <p data-i18n="foot.pc2_desc">Forum pour profs ÉPS, éducatrices SDG et animateurs de camp. Partage tes trucs, pose tes questions.</p>
+      <a href="https://zonetotalsport.ca/aidons-nous/" target="_blank" rel="noopener" data-i18n="foot.pc2_cta">REJOINDRE →</a>
     </div>
     <div class="pushcard">
       <span class="em">💛</span>
-      <h5>SOUTIENS LA ZONE</h5>
-      <p>100% gratuit, sans pub. Un petit don aide à garder les outils accessibles à tous les profs.</p>
-      <a href="#">FAIRE UN DON →</a>
+      <h5 data-i18n="foot.pc3_title">SOUTIENS LA ZONE</h5>
+      <p data-i18n="foot.pc3_desc">100% gratuit, sans pub. Un petit don aide à garder les outils accessibles à tous les profs.</p>
+      <a href="#" data-i18n="foot.pc3_cta">FAIRE UN DON →</a>
     </div>
   </div>
 
@@ -3253,62 +3269,62 @@
 
     <div class="foot-col foot-brand">
       <div class="logo-block">⚡ ZONE TOTAL SPORT</div>
-      <p class="tag">Faire bouger les enfants,<br>c'est notre mission!</p>
+      <p class="tag" data-i18n="foot.brand_tag">Faire bouger les enfants,<br>c'est notre mission!</p>
       <div class="socials">
         <a href="https://www.facebook.com/zonetotalsportparMr.Roots/" class="fb" title="Facebook">f</a>
         <a href="https://www.instagram.com/zonetotalsportparmrroots/" class="ig" title="Instagram">◉</a>
         <a href="https://www.youtube.com/@zonetotalsportparMrRoots" class="yt" title="YouTube">▶</a>
         <a href="https://www.tiktok.com/@zonetotalsport" class="tt" title="TikTok">♪</a>
       </div>
-      <div style="font-family: var(--font-fun); font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500;">
+      <div style="font-family: var(--font-fun); font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500;" data-i18n="foot.brand_stats">
         2 300+ pros inscrits · 500+ jeux · 150+ SAÉ
       </div>
     </div>
 
     <div class="foot-col">
-      <h4>POUR QUI?</h4>
+      <h4 data-i18n="foot.h_forwho">POUR QUI?</h4>
       <ul>
-        <li><a href="#"><span>🏃</span>Éducation physique</a></li>
-        <li><a href="#"><span>🧸</span>Service de garde</a></li>
-        <li><a href="#"><span>🏕️</span>Camps de jour</a></li>
-        <li><a href="#"><span>🤝</span>Communauté Aidons-nous</a></li>
+        <li><a href="#"><span>🏃</span><span data-i18n="foot.fw1">Éducation physique</span></a></li>
+        <li><a href="#"><span>🧸</span><span data-i18n="foot.fw2">Service de garde</span></a></li>
+        <li><a href="#"><span>🏕️</span><span data-i18n="foot.fw3">Camps de jour</span></a></li>
+        <li><a href="#"><span>🤝</span><span data-i18n="foot.fw4">Communauté Aidons-nous</span></a></li>
       </ul>
     </div>
 
     <div class="foot-col">
-      <h4>RESSOURCES</h4>
+      <h4 data-i18n="foot.h_resources">RESSOURCES</h4>
       <ul>
-        <li><a href="#">Banque de jeux <span class="badge-hot">500+</span></a></li>
-        <li><a href="#">SAÉ PFEQ</a></li>
-        <li><a href="#">Générateur de jeux IA</a></li>
-        <li><a href="#">90 cours maternelle <span class="badge-new">NEW</span></a></li>
-        <li><a href="https://zonetotalsport.ca/blog.html">Blog ÉPS</a></li>
-        <li><a href="https://zonetotalsport.ca/repertoire.html">Répertoire mondial</a></li>
+        <li><a href="#"><span data-i18n="foot.r1">Banque de jeux</span> <span class="badge-hot">500+</span></a></li>
+        <li><a href="#" data-i18n="foot.r2">SAÉ PFEQ</a></li>
+        <li><a href="#" data-i18n="foot.r3">Générateur de jeux IA</a></li>
+        <li><a href="#"><span data-i18n="foot.r4">90 cours maternelle</span> <span class="badge-new">NEW</span></a></li>
+        <li><a href="https://zonetotalsport.ca/blog.html" data-i18n="foot.r5">Blog ÉPS</a></li>
+        <li><a href="https://zonetotalsport.ca/repertoire.html" data-i18n="foot.r6">Répertoire mondial</a></li>
       </ul>
     </div>
 
     <div class="foot-col">
-      <h4>OUTILS</h4>
+      <h4 data-i18n="foot.h_tools">OUTILS</h4>
       <ul>
-        <li><a href="#">Intervention Groupe <span class="badge-new">NEW</span></a></li>
-        <li><a href="https://zonetotalsport.ca/apps/planificateur/">Planificateur EPS</a></li>
-        <li><a href="https://zonetotalsport.ca/apps/transitions/">Boîte à outils</a></li>
-        <li><a href="https://zonetotalsport.ca/apps/scoreboard/">Tableau indicateur</a></li>
-        <li><a href="#">Tableau blanc TNI</a></li>
-        <li><a href="#">Grille horaire</a></li>
-        <li><a href="#">Carnet de notes</a></li>
+        <li><a href="#"><span data-i18n="foot.t1">Intervention Groupe</span> <span class="badge-new">NEW</span></a></li>
+        <li><a href="https://zonetotalsport.ca/apps/planificateur/" data-i18n="foot.t2">Planificateur EPS</a></li>
+        <li><a href="https://zonetotalsport.ca/apps/transitions/" data-i18n="foot.t3">Boîte à outils</a></li>
+        <li><a href="https://zonetotalsport.ca/apps/scoreboard/" data-i18n="foot.t4">Tableau indicateur</a></li>
+        <li><a href="#" data-i18n="foot.t5">Tableau blanc TNI</a></li>
+        <li><a href="#" data-i18n="foot.t6">Grille horaire</a></li>
+        <li><a href="#" data-i18n="foot.t7">Carnet de notes</a></li>
       </ul>
     </div>
 
     <div class="foot-col">
-      <h4>EXTRAS</h4>
+      <h4 data-i18n="foot.h_extras">EXTRAS</h4>
       <ul>
-        <li><a href="#">☕ Pause ÉPS du jour</a></li>
-        <li><a href="https://zonetotalsport.ca/avis.html">★ Avis & témoignages</a></li>
-        <li><a href="https://suppleance.zonetotalsport.ca">🦺 Ma Suppléance</a></li>
-        <li><a href="#">💡 Suggérer une idée</a></li>
-        <li><a href="#">📤 Partager le site</a></li>
-        <li><a href="#">📬 Contact</a></li>
+        <li><a href="#" data-i18n="foot.e1">☕ Pause ÉPS du jour</a></li>
+        <li><a href="https://zonetotalsport.ca/avis.html" data-i18n="foot.e2">★ Avis & témoignages</a></li>
+        <li><a href="https://suppleance.zonetotalsport.ca" data-i18n="foot.e3">🦺 Ma Suppléance</a></li>
+        <li><a href="#" data-i18n="foot.e4">💡 Suggérer une idée</a></li>
+        <li><a href="#" data-i18n="foot.e5">📤 Partager le site</a></li>
+        <li><a href="#" data-i18n="foot.e6">📬 Contact</a></li>
       </ul>
     </div>
 
@@ -3316,47 +3332,54 @@
 
   <!-- QUOI DE NEUF -->
   <div class="foot-news">
-    <h4>★ QUOI DE NEUF?</h4>
+    <h4 data-i18n="foot.news_head">★ QUOI DE NEUF?</h4>
     <div class="news-list">
       <div class="news-item">
-        <div class="date">2 mai 2026</div>
-        <div class="title">🛡️ Intervention Groupe — le couteau suisse ÉPS</div>
-        <div class="desc">PWA tout-en-un : 60 jeux inclusifs, SOS crise, planificateur, dessin terrain. Fonctionne hors ligne!</div>
+        <div class="date" data-i18n="foot.news1_date">2 mai 2026</div>
+        <div class="title" data-i18n="foot.news1_title">🛡️ Intervention Groupe — le couteau suisse ÉPS</div>
+        <div class="desc" data-i18n="foot.news1_desc">PWA tout-en-un : 60 jeux inclusifs, SOS crise, planificateur, dessin terrain. Fonctionne hors ligne!</div>
       </div>
       <div class="news-item">
-        <div class="date">29 avril 2026</div>
-        <div class="title">📖 50 jeunes, un gymnase — l'art de maîtriser!</div>
-        <div class="desc">Stratégies concrètes : gestion de groupe, transitions, énergie. Pour profs ÉP, SDG et camps.</div>
+        <div class="date" data-i18n="foot.news2_date">29 avril 2026</div>
+        <div class="title" data-i18n="foot.news2_title">📖 50 jeunes, un gymnase — l'art de maîtriser!</div>
+        <div class="desc" data-i18n="foot.news2_desc">Stratégies concrètes : gestion de groupe, transitions, énergie. Pour profs ÉP, SDG et camps.</div>
       </div>
       <div class="news-item">
-        <div class="date">18 avril 2026</div>
-        <div class="title">🤝 Aidons-nous — la communauté d'entraide</div>
-        <div class="desc">Forum type Facebook pour profs ÉPS, éducatrices SDG et animateurs de camp. Optimisé TBI!</div>
+        <div class="date" data-i18n="foot.news3_date">18 avril 2026</div>
+        <div class="title" data-i18n="foot.news3_title">🤝 Aidons-nous — la communauté d'entraide</div>
+        <div class="desc" data-i18n="foot.news3_desc">Forum type Facebook pour profs ÉPS, éducatrices SDG et animateurs de camp. Optimisé TBI!</div>
       </div>
     </div>
   </div>
 
   <!-- BANDE LANGUES / COPYRIGHT -->
   <div class="foot-bottom">
-    <div>© 2026 Zone Total Sport · Tous droits réservés</div>
+    <div data-i18n="foot.copyright">© 2026 Zone Total Sport · Tous droits réservés</div>
     <div class="links">
-      <a href="#">FR</a>
-      <a href="#">EN</a>
+      <a href="#" onclick="event.preventDefault(); ztsSetLang('fr');">FR</a>
+      <a href="#" onclick="event.preventDefault(); ztsSetLang('en');">EN</a>
       <a href="#">中</a>
       <a href="#">ES</a>
       <span style="opacity:0.3;">|</span>
-      <a href="https://zonetotalsport.ca/politique.html">Politique de confidentialité</a>
-      <a href="#">À propos</a>
+      <a href="https://zonetotalsport.ca/politique.html" data-i18n="foot.privacy">Politique de confidentialité</a>
+      <a href="#" data-i18n="foot.about">À propos</a>
     </div>
-    <div class="made">Fait avec 💛 au Québec</div>
+    <div class="made" data-i18n="foot.made">Fait avec 💛 au Québec</div>
   </div>
 
 </footer>
 
 <script>
 
+  // ============ LANGUE ACTIVE (déclarée tôt : utilisée par renderMenuJour) ============
+  var ztsLang = (function(){
+    var s = localStorage.getItem('zts_lang');
+    if (s === 'fr' || s === 'en') return s;
+    return (navigator.language || 'fr').toLowerCase().startsWith('en') ? 'en' : 'fr';
+  })();
+
   // ============ CONFIG DES 3 MÉTIERS ============
-  const METIERS = {
+  let METIERS = {
     ep: {
       nom: 'Zone ÉP',
       color: '#00E5FF',
@@ -3515,7 +3538,7 @@
 
   // ============ OUTILS DE LA BOÎTE À OUTILS (colonne flottante toujours visible) ============
   // Chaque outil ouvre un modal fonctionnel (pas un lien externe)
-  const APPS_DEFAULT = [
+  let APPS_DEFAULT = [
     { icon: '🎲', name: 'Dé',        tool: 'dice' },
     { icon: '🎡', name: 'Roue',      tool: 'wheel' },
     { icon: '⏱️', name: 'Chrono',    tool: 'chrono' },
@@ -3561,8 +3584,8 @@
       const target = app.url ? ' target="_blank" rel="noopener"' : '';
       const cls = app.soon ? 'tool-btn soon' : 'tool-btn';
       const badge = app.soon
-        ? '<span class="soon-badge">BIENTÔT</span>'
-        : (app.hot ? '<span class="hot-badge">★ HOT</span>' : '');
+        ? `<span class="soon-badge">${t('badge.soon')}</span>`
+        : (app.hot ? `<span class="hot-badge">${t('badge.hot')}</span>` : '');
       return `
         <a href="${href}"${target} class="${cls}">
           ${badge}
@@ -3575,7 +3598,7 @@
   }
 
   // ============ CONTENU "AUJOURD'HUI AU MENU" PAR DÉFAUT + PAR MÉTIER ============
-  const MENU_JOUR = {
+  let MENU_JOUR = {
     default: {
       titre: 'Choisis ton métier pour ton menu du jour',
       meteoTag: 'EXTÉRIEUR',
@@ -3672,11 +3695,18 @@
     document.getElementById('defiDesc').textContent = m.defiDesc;
     document.getElementById('defiBox').textContent = m.defiBox;
 
-    // Date du jour
+    // Date du jour (selon la langue)
     const now = new Date();
-    const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-    const months = ['jan','fév','mars','avr','mai','juin','juil','août','sept','oct','nov','déc'];
-    document.getElementById('menuJourDate').textContent = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
+    const EN = (typeof ztsLang !== 'undefined' && ztsLang === 'en');
+    const days = EN
+      ? ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+      : ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    const months = EN
+      ? ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+      : ['jan','fév','mars','avr','mai','juin','juil','août','sept','oct','nov','déc'];
+    document.getElementById('menuJourDate').textContent = EN
+      ? `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()}`
+      : `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
   }
   renderMenuJour('default');
 
@@ -3729,7 +3759,7 @@
       document.getElementById('titre-metier').textContent = m.titre;
       document.getElementById('baseline-metier').textContent = m.baseline;
       const howtoEl = document.getElementById('metier-howto');
-      if (howtoEl) howtoEl.textContent = m.baseline + ' Clique sur un outil pour l\'ouvrir. Les boutons marqués « bientôt » sont en chantier.';
+      if (howtoEl) howtoEl.textContent = m.baseline + t('metier.howto_suffix');
 
       // Personnage grand format dans le header
       document.getElementById('perso-big-img').src = m.mascot;
@@ -3759,7 +3789,7 @@
       // Met à jour l'avatar dans la bulle pour matcher le métier
       bubAvatar.src = m.mascot;
       bubAvatar.style.background = m.color;
-      bub.dataset.defaultMsg = m.mascotMsg + ' Clique-moi!';
+      bub.dataset.defaultMsg = m.mascotMsg + (ztsLang==='en'?' Click me!':' Clique-moi!');
       bubText.textContent = bub.dataset.defaultMsg;
 
       // === GROSSE GRILLE DE BOUTONS ILLUSTRÉS ===
@@ -3822,7 +3852,7 @@
       const bubTextReset = document.getElementById('bubble-text');
       bubAvatarReset.src = 'perso-ep.png';
       bubAvatarReset.style.background = 'var(--cyan)';
-      bubReset.dataset.defaultMsg = 'Salut! Clique-moi pour une dose de motivation!';
+      bubReset.dataset.defaultMsg = t('mascot.default');
       bubTextReset.textContent = bubReset.dataset.defaultMsg;
 
       // Reset apps et menu du jour
@@ -3851,7 +3881,7 @@
   });
 
   // ============ MR ROOT MOTIVATEUR : citations aléatoires au clic ============
-  const QUOTES = {
+  let QUOTES = {
     general: [
       "T'es plus fort•e que tu penses! 💪",
       "Une journée à la fois, une bouchée à la fois.",
@@ -3936,7 +3966,7 @@
     if (bubbleTimer) clearTimeout(bubbleTimer);
     bubbleTimer = setTimeout(() => {
       bubbleEl.classList.remove('show', 'pop');
-      textEl.textContent = bubbleEl.dataset.defaultMsg || 'Salut! Clique-moi pour une dose de motivation!';
+      textEl.textContent = bubbleEl.dataset.defaultMsg || t('mascot.default');
     }, 5000);
   });
 
@@ -3955,18 +3985,18 @@
         </div>
         <div class="tool-dice-display" id="diceDisplay">?</div>
         <div class="button-row">
-          <button class="tool-action-btn" onclick="rollDice()">LANCER!</button>
+          <button class="tool-action-btn" onclick="rollDice()" data-i18n="tool.roll">LANCER!</button>
         </div>
       `
     },
     wheel: {
       title: '🎡 ROUE DES NOMS',
       render: () => `
-        <label style="font-family: var(--font-impact); font-size: 14px; display: block; margin-bottom: 6px;">NOMS (1 PAR LIGNE)</label>
+        <label style="font-family: var(--font-impact); font-size: 14px; display: block; margin-bottom: 6px;" data-i18n="tool.names_label">NOMS (1 PAR LIGNE)</label>
         <textarea id="wheelNames" placeholder="Léa\nThomas\nSarah\nLucas\nMaxime\nEmma">Léa\nThomas\nSarah\nLucas\nMaxime\nEmma</textarea>
         <div class="tool-wheel-result" id="wheelResult">—</div>
         <div class="button-row">
-          <button class="tool-action-btn" onclick="spinWheel()">TOURNER!</button>
+          <button class="tool-action-btn" onclick="spinWheel()" data-i18n="tool.spin">TOURNER!</button>
         </div>
       `
     },
@@ -3998,14 +4028,14 @@
     teams: {
       title: '👥 ÉQUIPES',
       render: () => `
-        <label style="font-family: var(--font-impact); font-size: 14px; display: block;">NOMS (1 PAR LIGNE)</label>
-        <textarea id="teamNames" placeholder="Tape les noms ici">Léa\nThomas\nSarah\nLucas\nMaxime\nEmma\nHugo\nZoé</textarea>
+        <label style="font-family: var(--font-impact); font-size: 14px; display: block;" data-i18n="tool.names_label">NOMS (1 PAR LIGNE)</label>
+        <textarea id="teamNames" data-i18n-attr="placeholder:tool.ph_team_names" placeholder="Tape les noms ici">Léa\nThomas\nSarah\nLucas\nMaxime\nEmma\nHugo\nZoé</textarea>
         <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-          <label style="font-family: var(--font-impact); font-size: 14px;">NB ÉQUIPES:</label>
+          <label style="font-family: var(--font-impact); font-size: 14px;" data-i18n="tool.nb_teams">NB ÉQUIPES:</label>
           <input type="number" id="teamCount" value="2" min="2" max="8" style="width: 80px; margin: 0;">
         </div>
         <div class="button-row">
-          <button class="tool-action-btn" onclick="generateTeams()">GÉNÉRER!</button>
+          <button class="tool-action-btn" onclick="generateTeams()" data-i18n="tool.generate">GÉNÉRER!</button>
         </div>
         <div class="teams-result" id="teamsResult"></div>
       `
@@ -4013,13 +4043,13 @@
     message: {
       title: '📝 MESSAGE DU JOUR',
       render: () => `
-        <div class="tool-message-display" id="messageDisplay">Bienvenue au cours d'éducation physique! 🏃</div>
-        <label style="font-family: var(--font-impact); font-size: 14px; display: block;">MODIFIER LE MESSAGE</label>
-        <textarea id="messageEdit">Bienvenue au cours d'éducation physique! 🏃</textarea>
+        <div class="tool-message-display" id="messageDisplay" data-i18n="tool.welcome_msg">Bienvenue au cours d'éducation physique! 🏃</div>
+        <label style="font-family: var(--font-impact); font-size: 14px; display: block;" data-i18n="tool.edit_msg">MODIFIER LE MESSAGE</label>
+        <textarea id="messageEdit" data-i18n="tool.welcome_msg">Bienvenue au cours d'éducation physique! 🏃</textarea>
         <div class="button-row">
-          <button class="tool-action-btn" onclick="updateMessage('jaune')">JAUNE</button>
+          <button class="tool-action-btn" onclick="updateMessage('jaune')" data-i18n="tool.yellow">JAUNE</button>
           <button class="tool-action-btn alt" onclick="updateMessage('cyan')">CYAN</button>
-          <button class="tool-action-btn danger" onclick="updateMessage('rose')">ROSE</button>
+          <button class="tool-action-btn danger" onclick="updateMessage('rose')" data-i18n="tool.pink">ROSE</button>
         </div>
       `
     },
@@ -4028,14 +4058,14 @@
       render: () => {
         const saved = JSON.parse(localStorage.getItem('zts-school') || '{}');
         return `
-          <label style="font-family: var(--font-impact); font-size: 14px;">NOM DE L'ÉCOLE</label>
-          <input id="schoolName" placeholder="Ex. École des Découvreurs" value="${saved.name || ''}">
-          <label style="font-family: var(--font-impact); font-size: 14px;">VILLE</label>
+          <label style="font-family: var(--font-impact); font-size: 14px;" data-i18n="tool.school_name">NOM DE L'ÉCOLE</label>
+          <input id="schoolName" data-i18n-attr="placeholder:tool.ph_school" placeholder="Ex. École des Découvreurs" value="${saved.name || ''}">
+          <label style="font-family: var(--font-impact); font-size: 14px;" data-i18n="tool.city">VILLE</label>
           <input id="schoolCity" placeholder="Ex. Saint-Jean-sur-Richelieu" value="${saved.city || ''}">
-          <label style="font-family: var(--font-impact); font-size: 14px;">CYCLE PRINCIPAL</label>
-          <input id="schoolCycle" placeholder="Ex. 1er-2e-3e cycle" value="${saved.cycle || ''}">
+          <label style="font-family: var(--font-impact); font-size: 14px;" data-i18n="tool.main_cycle">CYCLE PRINCIPAL</label>
+          <input id="schoolCycle" data-i18n-attr="placeholder:tool.ph_cycle" placeholder="Ex. 1er-2e-3e cycle" value="${saved.cycle || ''}">
           <div class="button-row">
-            <button class="tool-action-btn" onclick="saveSchool()">SAUVEGARDER</button>
+            <button class="tool-action-btn" onclick="saveSchool()" data-i18n="tool.save">SAUVEGARDER</button>
           </div>
           <div class="tool-school-info" id="schoolInfo" style="${saved.name ? '' : 'display:none;'}">
             <h4 id="schoolDisplayName">${saved.name || ''}</h4>
@@ -4048,12 +4078,17 @@
   };
 
   function openTool(key) {
-    const t = TOOLS[key];
-    if (!t) return;
-    document.getElementById('toolModalTitle').textContent = t.title;
-    document.getElementById('toolModalBody').innerHTML = t.render();
+    const tool = TOOLS[key];
+    if (!tool) return;
+    _openToolKey = key;
+    document.getElementById('toolModalTitle').textContent = t(TOOL_TITLE_KEY[key] || 'tool.modal_title');
+    const body = document.getElementById('toolModalBody');
+    body.innerHTML = tool.render();
+    applyStatic(body); // traduit les libellés data-i18n du contenu injecté
     document.getElementById('toolModal').classList.add('open');
   }
+  // Map outil → clé de titre i18n
+  const TOOL_TITLE_KEY = { dice:'tool.dice', wheel:'tool.wheel', chrono:'tool.chrono', timer:'tool.timer', teams:'tool.teams', message:'tool.message', school:'tool.school' };
 
   function closeTool() {
     document.getElementById('toolModal').classList.remove('open');
@@ -4086,7 +4121,7 @@
   // ===== ROUE =====
   function spinWheel() {
     const names = document.getElementById('wheelNames').value.split('\n').map(n => n.trim()).filter(n => n);
-    if (!names.length) { alert('Ajoute au moins un nom!'); return; }
+    if (!names.length) { alert(t('tool.alert_one_name')); return; }
     const r = document.getElementById('wheelResult');
     r.classList.add('spinning');
     let count = 0;
@@ -4164,7 +4199,7 @@
   function generateTeams() {
     const names = document.getElementById('teamNames').value.split('\n').map(n => n.trim()).filter(n => n);
     const count = Math.max(2, Math.min(8, parseInt(document.getElementById('teamCount').value) || 2));
-    if (!names.length) { alert('Ajoute des noms!'); return; }
+    if (!names.length) { alert(t('tool.alert_names')); return; }
     // Shuffle Fisher-Yates
     for (let i = names.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -4174,7 +4209,7 @@
     names.forEach((n, i) => teams[i % count].push(n));
     document.getElementById('teamsResult').innerHTML = teams.map((team, i) => `
       <div class="team-block">
-        <h4>Équipe ${i + 1}</h4>
+        <h4>${t('tool.team_label')} ${i + 1}</h4>
         <ul>${team.map(n => `<li>${n}</li>`).join('')}</ul>
       </div>
     `).join('');
@@ -4197,7 +4232,7 @@
       city: document.getElementById('schoolCity').value.trim(),
       cycle: document.getElementById('schoolCycle').value.trim()
     };
-    if (!data.name) { alert('Mets au moins un nom d\'école!'); return; }
+    if (!data.name) { alert(t('tool.alert_school')); return; }
     localStorage.setItem('zts-school', JSON.stringify(data));
     document.getElementById('schoolDisplayName').textContent = data.name;
     document.getElementById('schoolDisplayCity').textContent = '📍 ' + data.city;
@@ -4206,7 +4241,7 @@
   }
 
   // ============ SÉRIES SPORTIVES - MODAL CONTENU ============
-  const SERIES_DATA = {
+  let SERIES_DATA = {
     nhl: {
       badge: '🏒 LNH',
       title: 'Séries éliminatoires LNH 2026',
@@ -4281,6 +4316,7 @@
     const data = SERIES_DATA[league];
     if (!data) return;
 
+    document.getElementById('seriesModal').dataset.league = league;
     document.getElementById('seriesBadge').textContent = data.badge;
     document.getElementById('seriesTitle').textContent = data.title;
     document.getElementById('seriesSubtitle').textContent = data.subtitle;
@@ -4358,6 +4394,358 @@
       setTimeout(() => titreSwipe.style.transform = '', 250);
     }
   }, 6000);
+
+  /* =====================================================================
+     ============ I18N HOME — FR / EN (contrôleur autonome) =============
+     Couvre TOUT : statique (data-i18n) + données injectées par JS
+     (METIERS, MENU_JOUR, QUOTES, SERIES, TOOLS, APPS_DEFAULT).
+     Clé partagée avec les apps : localStorage 'zts_lang'. Défaut FR.
+     ===================================================================== */
+
+  // --- Dictionnaire des chaînes STATIQUES + libellés outils + chaînes JS ---
+  const HOME_I18N = {
+    fr: {
+      'gate.title':'ACCÈS PROTÉGÉ','gate.sub':'Aperçu privé de Zone Total Sport. Entre le mot de passe pour continuer.','gate.ph':'Mot de passe','gate.btn':'DÉVERROUILLER','gate.err':'❌ Mot de passe incorrect',
+      'nav.home':'Accueil','nav.resources':'Ressources','nav.community':'Communauté ▼','nav.donate':'Dons','nav.greeting':'Salut, Joey!',
+      'lang.fr':'FR','lang.en':'EN','brand.sub':'Pédagogie Primaire',
+      'series.see_nhl':'Voir les séries LNH','series.see_nba':'Voir les séries NBA','series.nhl_label':'SÉRIES LNH','series.nba_label':'SÉRIES NBA',
+      'series.title_init':'Séries éliminatoires LNH 2026','series.sub_init':'Coupe Stanley · Tour final','series.ext':'Voir le tableau complet sur le site officiel →',
+      'hero.eyebrow':'+500 jeux · 100% gratuit · primaire','hero.title1':'Faire bouger les enfants,','hero.title2':"c'est notre mission!",
+      'hero.lede':"Une plateforme. Trois métiers. Choisis le tien et reçois exactement ce qu'il te faut — pour des journées qui roulent au primaire.",
+      'metier.ep':'Éducation physique','metier.sdg':'Service de garde','metier.camp':'Camps de jour',
+      'porte.ep.role':"Profs d'ÉP du primaire : cours béton, alignés PFEQ, prêts dès lundi matin.",
+      'porte.sdg.role':'Éducatrices qui animent 30 jeunes au primaire : routines, jeux, journées péda.',
+      'porte.camp.role':'Coordos & moniteurs : grands jeux, thèmes, plein air et plan B météo.',
+      'porte.ep.alt':"Prof d'éducation physique",'porte.sdg.alt':'Éducateur service de garde','porte.camp.alt':'Animateur camp de jour',
+      'tag.evaluation':'Évaluation','tag.gymnase':'Gymnase','tag.routines':'Routines','tag.jeux_calmes':'Jeux calmes','tag.pluie':'Pluie','tag.sos':'SOS conflits',
+      'tag.grands_jeux':'Grands jeux','tag.themes':'Thèmes','tag.plein_air':'Plein air','tag.planb':'Plan B',
+      'porte.ep.cta':"C'est parti!",'porte.sdg.cta':'On y va!','porte.camp.cta':'En avant!',
+      'stat.games':'Jeux & fiches','stat.sae':'SAÉ PFEQ','stat.pros':'Pros inscrits','stat.free':'Gratuit, à vie',
+      'menu.pill':'✨ AUJOURD\'HUI AU MENU','menu.meteo_head':'☁️ MÉTÉO & PLAN','menu.meteo_loc':'Bruine · Saint-Jean-sur-Richelieu',
+      'menu.jeu_head':'🎮 JEU DU JOUR','menu.how_to_play':'COMMENT JOUER','menu.see_games':'VOIR 150 AUTRES JEUX →',
+      'menu.defi_head':'💪 DÉFI DU JOUR','menu.todo':'À FAIRE AUJOURD\'HUI',
+      'metier.change':'← Changer','metier.howto_suffix':" Clique sur un outil pour l'ouvrir. Les boutons marqués « bientôt » sont en chantier.",
+      'pause.label':'PAUSE SYNDICALE','pause.title':'Prends 30 secondes pour toi','pause.sub':'Une citation, une question. Un nouveau défi chaque jour.',
+      'pause.joke_head':'😂 BLAGUE DU JOUR','pause.joke':'« Qu\'est-ce qu\'un haltère déprimé? Un poids mort. »',
+      'pause.fact_head':'📜 FAIT HISTORIQUE','pause.fact':'Les Avalanche du Colorado en route vers la Coupe Stanley — Patrick Roy et Joe Sakic mènent le Colorado à la Coupe. Roy gagne son 3e Conn Smythe.',
+      'pause.quiz_head':'🧠 QUIZ SPORTIF','pause.quiz_q':'Record du saut en longueur masculin?',
+      'foot.join_title':'REJOINS LA ZONE!','foot.join_sub':'Gratuit pour toujours · 30 secondes · aucune carte de crédit','foot.email_ph':'ton@courriel.ca','foot.signup':'M\'INSCRIRE!','foot.signup_alert':'Merci! On t\'envoie ton lien magique 🎉',
+      'foot.live':'SCORES EN DIRECT',
+      'foot.pc1_title':'90 COURS MATERNELLE','foot.pc1_desc':'Web-app gratuite, 90 séances clé en main, prêtes dès lundi. 4-6 ans, motricité, coopération.','foot.pc1_cta':'OBTENIR L\'ACCÈS →',
+      'foot.pc2_title':'AIDONS-NOUS','foot.pc2_desc':'Forum pour profs ÉPS, éducatrices SDG et animateurs de camp. Partage tes trucs, pose tes questions.','foot.pc2_cta':'REJOINDRE →',
+      'foot.pc3_title':'SOUTIENS LA ZONE','foot.pc3_desc':'100% gratuit, sans pub. Un petit don aide à garder les outils accessibles à tous les profs.','foot.pc3_cta':'FAIRE UN DON →',
+      'foot.brand_tag':'Faire bouger les enfants,<br>c\'est notre mission!','foot.brand_stats':'2 300+ pros inscrits · 500+ jeux · 150+ SAÉ',
+      'foot.h_forwho':'POUR QUI?','foot.h_resources':'RESSOURCES','foot.h_tools':'OUTILS','foot.h_extras':'EXTRAS',
+      'foot.fw1':'Éducation physique','foot.fw2':'Service de garde','foot.fw3':'Camps de jour','foot.fw4':'Communauté Aidons-nous',
+      'foot.r1':'Banque de jeux','foot.r2':'SAÉ PFEQ','foot.r3':'Générateur de jeux IA','foot.r4':'90 cours maternelle','foot.r5':'Blog ÉPS','foot.r6':'Répertoire mondial',
+      'foot.t1':'Intervention Groupe','foot.t2':'Planificateur EPS','foot.t3':'Boîte à outils','foot.t4':'Tableau indicateur','foot.t5':'Tableau blanc TNI','foot.t6':'Grille horaire','foot.t7':'Carnet de notes',
+      'foot.e1':'☕ Pause ÉPS du jour','foot.e2':'★ Avis & témoignages','foot.e3':'🦺 Ma Suppléance','foot.e4':'💡 Suggérer une idée','foot.e5':'📤 Partager le site','foot.e6':'📬 Contact',
+      'foot.news_head':'★ QUOI DE NEUF?',
+      'foot.news1_date':'2 mai 2026','foot.news2_date':'29 avril 2026','foot.news3_date':'18 avril 2026',
+      'foot.news1_title':'🛡️ Intervention Groupe — le couteau suisse ÉPS','foot.news1_desc':'PWA tout-en-un : 60 jeux inclusifs, SOS crise, planificateur, dessin terrain. Fonctionne hors ligne!',
+      'foot.news2_title':'📖 50 jeunes, un gymnase — l\'art de maîtriser!','foot.news2_desc':'Stratégies concrètes : gestion de groupe, transitions, énergie. Pour profs ÉP, SDG et camps.',
+      'foot.news3_title':'🤝 Aidons-nous — la communauté d\'entraide','foot.news3_desc':'Forum type Facebook pour profs ÉPS, éducatrices SDG et animateurs de camp. Optimisé TBI!',
+      'foot.copyright':'© 2026 Zone Total Sport · Tous droits réservés','foot.privacy':'Politique de confidentialité','foot.about':'À propos','foot.made':'Fait avec 💛 au Québec',
+      'badge.soon':'BIENTÔT','badge.hot':'★ HOT',
+      'tool.modal_title':'Outil','tool.dice':'🎲 DÉ','tool.wheel':'🎡 ROUE DES NOMS','tool.chrono':'⏱️ CHRONO','tool.timer':'⏲️ MINUTEUR','tool.teams':'👥 ÉQUIPES','tool.message':'📝 MESSAGE DU JOUR','tool.school':'🏫 MON ÉCOLE',
+      'tool.names_label':'NOMS (1 PAR LIGNE)','tool.roll':'LANCER!','tool.spin':'TOURNER!','tool.nb_teams':'NB ÉQUIPES:','tool.generate':'GÉNÉRER!','tool.edit_msg':'MODIFIER LE MESSAGE','tool.yellow':'JAUNE','tool.pink':'ROSE',
+      'tool.welcome_msg':'Bienvenue au cours d\'éducation physique! 🏃','tool.school_name':'NOM DE L\'ÉCOLE','tool.city':'VILLE','tool.main_cycle':'CYCLE PRINCIPAL','tool.save':'SAUVEGARDER',
+      'tool.ph_school':'Ex. École des Découvreurs','tool.ph_cycle':'Ex. 1er-2e-3e cycle','tool.ph_team_names':'Tape les noms ici','tool.team_label':'Équipe',
+      'tool.alert_one_name':'Ajoute au moins un nom!','tool.alert_names':'Ajoute des noms!','tool.alert_school':'Mets au moins un nom d\'école!',
+      'mascot.default':'Salut! Clique-moi pour une dose de motivation!'
+    },
+    en: {
+      'gate.title':'PROTECTED ACCESS','gate.sub':'Private preview of Zone Total Sport. Enter the password to continue.','gate.ph':'Password','gate.btn':'UNLOCK','gate.err':'❌ Wrong password',
+      'nav.home':'Home','nav.resources':'Resources','nav.community':'Community ▼','nav.donate':'Donate','nav.greeting':'Hi, Joey!',
+      'lang.fr':'FR','lang.en':'EN','brand.sub':'Elementary Education',
+      'series.see_nhl':'View NHL playoffs','series.see_nba':'View NBA playoffs','series.nhl_label':'NHL PLAYOFFS','series.nba_label':'NBA PLAYOFFS',
+      'series.title_init':'NHL Playoffs 2026','series.sub_init':'Stanley Cup · Final round','series.ext':'See the full bracket on the official site →',
+      'hero.eyebrow':'+500 games · 100% free · elementary','hero.title1':'Getting kids moving,','hero.title2':"that's our mission!",
+      'hero.lede':"One platform. Three roles. Pick yours and get exactly what you need — for elementary days that run smoothly.",
+      'metier.ep':'Physical Education','metier.sdg':'Daycare','metier.camp':'Day Camps',
+      'porte.ep.role':'Elementary PE teachers: solid lessons, PFEQ-aligned, ready Monday morning.',
+      'porte.sdg.role':'Educators leading 30 elementary kids: routines, games, PD days.',
+      'porte.camp.role':'Coordinators & counselors: big games, themes, outdoors and weather plan Bs.',
+      'porte.ep.alt':'Physical education teacher','porte.sdg.alt':'Daycare educator','porte.camp.alt':'Day camp counselor',
+      'tag.evaluation':'Assessment','tag.gymnase':'Gym','tag.routines':'Routines','tag.jeux_calmes':'Calm games','tag.pluie':'Rain','tag.sos':'Conflict SOS',
+      'tag.grands_jeux':'Big games','tag.themes':'Themes','tag.plein_air':'Outdoors','tag.planb':'Plan B',
+      'porte.ep.cta':"Let's go!",'porte.sdg.cta':"Let's go!",'porte.camp.cta':'Onward!',
+      'stat.games':'Games & sheets','stat.sae':'PFEQ lessons','stat.pros':'Pros signed up','stat.free':'Free, for life',
+      'menu.pill':'✨ TODAY ON THE MENU','menu.meteo_head':'☁️ WEATHER & PLAN','menu.meteo_loc':'Drizzle · Saint-Jean-sur-Richelieu',
+      'menu.jeu_head':'🎮 GAME OF THE DAY','menu.how_to_play':'HOW TO PLAY','menu.see_games':'SEE 150 MORE GAMES →',
+      'menu.defi_head':'💪 CHALLENGE OF THE DAY','menu.todo':'TO DO TODAY',
+      'metier.change':'← Change','metier.howto_suffix':' Click a tool to open it. Buttons marked "soon" are in the works.',
+      'pause.label':'COFFEE BREAK','pause.title':'Take 30 seconds for yourself','pause.sub':'A quote, a question. A new challenge every day.',
+      'pause.joke_head':'😂 JOKE OF THE DAY','pause.joke':'"What do you call a depressed dumbbell? Dead weight."',
+      'pause.fact_head':'📜 HISTORICAL FACT','pause.fact':'The Colorado Avalanche on the way to the Stanley Cup — Patrick Roy and Joe Sakic lead Colorado to the Cup. Roy wins his 3rd Conn Smythe.',
+      'pause.quiz_head':'🧠 SPORTS QUIZ','pause.quiz_q':"Men's long jump world record?",
+      'foot.join_title':'JOIN THE ZONE!','foot.join_sub':'Free forever · 30 seconds · no credit card','foot.email_ph':'you@email.com','foot.signup':'SIGN ME UP!','foot.signup_alert':"Thanks! We're sending your magic link 🎉",
+      'foot.live':'LIVE SCORES',
+      'foot.pc1_title':'90 KINDERGARTEN LESSONS','foot.pc1_desc':'Free web app, 90 turnkey sessions, ready by Monday. Ages 4-6, motor skills, cooperation.','foot.pc1_cta':'GET ACCESS →',
+      'foot.pc2_title':'AIDONS-NOUS','foot.pc2_desc':'A forum for PE teachers, daycare educators and camp counselors. Share your tips, ask your questions.','foot.pc2_cta':'JOIN →',
+      'foot.pc3_title':'SUPPORT THE ZONE','foot.pc3_desc':'100% free, ad-free. A small donation helps keep the tools free for every teacher.','foot.pc3_cta':'DONATE →',
+      'foot.brand_tag':'Getting kids moving,<br>that\'s our mission!','foot.brand_stats':'2,300+ pros signed up · 500+ games · 150+ lessons',
+      'foot.h_forwho':'WHO IT\'S FOR','foot.h_resources':'RESOURCES','foot.h_tools':'TOOLS','foot.h_extras':'EXTRAS',
+      'foot.fw1':'Physical Education','foot.fw2':'Daycare','foot.fw3':'Day Camps','foot.fw4':'Aidons-nous community',
+      'foot.r1':'Game bank','foot.r2':'PFEQ lessons','foot.r3':'AI game generator','foot.r4':'90 kindergarten lessons','foot.r5':'PE Blog','foot.r6':'World directory',
+      'foot.t1':'Group Intervention','foot.t2':'PE Planner','foot.t3':'Toolbox','foot.t4':'Scoreboard','foot.t5':'IWB whiteboard','foot.t6':'Schedule grid','foot.t7':'Gradebook',
+      'foot.e1':'☕ Daily PE break','foot.e2':'★ Reviews & testimonials','foot.e3':'🦺 My Substitute','foot.e4':'💡 Suggest an idea','foot.e5':'📤 Share the site','foot.e6':'📬 Contact',
+      'foot.news_head':'★ WHAT\'S NEW?',
+      'foot.news1_date':'May 2, 2026','foot.news2_date':'April 29, 2026','foot.news3_date':'April 18, 2026',
+      'foot.news1_title':'🛡️ Group Intervention — the PE Swiss army knife','foot.news1_desc':'All-in-one PWA: 60 inclusive games, crisis SOS, planner, field drawing. Works offline!',
+      'foot.news2_title':'📖 50 kids, one gym — the art of mastering it!','foot.news2_desc':'Concrete strategies: group management, transitions, energy. For PE teachers, daycare and camps.',
+      'foot.news3_title':'🤝 Aidons-nous — the mutual-aid community','foot.news3_desc':'Facebook-style forum for PE teachers, daycare educators and camp counselors. IWB-optimized!',
+      'foot.copyright':'© 2026 Zone Total Sport · All rights reserved','foot.privacy':'Privacy policy','foot.about':'About','foot.made':'Made with 💛 in Québec',
+      'badge.soon':'SOON','badge.hot':'★ HOT',
+      'tool.modal_title':'Tool','tool.dice':'🎲 DIE','tool.wheel':'🎡 NAME WHEEL','tool.chrono':'⏱️ STOPWATCH','tool.timer':'⏲️ TIMER','tool.teams':'👥 TEAMS','tool.message':'📝 MESSAGE OF THE DAY','tool.school':'🏫 MY SCHOOL',
+      'tool.names_label':'NAMES (1 PER LINE)','tool.roll':'ROLL!','tool.spin':'SPIN!','tool.nb_teams':'# TEAMS:','tool.generate':'GENERATE!','tool.edit_msg':'EDIT THE MESSAGE','tool.yellow':'YELLOW','tool.pink':'PINK',
+      'tool.welcome_msg':'Welcome to PE class! 🏃','tool.school_name':'SCHOOL NAME','tool.city':'CITY','tool.main_cycle':'MAIN GRADE','tool.save':'SAVE',
+      'tool.ph_school':'e.g. Découvreurs School','tool.ph_cycle':'e.g. grades 1-2-3','tool.ph_team_names':'Type names here','tool.team_label':'Team',
+      'tool.alert_one_name':'Add at least one name!','tool.alert_names':'Add some names!','tool.alert_school':'Enter at least a school name!',
+      'mascot.default':'Hi! Click me for a motivation boost!'
+    }
+  };
+
+  // --- État de langue : ztsLang est déclaré en tête du script (var) ---
+  function t(key){ const d = HOME_I18N[ztsLang] || HOME_I18N.fr; return (key in d) ? d[key] : (HOME_I18N.fr[key] ?? key); }
+
+  // --- Conserve les données FR d'origine + miroirs EN ---
+  const METIERS_FR = METIERS, MENU_JOUR_FR = MENU_JOUR, QUOTES_FR = QUOTES, SERIES_FR = SERIES_DATA, APPS_DEFAULT_FR = APPS_DEFAULT;
+
+  const APPS_DEFAULT_EN = [
+    { icon:'🎲', name:'Die',       tool:'dice' },
+    { icon:'🎡', name:'Wheel',     tool:'wheel' },
+    { icon:'⏱️', name:'Stopwatch', tool:'chrono' },
+    { icon:'⏲️', name:'Timer',     tool:'timer' },
+    { icon:'👥', name:'Teams',     tool:'teams' },
+    { icon:'📝', name:'Message',   tool:'message' },
+    { icon:'🏫', name:'My school', tool:'school' }
+  ];
+
+  const METIERS_EN = {
+    ep: {
+      nom:'PE Zone', color:'#00E5FF', colorSoft:'#CCFAFF', colorTint:'rgba(0,229,255,0.18)', mascot:'perso-ep.png',
+      mascotMsg:'Yo coach! Your gym is waiting!', titre:'Your gym, your rules.',
+      baseline:'Everything you need for your elementary PE classes — PFEQ-aligned, gym-tested, ready by Monday.',
+      cta:'Join 2,300+ PE teachers', ctaSub:'Unlimited access to 500+ games, lessons and tools. Free for life!',
+      commentUtiliser:['Pick an app from the grid below','It opens in under 2 seconds','No account needed to start','Automatic local save'],
+      apps:[
+        { icon:'📅', name:'PE Planner', desc:'Full school-year calendar', url:'https://zonetotalsport.ca/apps/planificateur/', hot:true },
+        { icon:'🏀', name:'Scoreboard', desc:'3-sport scoreboard', url:'https://zonetotalsport.ca/apps/scoreboard/', hot:true },
+        { icon:'🧰', name:'Toolbox', desc:'Signals, timer, teams', url:'https://zonetotalsport.ca/apps/transitions/' },
+        { icon:'🎒', name:'90 kindergarten lessons', desc:'Turnkey web app', url:'https://zonetotalsport.ca/apps/cours-maternelle/', hot:true },
+        { icon:'🦺', name:'My Substitute', desc:'Plans for substitutes', url:'https://suppleance.zonetotalsport.ca/' },
+        { icon:'🌍', name:'World directory', desc:'PE teachers worldwide', url:'https://zonetotalsport.ca/repertoire.html' },
+        { icon:'✏️', name:'PE Blog', desc:'23+ practical articles', url:'https://zonetotalsport.ca/blog.html' },
+        { icon:'🤝', name:'PE Community', desc:'Aidons-nous forum', url:'https://zonetotalsport.ca/aidons-nous/' },
+        { icon:'🎮', name:'Game bank', desc:'500+ games with PDF sheets', soon:true },
+        { icon:'🤖', name:'AI SAÉ generator', desc:'PFEQ lessons in 10 sec', soon:true },
+        { icon:'📊', name:'Light gradebook', desc:'Assessment & attendance', soon:true },
+        { icon:'📋', name:'Drills bank', desc:'Technique sheets', soon:true },
+        { icon:'🗓️', name:'Schedule grid', desc:'Specialists & rooms', soon:true },
+        { icon:'🤸', name:'Warm-ups', desc:'50+ routines by age', soon:true },
+        { icon:'🏅', name:'School olympics', desc:'Schedule & events', soon:true },
+        { icon:'🌧️', name:'Weather plan B', desc:'Activities by weather', soon:true },
+        { icon:'🎵', name:'Music', desc:'Playlists by moment', soon:true },
+        { icon:'🖍️', name:'IWB whiteboard', desc:'Draw & project', soon:true },
+        { icon:'🧩', name:'Riddles & puzzles', desc:'Brain teasers by age', soon:true },
+        { icon:'🎤', name:'Rhymes & songs', desc:'Audio bank + lyrics', soon:true }
+      ],
+      temoignage:{ initiale:'MC', nom:'Marie-Claude — PE teacher, Laval', quote:'I plan 5 lessons in 20 minutes on Sunday night. It used to take me 3 hours. Game changer.' }
+    },
+    sdg: {
+      nom:'Daycare Zone', color:'#39FF14', colorSoft:'#D6FFCB', colorTint:'rgba(57,255,20,0.18)', mascot:'perso-sdg.png',
+      mascotMsg:'Hi! Ready for your day?', titre:'Your day, fully equipped.',
+      baseline:'Everything to lead 30 elementary kids — routines, transitions, conflict SOS and turnkey PD days.',
+      cta:'Join daycare educators', ctaSub:'Concrete solutions for 30 kids, little gear and lots of noise. Free!',
+      commentUtiliser:['Grab an app for your need of the moment','Everything works offline (zero stress)','Made for ages 5-12, ready to project','No account needed to start'],
+      apps:[
+        { icon:'🧰', name:'Transition box', desc:'Signals, timer, teams to lead 30 kids', url:'https://zonetotalsport.ca/apps/transitions/', hot:true },
+        { icon:'🏀', name:'Scoreboard', desc:'For big daycare games', url:'https://zonetotalsport.ca/apps/scoreboard/' },
+        { icon:'📅', name:'Daycare planner', desc:'Weekly programming and PD days', url:'https://zonetotalsport.ca/apps/planificateur/', new:true },
+        { icon:'🎒', name:'90 kindergarten lessons', desc:'Ideal for daycare kindergarten', url:'https://zonetotalsport.ca/apps/cours-maternelle/', hot:true },
+        { icon:'✏️', name:'PE Blog', desc:'Large-group management articles', url:'https://zonetotalsport.ca/blog.html' },
+        { icon:'🤝', name:'Daycare Community', desc:'Aidons-nous educator forum', url:'https://zonetotalsport.ca/aidons-nous/' },
+        { icon:'🎲', name:'No-gear games', desc:'200+ zero-prep schoolyard games', soon:true },
+        { icon:'🛡️', name:'SOS Intervention', desc:'100 concrete crisis solutions', soon:true },
+        { icon:'✅', name:'Attendance book', desc:'Group roll call in 30 sec', soon:true },
+        { icon:'🎨', name:'PD day', desc:'Turnkey planning for special days', soon:true },
+        { icon:'📚', name:'Creative activity bank', desc:'Crafts, science, calm workshops', soon:true },
+        { icon:'📖', name:'Stories to tell', desc:'100+ short tales to read aloud', soon:true },
+        { icon:'🤖', name:'AI theme generator', desc:'Custom theme day in 10 sec', soon:true, new:true },
+        { icon:'📣', name:'Rally cheers', desc:'Chants to gather the group', soon:true, new:true },
+        { icon:'📋', name:'Group logbook', desc:'Allergies, contacts, info per child', soon:true, new:true },
+        { icon:'🎤', name:'Rhymes & songs', desc:'Audio bank + lyrics for little ones', soon:true },
+        { icon:'🌧️', name:'Weather plan B', desc:"Indoor activities when it's wild outside", soon:true },
+        { icon:'🎵', name:'Mood music', desc:'Playlists by time of day', soon:true },
+        { icon:'🖍️', name:'IWB whiteboard', desc:'Locally projected activities', soon:true },
+        { icon:'🧩', name:'Riddles & puzzles', desc:'Brain teasers by age for quiet time', soon:true },
+        { icon:'🤸', name:'Warm-ups', desc:'Energetic wake-ups for big groups', soon:true, new:true },
+        { icon:'🏅', name:'Daycare olympics', desc:'Turnkey special day', soon:true, new:true }
+      ],
+      temoignage:{ initiale:'JL', nom:'Julie L. — Daycare educator, Trois-Rivières', quote:"September PD day, never stressful again. I open the app and we're off!" }
+    },
+    camp: {
+      nom:'Camp Zone', color:'#FF6B00', colorSoft:'#FFE7D1', colorTint:'rgba(255,107,0,0.18)', mascot:'perso-camp.png',
+      mascotMsg:'Hey counselor! Ready for a mission?', titre:'Unforgettable summers.',
+      baseline:'Big games, theme days, tournaments and weather plan Bs — everything to run a full summer without burning out.',
+      cta:'Join coordinators & counselors', ctaSub:'Everything to plan a full summer without burning out. Free for life!',
+      commentUtiliser:['Pick a big game or build your own (AI)','Print/project the sheet in one click','Timer, teams and music as a bonus','Works offline, anywhere at camp'],
+      apps:[
+        { icon:'⚡', name:'Camp toolbox', desc:'Timer, teams, music for big games', url:'https://zonetotalsport.ca/apps/transitions/', hot:true },
+        { icon:'🎯', name:'Scoreboard', desc:'Camp tournaments & scoreboard', url:'https://zonetotalsport.ca/apps/scoreboard/' },
+        { icon:'📅', name:'Camp planner', desc:'Built for summer and theme weeks', url:'https://zonetotalsport.ca/apps/planificateur/' },
+        { icon:'✏️', name:'PE Blog', desc:'Large-group & leadership strategies', url:'https://zonetotalsport.ca/blog.html' },
+        { icon:'🤝', name:'Camp Community', desc:'Aidons-nous forum for coordinators & counselors', url:'https://zonetotalsport.ca/aidons-nous/' },
+        { icon:'🏆', name:'Big games & themes', desc:'50+ turnkey games for a full day', soon:true, hot:true },
+        { icon:'🎤', name:'Camp songs', desc:'80+ songs + lyrics for bus & campfire', soon:true },
+        { icon:'🔥', name:'Ceremonies & rituals', desc:'Opening, campfire, closing', soon:true },
+        { icon:'🌙', name:'Evening games', desc:'For overnight camps & theme nights', soon:true },
+        { icon:'🤖', name:'AI theme generator', desc:'Custom full day in 10 sec', soon:true },
+        { icon:'📣', name:'Rally cheers', desc:'Team chants & catchy rhythms', soon:true },
+        { icon:'📋', name:'Group logbook', desc:'Allergies, contacts, info per camper', soon:true },
+        { icon:'🎨', name:'Creative activity bank', desc:'150+ crafts & workshops', soon:true },
+        { icon:'✅', name:'Attendance book', desc:'Group roll call in 30 sec', soon:true, new:true },
+        { icon:'🛡️', name:'SOS Intervention', desc:'100 concrete crisis solutions', soon:true, new:true },
+        { icon:'📖', name:'Stories to tell', desc:'100+ tales for quiet time & bedtime', soon:true, new:true },
+        { icon:'🌦️', name:'Weather plan B', desc:'Indoor activities for rain & heat', soon:true },
+        { icon:'🎵', name:'Camp music', desc:'Songs + big-game vibes', soon:true },
+        { icon:'🧩', name:'Riddles & puzzles', desc:'150+ brain teasers by age', soon:true },
+        { icon:'🖍️', name:'IWB whiteboard', desc:'For indoor rain/heat days', soon:true, new:true },
+        { icon:'🤸', name:'Warm-ups', desc:'Morning routines before camp activities', soon:true, new:true },
+        { icon:'🏅', name:'Camp olympics', desc:'Turnkey inter-group tournament', soon:true, new:true }
+      ],
+      temoignage:{ initiale:'AB', nom:'Alex B. — Day camp coordinator, Sherbrooke', quote:'Last summer I trained 12 counselors with the platform. Total game changer!' }
+    }
+  };
+
+  const MENU_JOUR_EN = {
+    default:{ titre:'Pick your role for your daily menu', meteoTag:'OUTDOOR', meteoNote:'Perfect weather outside', suggTitle:"★ TODAY WE'VE GOT FOR YOU",
+      suggList:[ {cyc:'PE',name:'Bank of 500 games',desc:'Filter by age, gear and skill.'},{cyc:'DC',name:'SOS Intervention',desc:'100 solutions to handle a crisis.'},{cyc:'CAMP',name:'Big summer games',desc:'50+ turnkey themes for your camp.'} ],
+      jeuTag:'🏫 FOR EVERYONE', jeuName:'KINBALL', jeuDesc:'Three teams of 4 players with a giant ball. One team calls a color and hits the ball. The named team must catch it before it touches the ground.', jeuTags:['Team','All grades','Giant ball'],
+      defiTag:'🌟 UNIVERSAL CHALLENGE', defiName:'COMPLIMENT CHAIN', defiDesc:'Each person compliments their neighbor. The neighbor continues.', defiBox:'Closing circle: one compliment passed right to left.' },
+    ep:{ titre:'Your PE class ready in 30 seconds', meteoTag:'OUTDOOR', meteoNote:'Perfect weather outside', suggTitle:'★ SUGGESTIONS BY GRADE',
+      suggList:[ {cyc:'G1',name:'Crazy cone course',desc:'Slalom, jumps, races among 8-10 colored cones.'},{cyc:'G2',name:'Sporty treasure hunt',desc:'Clues leading to a physical challenge at each station.'},{cyc:'G3',name:'Modified kin-ball',desc:'3 teams, big ball, cooperative strategy.'} ],
+      jeuTag:'🏫 FOR THE GYM', jeuName:'KINBALL', jeuDesc:'Three teams of 4 players with a giant ball. One team calls a color and hits the ball. The named team must catch it before it touches the ground.', jeuTags:['Team','Grades 2-3','Giant ball'],
+      defiTag:'🏫 IN CLASS & 🏠 AT HOME', defiName:'COMPLIMENT CHAIN', defiDesc:'Each person compliments their neighbor. The neighbor continues.', defiBox:'Closing circle: one compliment passed right to left.' },
+    sdg:{ titre:'Your daycare day ready in 30 seconds', meteoTag:'INDOOR', meteoNote:'Plan B on · pouring rain', suggTitle:'★ SUGGESTIONS BY AGE GROUP',
+      suggList:[ {cyc:'5-6',name:'Lively reading corner',desc:'Interactive stories with puppets or mime.'},{cyc:'7-9',name:'Craft workshop',desc:'Free creation with recycled materials. 45 min.'},{cyc:'10-12',name:'Board-game tournament',desc:'Board games in mixed teams. Strategy bonus.'} ],
+      jeuTag:'🧸 FOR THE DAYCARE ROOM', jeuName:'WEREWOLF', jeuDesc:'A no-gear social game. Villagers must unmask the werewolves before they devour the whole village. Atmosphere and strategy.', jeuTags:['No gear','Age 8+','Group 8-30'],
+      defiTag:'🧸 IN A CIRCLE', defiName:'THANK-YOU CHAIN', defiDesc:'Each child thanks their neighbor for something.', defiBox:'End with a group round of applause to close the day.' },
+    camp:{ titre:'Your camp day ready in 30 seconds', meteoTag:'OUTDOOR', meteoNote:'☀️ Perfect for a big game', suggTitle:'★ SUGGESTIONS BY AGE',
+      suggList:[ {cyc:'6-8',name:'Treasure race',desc:'Simple clues, teams of 4, course around camp.'},{cyc:'9-11',name:'Capture the flag',desc:'2-team classic. Strategy + running.'},{cyc:'12+',name:'Themed olympics',desc:'Varied events with a points system.'} ],
+      jeuTag:'🏕️ FOR THE FIELD', jeuName:'CAPTURE THE FLAG', jeuDesc:'Two teams, two flags to protect or capture. Team strategy, wild running, a jail to free. The camp classic!', jeuTags:['Teams','Outdoors','Age 8+'],
+      defiTag:'🏕️ CAMPFIRE CIRCLE', defiName:'BEST MOMENT', defiDesc:'Everyone names their best moment of the day.', defiBox:'End by singing the camp song all together.' }
+  };
+
+  const QUOTES_EN = {
+    general:["You're stronger than you think! 💪","One day at a time, one bite at a time.","Your smile changes a child's day. 😊","Breathe. You've got this in your blood.","There's no perfect teacher, just teachers who try.","Drink your coffee. The rest will follow. ☕","You make a REAL difference.","Don't give up, you're almost there!","The kids will remember you. Always.","Believe in yourself — they already believe in you.","Champion!","You change lives without even realizing it.","One crisis at a time. You'll make it.","You did great work today.","Small win = big win.","Tomorrow is another day. Get some rest.","You're not alone. Many of us admire you.","Today's chaos = tomorrow's memory.","You deserve your coffee. And your Friday wine. 🍷"],
+    ep:["Coach, you rock! 🏃","The gym is your kingdom.","Your whistle is magic. ⚽","Your students move thanks to you!","PFEQ or not, you always find a way.","One class at a time, coach!","Phys ed is education for LIFE."],
+    sdg:["30 kids, your team! 🧸","You've got the energy — trust yourself.","Transitions? You're a champ!","A little chaos, a lot of joy.","Your patience is a superpower. ✨","You make their school day complete."],
+    camp:["Summer is your season! ☀️","You're creating childhood memories.","Camp is pure magic. 🏕️","Grab the sunscreen and go!","Those big games — YOU bring them to life.","You're the hero of their summer."]
+  };
+
+  const SERIES_EN = {
+    nhl:{ badge:'🏒 NHL', title:'NHL Playoffs 2026', subtitle:'On the road to the Stanley Cup', externalUrl:'https://www.nhl.com/playoffs', bracket:SERIES_FR.nhl.bracket },
+    nba:{ badge:'🏀 NBA', title:'NBA Playoffs 2026', subtitle:"Larry O'Brien Trophy on the line", externalUrl:'https://www.nba.com/playoffs', bracket:SERIES_FR.nba.bracket }
+  };
+
+  // --- Applique le dictionnaire statique au DOM (data-i18n / data-i18n-attr) ---
+  function applyStatic(root){
+    root = root || document;
+    const d = HOME_I18N[ztsLang] || HOME_I18N.fr;
+    root.querySelectorAll('[data-i18n]').forEach(el=>{
+      const k = el.getAttribute('data-i18n');
+      if (k in d) { if (d[k].includes('<')) el.innerHTML = d[k]; else el.textContent = d[k]; }
+    });
+    root.querySelectorAll('[data-i18n-attr]').forEach(el=>{
+      el.getAttribute('data-i18n-attr').split(';').forEach(pair=>{
+        const [attr,k] = pair.split(':').map(s=>s.trim());
+        if (attr && k && k in d) el.setAttribute(attr, d[k]);
+      });
+    });
+  }
+
+  // --- Métier courant (ou null) ---
+  function currentMetier(){
+    if (document.body.classList.contains('metier-ep')) return 'ep';
+    if (document.body.classList.contains('metier-sdg')) return 'sdg';
+    if (document.body.classList.contains('metier-camp')) return 'camp';
+    return null;
+  }
+
+  // --- Ré-applique les textes du métier actif (sans animation) ---
+  function applyMetierTexts(key){
+    const m = METIERS[key]; if (!m) return;
+    document.getElementById('pill-metier').textContent = m.nom;
+    document.getElementById('titre-metier').textContent = m.titre;
+    document.getElementById('baseline-metier').textContent = m.baseline;
+    const howtoEl = document.getElementById('metier-howto');
+    if (howtoEl) howtoEl.textContent = m.baseline + t('metier.howto_suffix');
+    document.getElementById('comment-utiliser-list').innerHTML = m.commentUtiliser.map(s=>`<li>${s}</li>`).join('');
+    const bub = document.getElementById('mascot-bubble');
+    const bubText = document.getElementById('bubble-text');
+    bub.dataset.defaultMsg = m.mascotMsg + (ztsLang==='en'?' Click me!':' Clique-moi!');
+    if (bubText && !bub.classList.contains('show')) bubText.textContent = bub.dataset.defaultMsg;
+  }
+
+  // --- Bascule de langue : swap données + re-render + statique ---
+  let _openToolKey = null;
+  function setLang(l){
+    ztsLang = (l==='en') ? 'en' : 'fr';
+    localStorage.setItem('zts_lang', ztsLang);
+    document.documentElement.lang = (ztsLang==='en') ? 'en' : 'fr-CA';
+    const EN = ztsLang==='en';
+    METIERS = EN?METIERS_EN:METIERS_FR;
+    MENU_JOUR = EN?MENU_JOUR_EN:MENU_JOUR_FR;
+    QUOTES = EN?QUOTES_EN:QUOTES_FR;
+    SERIES_DATA = EN?SERIES_EN:SERIES_FR;
+    APPS_DEFAULT = EN?APPS_DEFAULT_EN:APPS_DEFAULT_FR;
+
+    // Toggle visuel
+    document.querySelectorAll('.zts-lang button').forEach(b=>b.classList.toggle('active', b.dataset.lang===ztsLang));
+
+    // Statique
+    applyStatic(document);
+
+    // Dynamique
+    renderApps(APPS_DEFAULT);
+    const key = currentMetier();
+    renderMenuJour(key || 'default');
+    if (key){ applyMetierTexts(key); renderToolsGrid(METIERS[key].apps); }
+
+    // Mascotte par défaut hors métier
+    if (!key){
+      const bub = document.getElementById('mascot-bubble');
+      const bubText = document.getElementById('bubble-text');
+      bub.dataset.defaultMsg = t('mascot.default');
+      if (bubText && !bub.classList.contains('show')) bubText.textContent = bub.dataset.defaultMsg;
+    }
+
+    // Modale outil ouverte → re-render
+    if (_openToolKey && document.getElementById('toolModal').classList.contains('open')) openTool(_openToolKey);
+    // Modale séries ouverte → re-render entête
+    const sm = document.getElementById('seriesModal');
+    if (sm.classList.contains('open')){
+      const lg = sm.dataset.league;
+      if (lg && SERIES_DATA[lg]){
+        document.getElementById('seriesBadge').textContent = SERIES_DATA[lg].badge;
+        document.getElementById('seriesTitle').textContent = SERIES_DATA[lg].title;
+        document.getElementById('seriesSubtitle').textContent = SERIES_DATA[lg].subtitle;
+        document.getElementById('seriesExtLink').href = SERIES_DATA[lg].externalUrl;
+      }
+    }
+  }
+  window.ztsSetLang = setLang;
+
+  // --- Init langue au chargement ---
+  (function initLang(){
+    document.querySelectorAll('.zts-lang button').forEach(b=>{
+      b.addEventListener('click', ()=>setLang(b.dataset.lang));
+    });
+    // Applique l'état courant (gère le cas EN stocké/navigateur)
+    setLang(ztsLang);
+  })();
 
 </script>
 
