@@ -2867,6 +2867,16 @@
   }
   .dark-nav .zts-lang button.active { background: var(--cyan); color: var(--ink); }
 
+  /* ===== État "Bientôt / Coming soon" — lien désactivé ===== */
+  .is-soon { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+  .soon-pill {
+    display: inline-block; margin-left: 6px; padding: 1px 9px;
+    font-family: var(--font-impact); font-size: 0.7em; letter-spacing: 0.03em;
+    background: #e6e6ef; color: #1a1a2e; border: 2px solid var(--ink);
+    border-radius: 999px; vertical-align: middle; line-height: 1.5;
+  }
+  .dark-nav .dn-btn.is-soon .soon-pill { background: #fff; }
+
 </style>
 </head>
 <body>
@@ -2933,12 +2943,12 @@
 
 <!-- DARK NAV BAR — toujours visible en haut -->
 <div class="dark-nav" id="darkNav">
-  <a href="#" class="dn-btn active" onclick="event.preventDefault(); if(document.body.className.match(/metier-/)) retourSelecteur(); window.scrollTo({top:0,behavior:'smooth'});"><span class="em">🏠</span><span data-i18n="nav.home">Accueil</span></a>
-  <a href="#" class="dn-btn"><span class="em">📁</span><span data-i18n="nav.resources">Ressources</span></a>
+  <a href="#stage1" class="dn-btn active" onclick="event.preventDefault(); if(document.body.className.match(/metier-/)) retourSelecteur(); window.scrollTo({top:0,behavior:'smooth'});"><span class="em">🏠</span><span data-i18n="nav.home">Accueil</span></a>
+  <a class="dn-btn is-soon" aria-disabled="true"><span class="em">📁</span><span data-i18n="nav.resources">Ressources</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
   <a href="https://zonetotalsport.ca/blog.html" class="dn-btn"><span class="em">✏️</span>Blog</a>
   <a href="https://zonetotalsport.ca/aidons-nous/" class="dn-btn communaute"><span class="em">🤝</span><span data-i18n="nav.community">Communauté ▼</span></a>
-  <a href="#" class="dn-btn dons"><span class="em">💛</span><span data-i18n="nav.donate">Dons</span></a>
-  <a href="#" class="dn-btn user"><span class="em">👋</span><span data-i18n="nav.greeting">Salut, Joey!</span></a>
+  <a class="dn-btn dons is-soon" aria-disabled="true"><span class="em">💛</span><span data-i18n="nav.donate">Dons</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
+  <span class="dn-btn user"><span class="em">👋</span><span data-i18n="nav.greeting">Salut, Joey!</span></span>
   <div class="zts-lang" role="group" aria-label="Langue / Language">
     <button type="button" data-lang="fr" data-i18n="lang.fr">FR</button>
     <button type="button" data-lang="en" data-i18n="lang.en">EN</button>
@@ -2947,12 +2957,12 @@
 
 <!-- SÉRIES SPORTIVES - colonne flottante à gauche -->
 <div class="series-dock">
-  <a class="serie-card nhl" href="#" onclick="openSeries('nhl'); return false;" data-i18n-attr="title:series.see_nhl" title="Voir les séries LNH">
+  <a class="serie-card nhl" href="apps-nhl/index.html" onclick="openSeries('nhl'); return false;" data-i18n-attr="title:series.see_nhl" title="Voir les séries LNH">
     <span class="dot-live"></span>
     <div class="league-logo">🏒</div>
     <div class="label" data-i18n="series.nhl_label">SÉRIES LNH</div>
   </a>
-  <a class="serie-card nba" href="#" onclick="openSeries('nba'); return false;" data-i18n-attr="title:series.see_nba" title="Voir les séries NBA">
+  <a class="serie-card nba" href="apps-nba/index.html" onclick="openSeries('nba'); return false;" data-i18n-attr="title:series.see_nba" title="Voir les séries NBA">
     <span class="dot-live"></span>
     <span class="ball">🏀</span>
     <div class="league-logo">🏀</div>
@@ -2987,7 +2997,7 @@
   <div class="header-row" id="navLinks">
     <!-- CENTRÉ : Logo + Clock + Sub-title -->
     <div class="header-center" style="grid-column: 1 / -1;">
-      <a href="#" class="logo">ZONE <span class="total">TOTAL</span> SPORT</a>
+      <a href="#stage1" class="logo">ZONE <span class="total">TOTAL</span> SPORT</a>
       <div class="clock">
         <span class="clock-icon">🕐</span>
         <span class="clock-time" id="clockTime">--:--:--</span>
@@ -3104,7 +3114,7 @@
         <div class="tags-row" id="jeuTags">
           <span>Équipe</span><span>2e-3e cycle</span><span>Ballon géant</span>
         </div>
-        <a href="#" class="voir-tous" id="voirTous" data-i18n="menu.see_games">VOIR 150 AUTRES JEUX →</a>
+        <a class="voir-tous is-soon" id="voirTous" aria-disabled="true"><span data-i18n="menu.see_games">VOIR 150 AUTRES JEUX →</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
       </div>
 
       <!-- DÉFI DU JOUR -->
@@ -3260,7 +3270,7 @@
       <span class="em">💛</span>
       <h5 data-i18n="foot.pc3_title">SOUTIENS LA ZONE</h5>
       <p data-i18n="foot.pc3_desc">100% gratuit, sans pub. Un petit don aide à garder les outils accessibles à tous les profs.</p>
-      <a href="#" data-i18n="foot.pc3_cta">FAIRE UN DON →</a>
+      <a class="is-soon" aria-disabled="true"><span data-i18n="foot.pc3_cta">FAIRE UN DON →</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
     </div>
   </div>
 
@@ -3284,20 +3294,20 @@
     <div class="foot-col">
       <h4 data-i18n="foot.h_forwho">POUR QUI?</h4>
       <ul>
-        <li><a href="#"><span>🏃</span><span data-i18n="foot.fw1">Éducation physique</span></a></li>
-        <li><a href="#"><span>🧸</span><span data-i18n="foot.fw2">Service de garde</span></a></li>
-        <li><a href="#"><span>🏕️</span><span data-i18n="foot.fw3">Camps de jour</span></a></li>
-        <li><a href="#"><span>🤝</span><span data-i18n="foot.fw4">Communauté Aidons-nous</span></a></li>
+        <li><a href="#stage1" onclick="choisirMetier('ep'); return false;"><span>🏃</span><span data-i18n="foot.fw1">Éducation physique</span></a></li>
+        <li><a href="#stage1" onclick="choisirMetier('sdg'); return false;"><span>🧸</span><span data-i18n="foot.fw2">Service de garde</span></a></li>
+        <li><a href="#stage1" onclick="choisirMetier('camp'); return false;"><span>🏕️</span><span data-i18n="foot.fw3">Camps de jour</span></a></li>
+        <li><a href="https://zonetotalsport.ca/aidons-nous/"><span>🤝</span><span data-i18n="foot.fw4">Communauté Aidons-nous</span></a></li>
       </ul>
     </div>
 
     <div class="foot-col">
       <h4 data-i18n="foot.h_resources">RESSOURCES</h4>
       <ul>
-        <li><a href="#"><span data-i18n="foot.r1">Banque de jeux</span> <span class="badge-hot">500+</span></a></li>
-        <li><a href="#" data-i18n="foot.r2">SAÉ PFEQ</a></li>
-        <li><a href="#" data-i18n="foot.r3">Générateur de jeux IA</a></li>
-        <li><a href="#"><span data-i18n="foot.r4">90 cours maternelle</span> <span class="badge-new">NEW</span></a></li>
+        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.r1">Banque de jeux</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
+        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.r2">SAÉ PFEQ</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
+        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.r3">Générateur de jeux IA</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
+        <li><a href="https://zonetotalsport.ca/apps/cours-maternelle/"><span data-i18n="foot.r4">90 cours maternelle</span> <span class="badge-new">NEW</span></a></li>
         <li><a href="https://zonetotalsport.ca/blog.html" data-i18n="foot.r5">Blog ÉPS</a></li>
         <li><a href="https://zonetotalsport.ca/repertoire.html" data-i18n="foot.r6">Répertoire mondial</a></li>
       </ul>
@@ -3306,25 +3316,25 @@
     <div class="foot-col">
       <h4 data-i18n="foot.h_tools">OUTILS</h4>
       <ul>
-        <li><a href="#"><span data-i18n="foot.t1">Intervention Groupe</span> <span class="badge-new">NEW</span></a></li>
+        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.t1">Intervention Groupe</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
         <li><a href="https://zonetotalsport.ca/apps/planificateur/" data-i18n="foot.t2">Planificateur EPS</a></li>
         <li><a href="https://zonetotalsport.ca/apps/transitions/" data-i18n="foot.t3">Boîte à outils</a></li>
         <li><a href="https://zonetotalsport.ca/apps/scoreboard/" data-i18n="foot.t4">Tableau indicateur</a></li>
-        <li><a href="#" data-i18n="foot.t5">Tableau blanc TNI</a></li>
-        <li><a href="#" data-i18n="foot.t6">Grille horaire</a></li>
-        <li><a href="#" data-i18n="foot.t7">Carnet de notes</a></li>
+        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.t5">Tableau blanc TNI</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
+        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.t6">Grille horaire</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
+        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.t7">Carnet de notes</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
       </ul>
     </div>
 
     <div class="foot-col">
       <h4 data-i18n="foot.h_extras">EXTRAS</h4>
       <ul>
-        <li><a href="#" data-i18n="foot.e1">☕ Pause ÉPS du jour</a></li>
+        <li><a href="#stage1" onclick="document.getElementById('pauseModal').classList.add('open'); return false;" data-i18n="foot.e1">☕ Pause ÉPS du jour</a></li>
         <li><a href="https://zonetotalsport.ca/avis.html" data-i18n="foot.e2">★ Avis & témoignages</a></li>
         <li><a href="https://suppleance.zonetotalsport.ca" data-i18n="foot.e3">🦺 Ma Suppléance</a></li>
-        <li><a href="#" data-i18n="foot.e4">💡 Suggérer une idée</a></li>
-        <li><a href="#" data-i18n="foot.e5">📤 Partager le site</a></li>
-        <li><a href="#" data-i18n="foot.e6">📬 Contact</a></li>
+        <li><a href="mailto:zts@hotmail.ca?subject=Suggestion%20-%20Zone%20Total%20Sport" data-i18n="foot.e4">💡 Suggérer une idée</a></li>
+        <li><a href="https://zonetotalsport.ca" onclick="if(navigator.share){navigator.share({title:'Zone Total Sport',url:'https://zonetotalsport.ca'});return false;}" data-i18n="foot.e5">📤 Partager le site</a></li>
+        <li><a href="mailto:zts@hotmail.ca" data-i18n="foot.e6">📬 Contact</a></li>
       </ul>
     </div>
 
@@ -3356,13 +3366,13 @@
   <div class="foot-bottom">
     <div data-i18n="foot.copyright">© 2026 Zone Total Sport · Tous droits réservés</div>
     <div class="links">
-      <a href="#" onclick="event.preventDefault(); ztsSetLang('fr');">FR</a>
-      <a href="#" onclick="event.preventDefault(); ztsSetLang('en');">EN</a>
-      <a href="#">中</a>
-      <a href="#">ES</a>
+      <a href="#stage1" onclick="event.preventDefault(); ztsSetLang('fr');">FR</a>
+      <a href="#stage1" onclick="event.preventDefault(); ztsSetLang('en');">EN</a>
+      <a class="is-soon" aria-disabled="true">中 <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
+      <a class="is-soon" aria-disabled="true">ES <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
       <span style="opacity:0.3;">|</span>
       <a href="https://zonetotalsport.ca/politique.html" data-i18n="foot.privacy">Politique de confidentialité</a>
-      <a href="#" data-i18n="foot.about">À propos</a>
+      <a class="is-soon" aria-disabled="true"><span data-i18n="foot.about">À propos</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
     </div>
     <div class="made" data-i18n="foot.made">Fait avec 💛 au Québec</div>
   </div>
@@ -4446,7 +4456,7 @@
       'foot.news2_title':'📖 50 jeunes, un gymnase — l\'art de maîtriser!','foot.news2_desc':'Stratégies concrètes : gestion de groupe, transitions, énergie. Pour profs ÉP, SDG et camps.',
       'foot.news3_title':'🤝 Aidons-nous — la communauté d\'entraide','foot.news3_desc':'Forum type Facebook pour profs ÉPS, éducatrices SDG et animateurs de camp. Optimisé TBI!',
       'foot.copyright':'© 2026 Zone Total Sport · Tous droits réservés','foot.privacy':'Politique de confidentialité','foot.about':'À propos','foot.made':'Fait avec 💛 au Québec',
-      'badge.soon':'BIENTÔT','badge.hot':'★ HOT',
+      'badge.soon':'BIENTÔT','badge.hot':'★ HOT','state.soon':'Bientôt',
       'tool.modal_title':'Outil','tool.dice':'🎲 DÉ','tool.wheel':'🎡 ROUE DES NOMS','tool.chrono':'⏱️ CHRONO','tool.timer':'⏲️ MINUTEUR','tool.teams':'👥 ÉQUIPES','tool.message':'📝 MESSAGE DU JOUR','tool.school':'🏫 MON ÉCOLE',
       'tool.names_label':'NOMS (1 PAR LIGNE)','tool.roll':'LANCER!','tool.spin':'TOURNER!','tool.nb_teams':'NB ÉQUIPES:','tool.generate':'GÉNÉRER!','tool.edit_msg':'MODIFIER LE MESSAGE','tool.yellow':'JAUNE','tool.pink':'ROSE',
       'tool.welcome_msg':'Bienvenue au cours d\'éducation physique! 🏃','tool.school_name':'NOM DE L\'ÉCOLE','tool.city':'VILLE','tool.main_cycle':'CYCLE PRINCIPAL','tool.save':'SAUVEGARDER',
@@ -4496,7 +4506,7 @@
       'foot.news2_title':'📖 50 kids, one gym — the art of mastering it!','foot.news2_desc':'Concrete strategies: group management, transitions, energy. For PE teachers, daycare and camps.',
       'foot.news3_title':'🤝 Aidons-nous — the mutual-aid community','foot.news3_desc':'Facebook-style forum for PE teachers, daycare educators and camp counselors. IWB-optimized!',
       'foot.copyright':'© 2026 Zone Total Sport · All rights reserved','foot.privacy':'Privacy policy','foot.about':'About','foot.made':'Made with 💛 in Québec',
-      'badge.soon':'SOON','badge.hot':'★ HOT',
+      'badge.soon':'SOON','badge.hot':'★ HOT','state.soon':'Coming soon',
       'tool.modal_title':'Tool','tool.dice':'🎲 DIE','tool.wheel':'🎡 NAME WHEEL','tool.chrono':'⏱️ STOPWATCH','tool.timer':'⏲️ TIMER','tool.teams':'👥 TEAMS','tool.message':'📝 MESSAGE OF THE DAY','tool.school':'🏫 MY SCHOOL',
       'tool.names_label':'NAMES (1 PER LINE)','tool.roll':'ROLL!','tool.spin':'SPIN!','tool.nb_teams':'# TEAMS:','tool.generate':'GENERATE!','tool.edit_msg':'EDIT THE MESSAGE','tool.yellow':'YELLOW','tool.pink':'PINK',
       'tool.welcome_msg':'Welcome to PE class! 🏃','tool.school_name':'SCHOOL NAME','tool.city':'CITY','tool.main_cycle':'MAIN GRADE','tool.save':'SAVE',
