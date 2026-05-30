@@ -28,6 +28,8 @@
       </div>
     </section>
 
+    <section class="zts-menu" id="menuJour"></section>
+
     <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-4) 0 var(--space-3);" data-i18n="hub.active">Apps prêtes à l'emploi</h2>
     <div class="zts-grid" id="gridActive"></div>
 
@@ -62,12 +64,63 @@
       { icon:'🎡', fr:{n:'Roue de responsabilités',d:'Routines : collation, jeu libre'}, en:{n:'Responsibility wheel',d:'Routines: snack, free play'} }
     ];
 
+    // ===== Menu du jour SDG (bilingue) =====
+    const MENU = {
+      fr:{
+        weather:{tag:'INTÉRIEUR', note:'Plan B activé · pluie battante', suggTitle:'★ Suggestions par groupe d\'âge', sugg:[
+          {cyc:'5-6',name:'Coin lecture animé',desc:'Histoires interactives avec marionnettes ou mimes.'},
+          {cyc:'7-9',name:'Atelier bricolage',desc:'Création libre avec matériaux recyclés. 45 min.'},
+          {cyc:'10-12',name:'Tournoi société',desc:'Jeux de plateau en équipes mixtes. Bonus stratégique.'}]},
+        game:{tag:'🧸 Pour le local SDG', name:'LOUP-GAROU', desc:'Jeu sans matériel. Les villageois démasquent les loups-garous avant qu\'ils ne dévorent le village. Ambiance et stratégie.', chips:['Sans matériel','8 ans +','Groupe 8-30']},
+        challenge:{tag:'🧸 En cercle', name:'MERCI EN CHAÎNE', desc:'Chaque enfant dit merci pour quelque chose à son voisin.', box:'Termine par un applaudissement collectif pour clôturer la journée.'}
+      },
+      en:{
+        weather:{tag:'INDOOR', note:'Plan B on · pouring rain', suggTitle:'★ Suggestions by age group', sugg:[
+          {cyc:'5-6',name:'Lively reading corner',desc:'Interactive stories with puppets or mime.'},
+          {cyc:'7-9',name:'Craft workshop',desc:'Free creation with recycled materials. 45 min.'},
+          {cyc:'10-12',name:'Board-game tournament',desc:'Board games in mixed teams. Strategy bonus.'}]},
+        game:{tag:'🧸 For the daycare room', name:'WEREWOLF', desc:'A no-gear game. Villagers unmask the werewolves before they devour the village. Atmosphere and strategy.', chips:['No gear','Age 8+','Group 8-30']},
+        challenge:{tag:'🧸 In a circle', name:'THANK-YOU CHAIN', desc:'Each child thanks their neighbor for something.', box:'End with a group round of applause to close the day.'}
+      }
+    };
+    function renderMenu(){
+      const m = MENU[ZTS.getLang()];
+      document.getElementById('menuJour').innerHTML = `
+        <h2 class="zts-menu__title">${ZTS.t('hub.menu_title')}</h2>
+        <div class="zts-menu__grid">
+          <div class="zts-menu__card">
+            <h3>${ZTS.t('hub.menu_weather')}</h3>
+            <span class="zts-menu__tag">${m.weather.tag}</span>
+            <div class="zts-menu__desc">${m.weather.note}</div>
+            <div class="zts-menu__small">${m.weather.suggTitle}</div>
+            <ul class="zts-menu__list">${m.weather.sugg.map(s=>`<li><span class="cyc">${s.cyc}</span>${s.name} — <span style="opacity:.8">${s.desc}</span></li>`).join('')}</ul>
+          </div>
+          <div class="zts-menu__card">
+            <h3>${ZTS.t('hub.menu_game')}</h3>
+            <span class="zts-menu__tag">${m.game.tag}</span>
+            <div class="zts-menu__name">${m.game.name}</div>
+            <div class="zts-menu__small">${ZTS.t('hub.menu_howplay')}</div>
+            <div class="zts-menu__desc">${m.game.desc}</div>
+            <div class="zts-menu__chips">${m.game.chips.map(c=>`<span>${c}</span>`).join('')}</div>
+          </div>
+          <div class="zts-menu__card">
+            <h3>${ZTS.t('hub.menu_challenge')}</h3>
+            <span class="zts-menu__tag">${m.challenge.tag}</span>
+            <div class="zts-menu__name">${m.challenge.name}</div>
+            <div class="zts-menu__desc">${m.challenge.desc}</div>
+            <div class="zts-menu__small">${ZTS.t('hub.menu_todo')}</div>
+            <div class="zts-menu__box">${m.challenge.box}</div>
+          </div>
+        </div>`;
+    }
+
     function tagHtml(tag){
       if(!tag) return '';
       const key = tag==='ia'?'tag.ia':tag==='new'?'tag.new':'tag.pro';
       return `<span class="zts-tag zts-tag--${tag}">${ZTS.t(key)}</span>`;
     }
     function renderHub(){
+      renderMenu();
       const L = ZTS.getLang();
       document.getElementById('gridActive').innerHTML = ACTIVE.map(a=>`
         <a class="zts-app-card" href="${a.url}" target="_blank" rel="noopener">

@@ -28,6 +28,8 @@
       </div>
     </section>
 
+    <section class="zts-menu" id="menuJour"></section>
+
     <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-4) 0 var(--space-3);" data-i18n="hub.active">Apps prêtes à l'emploi</h2>
     <div class="zts-grid" id="gridActive"></div>
 
@@ -70,12 +72,63 @@
       { icon:'🛡️', fr:{n:'Intervention Groupe',d:'PWA tout-en-un : 60 jeux, SOS crise'}, en:{n:'Group Intervention',d:'All-in-one PWA: 60 games, crisis SOS'} }
     ];
 
+    // ===== Menu du jour ÉP (bilingue) =====
+    const MENU = {
+      fr:{
+        weather:{tag:'EXTÉRIEUR', note:'Temps idéal dehors', suggTitle:'★ Suggestions par cycle', sugg:[
+          {cyc:'1ER',name:'Parcours cônes fous',desc:'Slalom, sauts, courses entre 8-10 cônes colorés.'},
+          {cyc:'2E',name:'Chasse au trésor sportive',desc:'Indices menant à un défi physique à chaque station.'},
+          {cyc:'3E',name:'Kin-ball modifié',desc:'3 équipes, gros ballon, stratégie coopérative.'}]},
+        game:{tag:'🏫 Pour le gymnase', name:'KINBALL', desc:'Trois équipes de 4 joueurs, un ballon géant. Une équipe nomme une couleur et frappe le ballon; l\'équipe nommée doit l\'attraper avant qu\'il touche le sol.', chips:['Équipe','2e-3e cycle','Ballon géant']},
+        challenge:{tag:'🏫 En classe & à la maison', name:'COMPLIMENT CHAÎNE', desc:'Chacun complimente son voisin. Le voisin continue.', box:'Cercle de fin : un compliment de droite à gauche.'}
+      },
+      en:{
+        weather:{tag:'OUTDOOR', note:'Perfect weather outside', suggTitle:'★ Suggestions by grade', sugg:[
+          {cyc:'G1',name:'Crazy cone course',desc:'Slalom, jumps, races among 8-10 colored cones.'},
+          {cyc:'G2',name:'Sporty treasure hunt',desc:'Clues leading to a physical challenge at each station.'},
+          {cyc:'G3',name:'Modified kin-ball',desc:'3 teams, big ball, cooperative strategy.'}]},
+        game:{tag:'🏫 For the gym', name:'KINBALL', desc:'Three teams of 4 players, one giant ball. A team calls a color and hits the ball; the named team must catch it before it touches the ground.', chips:['Team','Grades 2-3','Giant ball']},
+        challenge:{tag:'🏫 In class & at home', name:'COMPLIMENT CHAIN', desc:'Each person compliments their neighbor. The neighbor continues.', box:'Closing circle: one compliment passed right to left.'}
+      }
+    };
+    function renderMenu(){
+      const m = MENU[ZTS.getLang()];
+      document.getElementById('menuJour').innerHTML = `
+        <h2 class="zts-menu__title">${ZTS.t('hub.menu_title')}</h2>
+        <div class="zts-menu__grid">
+          <div class="zts-menu__card">
+            <h3>${ZTS.t('hub.menu_weather')}</h3>
+            <span class="zts-menu__tag">${m.weather.tag}</span>
+            <div class="zts-menu__desc">${m.weather.note}</div>
+            <div class="zts-menu__small">${m.weather.suggTitle}</div>
+            <ul class="zts-menu__list">${m.weather.sugg.map(s=>`<li><span class="cyc">${s.cyc}</span>${s.name} — <span style="opacity:.8">${s.desc}</span></li>`).join('')}</ul>
+          </div>
+          <div class="zts-menu__card">
+            <h3>${ZTS.t('hub.menu_game')}</h3>
+            <span class="zts-menu__tag">${m.game.tag}</span>
+            <div class="zts-menu__name">${m.game.name}</div>
+            <div class="zts-menu__small">${ZTS.t('hub.menu_howplay')}</div>
+            <div class="zts-menu__desc">${m.game.desc}</div>
+            <div class="zts-menu__chips">${m.game.chips.map(c=>`<span>${c}</span>`).join('')}</div>
+          </div>
+          <div class="zts-menu__card">
+            <h3>${ZTS.t('hub.menu_challenge')}</h3>
+            <span class="zts-menu__tag">${m.challenge.tag}</span>
+            <div class="zts-menu__name">${m.challenge.name}</div>
+            <div class="zts-menu__desc">${m.challenge.desc}</div>
+            <div class="zts-menu__small">${ZTS.t('hub.menu_todo')}</div>
+            <div class="zts-menu__box">${m.challenge.box}</div>
+          </div>
+        </div>`;
+    }
+
     function tagHtml(tag){
       if(!tag) return '';
       const key = tag==='ia'?'tag.ia':tag==='new'?'tag.new':'tag.pro';
       return `<span class="zts-tag zts-tag--${tag}">${ZTS.t(key)}</span>`;
     }
     function renderHub(){
+      renderMenu();
       const L = ZTS.getLang();
       document.getElementById('gridActive').innerHTML = ACTIVE.map(a=>`
         <a class="zts-app-card" href="${a.url}" target="_blank" rel="noopener">

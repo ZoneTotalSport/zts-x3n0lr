@@ -232,6 +232,44 @@ a { color:inherit; }
   border:var(--bord); border-radius:var(--r-pill); box-shadow:var(--ombre);
 }
 
+/* ============ MENU DU JOUR (haut de hub) ============ */
+.zts-menu { margin-bottom:var(--space-5); }
+.zts-menu__title { font-family:var(--font-impact); font-size:var(--fs-3); margin-bottom:var(--space-3); }
+.zts-menu__grid {
+  display:grid; gap:var(--space-4);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));
+}
+.zts-menu__card {
+  background:#fff; color:var(--ink);
+  border:var(--bord-gros); border-radius:var(--r-3); box-shadow:var(--ombre-xl);
+  padding:var(--space-4);
+}
+.zts-menu__card h3 { font-family:var(--font-impact); font-size:var(--fs-2); margin-bottom:var(--space-2); }
+.zts-menu__tag {
+  display:inline-block; font-family:var(--font-bang); font-size:var(--fs-1);
+  background:var(--metier); color:var(--ink); border:var(--bord); border-radius:var(--r-pill);
+  padding:2px 12px; box-shadow:var(--ombre); margin-bottom:8px;
+}
+.zts-menu__name { font-family:var(--font-impact); font-size:var(--fs-3); }
+.zts-menu__desc { font-family:var(--font-body); font-size:var(--fs-1); opacity:.85; margin:6px 0; }
+.zts-menu__list { list-style:none; margin-top:8px; display:grid; gap:7px; }
+.zts-menu__list li { font-family:var(--font-body); font-size:var(--fs-1); }
+.zts-menu__list .cyc {
+  font-family:var(--font-impact); font-size:.85em; background:var(--metier); color:var(--ink);
+  border:2px solid var(--zts-noir); border-radius:6px; padding:1px 7px; margin-right:7px;
+}
+.zts-menu__box {
+  margin-top:8px; padding:9px 13px; background:var(--cream);
+  border:var(--bord); border-radius:var(--r-1); font-family:var(--font-body); font-size:var(--fs-1);
+}
+.zts-menu__small { font-family:var(--font-impact); font-size:var(--fs-1); opacity:.7; margin:10px 0 2px; }
+.zts-menu__chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.zts-menu__chips span {
+  font-family:var(--font-fun); font-weight:700; font-size:var(--fs-1);
+  background:var(--metier-tint,rgba(0,0,0,.05)); border:2px solid var(--zts-noir);
+  border-radius:var(--r-pill); padding:1px 10px;
+}
+
 /* ============ BARRE DE STATS (compteurs animés) ============ */
 .zts-stats { display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; }
 .zts-stat {

@@ -58,5 +58,11 @@
   "hub.camp.title": "Des étés mémorables.",
   "hub.camp.intro": "Tout pour animer un été de camp complet : grands jeux, thèmes et plein air.",
   "hub.active": "Apps prêtes à l'emploi",
-  "hub.coming": "Bientôt disponibles"
+  "hub.coming": "Bientôt disponibles",
+  "hub.menu_title": "✨ Aujourd'hui au menu",
+  "hub.menu_weather": "☁️ Météo & plan",
+  "hub.menu_game": "🎮 Jeu du jour",
+  "hub.menu_challenge": "💪 Défi du jour",
+  "hub.menu_howplay": "Comment jouer",
+  "hub.menu_todo": "À faire aujourd'hui"
 }

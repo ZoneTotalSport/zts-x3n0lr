@@ -3141,32 +3141,9 @@
   </div>
 </section>
 
-<!-- STAGE 2 : PAGE MÉTIER (menu_jour est déjà au-dessus, hors stage2) -->
-<section class="stage2" id="stage2">
-
-  <!-- BANNIÈRE COMPACTE du métier : back button + nom du métier + mode d'emploi + petit personnage -->
-  <div class="metier-banner">
-    <div class="metier-banner-inner">
-      <button class="back-btn" onclick="retourSelecteur()" data-i18n="metier.change">← Changer</button>
-      <div class="metier-banner-title">
-        <span class="metier-banner-pill" id="pill-metier">Zone ÉP</span>
-        <h1 id="titre-metier">Ton gym, tes règles.</h1>
-        <p class="metier-howto" id="metier-howto">Choisis un outil ci-dessous — chaque bouton ouvre une app prête à l'emploi. Les outils marqués « bientôt » arrivent sous peu.</p>
-      </div>
-      <img class="metier-banner-char" id="perso-big-img" src="perso-ep.png" alt="">
-    </div>
-  </div>
-
-  <span id="baseline-metier" style="display:none;"></span>
-  <ul id="comment-utiliser-list" style="display:none;"></ul>
-
-  <!-- GROSSE GRILLE DE BOUTONS ILLUSTRÉS (seul contenu) -->
-  <section class="tools-section">
-    <div class="tools-grid" id="tools-grid">
-      <!-- Injecté en JS -->
-    </div>
-  </section>
-</section>
+<!-- STAGE 2 retiré : la grille d'apps par métier vit désormais dans les
+     hubs (ep.html / service-de-garde.html / camps-de-jour.html) — source
+     de vérité unique. Les portes du hero naviguent vers le hub. -->
 
 <!-- APPS FLOTTANTES À DROITE (toujours visibles) -->
 <section class="apps-section" id="appsSection">
@@ -3750,148 +3727,26 @@
   // Lance au chargement
   setTimeout(animateCounters, 400);
 
-  // ============ CHOISIR UN MÉTIER ============
+  // ============ CHOISIR UN MÉTIER → navigation vers le hub ============
+  // Source de vérité unique par métier = le hub. La langue active est déjà
+  // persistée dans localStorage 'zts_lang' ; le hub la lit au chargement.
+  const HUB_URL = { ep:'ep.html', sdg:'service-de-garde.html', camp:'camps-de-jour.html' };
   function choisirMetier(key) {
+    const url = HUB_URL[key];
+    if (!url) return;
+    const sweep = document.getElementById('sweep');
     const m = METIERS[key];
-    const sweep = document.getElementById('sweep');
-
-    // Set la couleur du sweep AVANT l'animation
-    sweep.style.background = m.color;
-
-    // Animation : sweep monte
-    sweep.classList.add('sweep');
-
-    setTimeout(() => {
-      // Reset complet : on enlève toutes les classes métier avant d'ajouter la nouvelle
-      document.body.classList.remove('metier-ep', 'metier-sdg', 'metier-camp', 'header-hidden');
-      document.body.classList.add(`metier-${key}`);
-
-      // Couleurs CSS — toutes les variables remises à jour
-      document.documentElement.style.setProperty('--accent', m.color);
-      document.documentElement.style.setProperty('--accent-soft', m.colorSoft);
-      document.documentElement.style.setProperty('--accent-tint', m.colorTint);
-
-      // Cache hero
-      document.getElementById('stage1').style.display = 'none';
-
-      // === HEADER MÉTIER ===
-      document.getElementById('pill-metier').textContent = m.nom;
-      document.getElementById('titre-metier').textContent = m.titre;
-      document.getElementById('baseline-metier').textContent = m.baseline;
-      const howtoEl = document.getElementById('metier-howto');
-      if (howtoEl) howtoEl.textContent = m.baseline + t('metier.howto_suffix');
-
-      // Personnage grand format dans le header
-      document.getElementById('perso-big-img').src = m.mascot;
-
-      // Comment utiliser (4 étapes)
-      document.getElementById('comment-utiliser-list').innerHTML =
-        m.commentUtiliser.map(step => `<li>${step}</li>`).join('');
-
-      // Titre apps (cet élément a été retiré du HTML — protection au cas où)
-      const appsTitleEl = document.getElementById('apps-title');
-      if (appsTitleEl) {
-        appsTitleEl.innerHTML = `Tes 9 outils <span style="color: var(--accent);">essentiels</span>`;
-      }
-
-      // === CTA FINAL (retiré du HTML) ===
-      const ctaT = document.getElementById('cta-titre');
-      const ctaS = document.getElementById('cta-sous');
-      if (ctaT) ctaT.textContent = m.cta;
-      if (ctaS) ctaS.textContent = m.ctaSub;
-
-      // === MASCOTTE FLOTTANTE ===
-      const mascotEmoji = document.getElementById('mascot-emoji');
-      mascotEmoji.innerHTML = `<img src="${m.mascot}" alt="">`;
-      const bub = document.getElementById('mascot-bubble');
-      const bubAvatar = document.getElementById('bubble-avatar');
-      const bubText = document.getElementById('bubble-text');
-      // Met à jour l'avatar dans la bulle pour matcher le métier
-      bubAvatar.src = m.mascot;
-      bubAvatar.style.background = m.color;
-      bub.dataset.defaultMsg = m.mascotMsg + (ztsLang==='en'?' Click me!':' Clique-moi!');
-      bubText.textContent = bub.dataset.defaultMsg;
-
-      // === GROSSE GRILLE DE BOUTONS ILLUSTRÉS ===
-      renderToolsGrid(m.apps);
-
-      // === MENU DU JOUR ADAPTÉ AU MÉTIER ===
-      renderMenuJour(key);
-
-      // === TÉMOIGNAGE (retiré du HTML) ===
-      const temEl = document.getElementById('temoignage');
-      if (temEl) temEl.innerHTML = `
-        <div class="avatar">${m.temoignage.initiale}</div>
-        <div>
-          <blockquote>${m.temoignage.quote}</blockquote>
-          <cite>${m.temoignage.nom}</cite>
-        </div>
-      `;
-
-      // Affiche stage 2
-      const s2 = document.getElementById('stage2');
-      s2.classList.add('show');
-
-      // Sweep redescend
-      setTimeout(() => {
-        sweep.classList.remove('sweep');
-        sweep.classList.add('sweep-out');
-        window.scrollTo({ top: 0, behavior: 'instant' });
-      }, 80);
-
-      // Reset sweep
-      setTimeout(() => {
-        sweep.classList.remove('sweep-out');
-      }, 600);
-
-    }, 380);
+    if (sweep && m) {
+      sweep.style.background = m.color;        // transition aux couleurs du métier
+      sweep.classList.add('sweep');
+      setTimeout(() => { window.location.href = url; }, 320);
+    } else {
+      window.location.href = url;
+    }
   }
 
-  // ============ RETOUR ============
-  function retourSelecteur() {
-    const sweep = document.getElementById('sweep');
-    sweep.style.background = '#161616';
-    sweep.classList.add('sweep');
-
-    setTimeout(() => {
-      // Reset complet de toutes les classes métier
-      document.body.classList.remove('metier-ep', 'metier-sdg', 'metier-camp', 'header-hidden');
-
-      // Couleurs CSS remises aux valeurs par défaut
-      document.documentElement.style.setProperty('--accent', '#00E5FF');
-      document.documentElement.style.setProperty('--accent-soft', '#CCFAFF');
-      document.documentElement.style.setProperty('--accent-tint', 'rgba(0,229,255,0.14)');
-
-      document.getElementById('stage2').classList.remove('show');
-      document.getElementById('stage1').style.display = 'flex';
-
-      // Au retour : on remet le personnage ÉP par défaut (pas l'éclair)
-      document.getElementById('mascot-emoji').innerHTML = '<img src="perso-ep.png" alt="Mr. Root">';
-      const bubReset = document.getElementById('mascot-bubble');
-      const bubAvatarReset = document.getElementById('bubble-avatar');
-      const bubTextReset = document.getElementById('bubble-text');
-      bubAvatarReset.src = 'perso-ep.png';
-      bubAvatarReset.style.background = 'var(--cyan)';
-      bubReset.dataset.defaultMsg = t('mascot.default');
-      bubTextReset.textContent = bubReset.dataset.defaultMsg;
-
-      // Reset apps et menu du jour
-      renderApps(APPS_DEFAULT);
-      renderMenuJour('default');
-
-      window.scrollTo({ top: 0, behavior: 'instant' });
-
-      setTimeout(() => {
-        sweep.classList.remove('sweep');
-        sweep.classList.add('sweep-out');
-      }, 80);
-
-      setTimeout(() => {
-        sweep.classList.remove('sweep-out');
-        animateCounters();
-      }, 600);
-    }, 380);
-  }
+  // Conservé pour le bouton Accueil (plus de stage2 in-page) : simple retour haut.
+  function retourSelecteur() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
   // ============ MOUSE FOLLOWING MASCOT ============
   let mouseX = 0, mouseY = 0;

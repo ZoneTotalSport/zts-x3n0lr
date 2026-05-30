@@ -58,5 +58,11 @@
   "hub.camp.title": "Unforgettable summers.",
   "hub.camp.intro": "Everything to run a full summer of camp: big games, themes and the outdoors.",
   "hub.active": "Ready-to-use apps",
-  "hub.coming": "Coming soon"
+  "hub.coming": "Coming soon",
+  "hub.menu_title": "✨ Today on the menu",
+  "hub.menu_weather": "☁️ Weather & plan",
+  "hub.menu_game": "🎮 Game of the day",
+  "hub.menu_challenge": "💪 Challenge of the day",
+  "hub.menu_howplay": "How to play",
+  "hub.menu_todo": "To do today"
 }
