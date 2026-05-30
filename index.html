@@ -2867,6 +2867,16 @@
   }
   .dark-nav .zts-lang button.active { background: var(--cyan); color: var(--ink); }
 
+  /* ===== Message inscription (honnête : bientôt) ===== */
+  .signup-msg {
+    margin-top: 12px; padding: 12px 16px;
+    background: rgba(255,255,255,0.92); color: #1a1a2e;
+    border: 3px solid var(--ink); border-radius: 14px;
+    box-shadow: 4px 4px 0 var(--ink);
+    font-family: var(--font-body); font-weight: 700; font-size: 15px;
+  }
+  .signup-msg a { color: var(--bleu); text-decoration: underline; font-weight: 800; }
+
   /* ===== État "Bientôt / Coming soon" — lien désactivé ===== */
   .is-soon { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
   .soon-pill {
@@ -3233,10 +3243,11 @@
       <h3 data-i18n="foot.join_title">REJOINS LA ZONE!</h3>
       <p data-i18n="foot.join_sub">Gratuit pour toujours · 30 secondes · aucune carte de crédit</p>
     </div>
-    <form onsubmit="event.preventDefault(); alert(t('foot.signup_alert'));">
-      <input type="email" data-i18n-attr="placeholder:foot.email_ph" placeholder="ton@courriel.ca" required>
+    <form id="signupForm" onsubmit="ztsSignup(event); return false;">
+      <input type="email" id="signupEmail" data-i18n-attr="placeholder:foot.email_ph" placeholder="ton@courriel.ca" required>
       <button type="submit" data-i18n="foot.signup">M'INSCRIRE!</button>
     </form>
+    <div id="signupMsg" class="signup-msg" hidden></div>
   </div>
 
   <!-- SCORES LIVE -->
@@ -4439,7 +4450,7 @@
       'pause.joke_head':'😂 BLAGUE DU JOUR','pause.joke':'« Qu\'est-ce qu\'un haltère déprimé? Un poids mort. »',
       'pause.fact_head':'📜 FAIT HISTORIQUE','pause.fact':'Les Avalanche du Colorado en route vers la Coupe Stanley — Patrick Roy et Joe Sakic mènent le Colorado à la Coupe. Roy gagne son 3e Conn Smythe.',
       'pause.quiz_head':'🧠 QUIZ SPORTIF','pause.quiz_q':'Record du saut en longueur masculin?',
-      'foot.join_title':'REJOINS LA ZONE!','foot.join_sub':'Gratuit pour toujours · 30 secondes · aucune carte de crédit','foot.email_ph':'ton@courriel.ca','foot.signup':'M\'INSCRIRE!','foot.signup_alert':'Merci! On t\'envoie ton lien magique 🎉',
+      'foot.join_title':'REJOINS LA ZONE!','foot.join_sub':'Gratuit pour toujours · 30 secondes · aucune carte de crédit','foot.email_ph':'ton@courriel.ca','foot.signup':'M\'INSCRIRE!','foot.signup_alert':'Merci! On t\'envoie ton lien magique 🎉','foot.signup_soon':'🎉 Merci! L\'inscription en ligne arrive bientôt. En attendant, écris-nous et on t\'ajoute à la Zone :','foot.signup_cta':'Nous écrire',
       'foot.live':'SCORES EN DIRECT',
       'foot.pc1_title':'90 COURS MATERNELLE','foot.pc1_desc':'Web-app gratuite, 90 séances clé en main, prêtes dès lundi. 4-6 ans, motricité, coopération.','foot.pc1_cta':'OBTENIR L\'ACCÈS →',
       'foot.pc2_title':'AIDONS-NOUS','foot.pc2_desc':'Forum pour profs ÉPS, éducatrices SDG et animateurs de camp. Partage tes trucs, pose tes questions.','foot.pc2_cta':'REJOINDRE →',
@@ -4489,7 +4500,7 @@
       'pause.joke_head':'😂 JOKE OF THE DAY','pause.joke':'"What do you call a depressed dumbbell? Dead weight."',
       'pause.fact_head':'📜 HISTORICAL FACT','pause.fact':'The Colorado Avalanche on the way to the Stanley Cup — Patrick Roy and Joe Sakic lead Colorado to the Cup. Roy wins his 3rd Conn Smythe.',
       'pause.quiz_head':'🧠 SPORTS QUIZ','pause.quiz_q':"Men's long jump world record?",
-      'foot.join_title':'JOIN THE ZONE!','foot.join_sub':'Free forever · 30 seconds · no credit card','foot.email_ph':'you@email.com','foot.signup':'SIGN ME UP!','foot.signup_alert':"Thanks! We're sending your magic link 🎉",
+      'foot.join_title':'JOIN THE ZONE!','foot.join_sub':'Free forever · 30 seconds · no credit card','foot.email_ph':'you@email.com','foot.signup':'SIGN ME UP!','foot.signup_alert':"Thanks! We're sending your magic link 🎉",'foot.signup_soon':'🎉 Thanks! Online sign-up is coming soon. In the meantime, email us and we\'ll add you to the Zone:','foot.signup_cta':'Email us',
       'foot.live':'LIVE SCORES',
       'foot.pc1_title':'90 KINDERGARTEN LESSONS','foot.pc1_desc':'Free web app, 90 turnkey sessions, ready by Monday. Ages 4-6, motor skills, cooperation.','foot.pc1_cta':'GET ACCESS →',
       'foot.pc2_title':'AIDONS-NOUS','foot.pc2_desc':'A forum for PE teachers, daycare educators and camp counselors. Share your tips, ask your questions.','foot.pc2_cta':'JOIN →',
@@ -4747,6 +4758,22 @@
     }
   }
   window.ztsSetLang = setLang;
+
+  // --- Inscription : pas d'endpoint confirmé → état honnête "bientôt" + relais courriel ---
+  function ztsSignup(e){
+    e.preventDefault();
+    const email = (document.getElementById('signupEmail')?.value || '').trim();
+    const form = document.getElementById('signupForm');
+    const box = document.getElementById('signupMsg');
+    if (!box) return;
+    const subject = encodeURIComponent('Inscription Zone Total Sport');
+    const body = encodeURIComponent('Ajoutez-moi à la Zone : ' + email);
+    box.innerHTML = `<span data-i18n="foot.signup_soon"></span> <a href="mailto:zts@hotmail.ca?subject=${subject}&body=${body}" data-i18n="foot.signup_cta"></a>`;
+    applyStatic(box);
+    box.hidden = false;
+    if (form) form.style.display = 'none';
+  }
+  window.ztsSignup = ztsSignup;
 
   // --- Init langue au chargement ---
   (function initLang(){
