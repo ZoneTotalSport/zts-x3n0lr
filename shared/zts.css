@@ -69,10 +69,32 @@
   --fs-6: clamp(40px,7vw,72px);
 }
 
-/* — Thématisation par métier : attribut data-metier sur <html> OU <body> — */
+/* — Thématisation par métier : attribut data-metier sur <body> — */
 [data-metier="ep"]   { --metier: var(--ep); }
 [data-metier="sdg"]  { --metier: var(--sdg); }
 [data-metier="camp"] { --metier: var(--camp); }
+
+/* — Fond d'image signature par métier (§2.5) — centralisé, aucune app en solo.
+   url() est relatif à CE fichier (/shared/) → ../bg-*.jpg = racine, valable
+   pour les hubs (racine) ET les apps (/apps/<nom>/). Défaut = gymnase (ep). — */
+html { background: var(--paper); }
+body[data-metier] { background: transparent; }
+body[data-metier]::before {
+  content:''; position:fixed; inset:0; z-index:-1;
+  background-image:url('../bg-ep.jpg');   /* défaut gymnase */
+  background-size:cover; background-position:center; background-repeat:no-repeat;
+  opacity:.5; filter:saturate(.92);
+}
+body[data-metier="sdg"]::before  { background-image:url('../bg-sdg.jpg'); }
+body[data-metier="camp"]::before { background-image:url('../bg-camp.jpg'); }
+/* Voile de lisibilité par-dessus le fond (teinté selon le métier) */
+body[data-metier]::after {
+  content:''; position:fixed; inset:0; z-index:-1;
+  background:linear-gradient(180deg, rgba(255,254,247,.80) 0%, rgba(255,254,247,.62) 45%, rgba(255,254,247,.82) 100%);
+}
+body[data-metier="ep"]::after   { background:linear-gradient(180deg, rgba(204,250,255,.72) 0%, rgba(255,254,247,.66) 50%, rgba(204,250,255,.72) 100%); }
+body[data-metier="sdg"]::after  { background:linear-gradient(180deg, rgba(214,255,203,.72) 0%, rgba(255,254,247,.66) 50%, rgba(214,255,203,.72) 100%); }
+body[data-metier="camp"]::after { background:linear-gradient(180deg, rgba(255,231,209,.72) 0%, rgba(255,254,247,.66) 50%, rgba(255,231,209,.72) 100%); }
 
 /* ============ RESET + BASE ============ */
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
