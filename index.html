@@ -3124,7 +3124,7 @@
         <div class="tags-row" id="jeuTags">
           <span>Équipe</span><span>2e-3e cycle</span><span>Ballon géant</span>
         </div>
-        <a class="voir-tous is-soon" id="voirTous" aria-disabled="true"><span data-i18n="menu.see_games">VOIR 150 AUTRES JEUX →</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
+        <a class="voir-tous" id="voirTous" href="https://jeux.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="menu.see_games">VOIR 150 AUTRES JEUX →</a>
       </div>
 
       <!-- DÉFI DU JOUR -->
@@ -3315,9 +3315,9 @@
     <div class="foot-col">
       <h4 data-i18n="foot.h_resources">RESSOURCES</h4>
       <ul>
-        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.r1">Banque de jeux</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
-        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.r2">SAÉ PFEQ</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
-        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.r3">Générateur de jeux IA</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
+        <li><a href="https://jeux.zonetotalsport.ca" target="_blank" rel="noopener"><span data-i18n="foot.r1">Banque de jeux</span> <span class="badge-hot">500+</span></a></li>
+        <li><a href="https://sae.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.r2">SAÉ PFEQ</a></li>
+        <li><a href="https://generateur.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.r3">Générateur de jeux IA</a></li>
         <li><a href="https://zonetotalsport.ca/apps/cours-maternelle/"><span data-i18n="foot.r4">90 cours maternelle</span> <span class="badge-new">NEW</span></a></li>
         <li><a href="https://zonetotalsport.ca/blog.html" data-i18n="foot.r5">Blog ÉPS</a></li>
         <li><a href="https://zonetotalsport.ca/repertoire.html" data-i18n="foot.r6">Répertoire mondial</a></li>
@@ -3331,9 +3331,9 @@
         <li><a href="https://zonetotalsport.ca/apps/planificateur/" data-i18n="foot.t2">Planificateur EPS</a></li>
         <li><a href="https://zonetotalsport.ca/apps/transitions/" data-i18n="foot.t3">Boîte à outils</a></li>
         <li><a href="https://zonetotalsport.ca/apps/scoreboard/" data-i18n="foot.t4">Tableau indicateur</a></li>
-        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.t5">Tableau blanc TNI</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
-        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.t6">Grille horaire</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
-        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.t7">Carnet de notes</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
+        <li><a href="https://tni.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.t5">Tableau blanc TNI</a></li>
+        <li><a href="https://grille.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.t6">Grille horaire</a></li>
+        <li><a href="https://evaluation.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.t7">Carnet de notes</a></li>
       </ul>
     </div>
 
@@ -3601,20 +3601,19 @@
     const grid = document.getElementById('tools-grid');
     if (!grid) return;
     grid.innerHTML = apps.map(app => {
-      const href = app.url || '#';
-      const target = app.url ? ' target="_blank" rel="noopener"' : '';
-      const cls = app.soon ? 'tool-btn soon' : 'tool-btn';
       const badge = app.soon
         ? `<span class="soon-badge">${t('badge.soon')}</span>`
         : (app.hot ? `<span class="hot-badge">${t('badge.hot')}</span>` : '');
-      return `
-        <a href="${href}"${target} class="${cls}">
+      const inner = `
           ${badge}
           <span class="icon">${app.icon}</span>
           <div class="label">${app.name}</div>
-          <div class="desc">${app.desc || ''}</div>
-        </a>
-      `;
+          <div class="desc">${app.desc || ''}</div>`;
+      // Sans URL confirmée → bouton désactivé "Bientôt" (jamais de lien mort)
+      if (app.soon || !app.url) {
+        return `<span class="tool-btn soon is-soon" aria-disabled="true">${inner}</span>`;
+      }
+      return `<a href="${app.url}" target="_blank" rel="noopener" class="tool-btn">${inner}</a>`;
     }).join('');
   }
 
@@ -4670,6 +4669,23 @@
     nhl:{ badge:'🏒 NHL', title:'NHL Playoffs 2026', subtitle:'On the road to the Stanley Cup', externalUrl:'https://www.nhl.com/playoffs', bracket:SERIES_FR.nhl.bracket },
     nba:{ badge:'🏀 NBA', title:'NBA Playoffs 2026', subtitle:"Larry O'Brien Trophy on the line", externalUrl:'https://www.nba.com/playoffs', bracket:SERIES_FR.nba.bracket }
   };
+
+  // --- URLs confirmées (200) injectées dans les apps des métiers (FR+EN) ---
+  // Retire l'état "soon" des apps dont l'URL est désormais connue.
+  const APP_URL = {
+    'Banque de jeux':'https://jeux.zonetotalsport.ca', 'Game bank':'https://jeux.zonetotalsport.ca',
+    'Générateur SAÉ IA':'https://generateur.zonetotalsport.ca', 'AI SAÉ generator':'https://generateur.zonetotalsport.ca',
+    'Carnet Léger':'https://evaluation.zonetotalsport.ca', 'Light gradebook':'https://evaluation.zonetotalsport.ca',
+    "Banque d'éducatifs":'https://educatifs.zonetotalsport.ca', 'Drills bank':'https://educatifs.zonetotalsport.ca',
+    'Grille horaire':'https://grille.zonetotalsport.ca', 'Schedule grid':'https://grille.zonetotalsport.ca',
+    'Musique':'https://musique.zonetotalsport.ca', 'Music':'https://musique.zonetotalsport.ca',
+    'Musique ambiance':'https://musique.zonetotalsport.ca', 'Mood music':'https://musique.zonetotalsport.ca',
+    'Musique camp':'https://musique.zonetotalsport.ca', 'Camp music':'https://musique.zonetotalsport.ca',
+    'Tableau blanc TNI':'https://tni.zonetotalsport.ca', 'IWB whiteboard':'https://tni.zonetotalsport.ca'
+  };
+  [METIERS_FR, METIERS_EN].forEach(M => Object.values(M).forEach(m => m.apps.forEach(a => {
+    if (APP_URL[a.name]) { a.url = APP_URL[a.name]; delete a.soon; }
+  })));
 
   // --- Applique le dictionnaire statique au DOM (data-i18n / data-i18n-attr) ---
   function applyStatic(root){
