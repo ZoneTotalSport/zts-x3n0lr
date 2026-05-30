@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- HUB MÉTIER — Camps de jour. Sur le design system partagé. -->
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camps de jour — Zone Total Sport</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Bangers&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/zts.css">
+</head>
+<body data-metier="camp">
+
+  <div data-zts-header></div>
+
+  <nav class="zts-subnav">
+    <a href="index.html" data-i18n="subnav.back_home">← Accueil</a>
+  </nav>
+
+  <main class="zts-container" style="padding-top:var(--space-4); padding-bottom:var(--space-7);">
+
+    <section class="zts-metier-banner" style="margin-bottom:var(--space-5);">
+      <div>
+        <span class="zts-metier-banner__pill" data-i18n="hub.camp.pill">Zone Camp</span>
+        <h1 style="margin-top:10px;" data-i18n="hub.camp.title">Des étés mémorables.</h1>
+        <p style="margin-top:8px; font-family:var(--font-body); font-size:var(--fs-2); max-width:60ch;" data-i18n="hub.camp.intro">Tout pour animer un été de camp complet.</p>
+      </div>
+    </section>
+
+    <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-4) 0 var(--space-3);" data-i18n="hub.active">Apps prêtes à l'emploi</h2>
+    <div class="zts-grid" id="gridActive"></div>
+
+    <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-6) 0 var(--space-3); opacity:.8;" data-i18n="hub.coming">Bientôt disponibles</h2>
+    <div class="zts-grid" id="gridSoon"></div>
+
+  </main>
+
+  <div data-zts-footer></div>
+
+  <script src="shared/zts.js"></script>
+  <script>
+    const ACTIVE = [
+      { icon:'⚡', url:'https://zonetotalsport.ca/apps/transitions/', tag:'pro', fr:{n:'Boîte à outils camp',d:'Chrono, équipes, musique pour grands jeux'}, en:{n:'Camp toolbox',d:'Timer, teams, music for big games'} },
+      { icon:'🎯', url:'https://zonetotalsport.ca/apps/scoreboard/', fr:{n:'Tableau indicateur',d:'Tournois et olympiades'}, en:{n:'Scoreboard',d:'Tournaments and olympics'} },
+      { icon:'📅', url:'https://zonetotalsport.ca/apps/planificateur/', fr:{n:'Planificateur camp',d:'Semaines thématiques d\'été'}, en:{n:'Camp planner',d:'Summer theme weeks'} },
+      { icon:'🎮', url:'https://jeux.zonetotalsport.ca', fr:{n:'Banque de jeux',d:'Grands jeux et plein air'}, en:{n:'Game bank',d:'Big and outdoor games'} },
+      { icon:'🎵', url:'https://musique.zonetotalsport.ca', fr:{n:'Musique',d:'Chansons + ambiance grand jeu'}, en:{n:'Music',d:'Songs + big-game vibes'} },
+      { icon:'🖍️', url:'https://tni.zonetotalsport.ca', fr:{n:'Tableau blanc TNI',d:'Pour journées intérieures pluie/canicule'}, en:{n:'IWB whiteboard',d:'For indoor rain/heat days'} },
+      { icon:'✏️', url:'https://zonetotalsport.ca/blog.html', fr:{n:'Blog',d:'Stratégies d\'animation'}, en:{n:'Blog',d:'Leadership strategies'} },
+      { icon:'🤝', url:'https://zonetotalsport.ca/aidons-nous/', fr:{n:'Communauté Camp',d:'Forum coordos et moniteurs'}, en:{n:'Camp Community',d:'Coordinators & counselors forum'} }
+    ];
+    const SOON = [
+      { icon:'🎤', fr:{n:'Chansons & cris de camp',d:'Paroles + audio, filtres énergie/thème'}, en:{n:'Camp songs & cheers',d:'Lyrics + audio, energy/theme filters'} },
+      { icon:'🏆', fr:{n:'Grands jeux',d:'Jeux grands groupes, fiches complètes'}, en:{n:'Big games',d:'Large-group games, full sheets'} },
+      { icon:'🏴‍☠️', fr:{n:'Jeux par thème',d:'Pirates, espace, médiéval, etc.'}, en:{n:'Themed games',d:'Pirates, space, medieval, etc.'} },
+      { icon:'😄', fr:{n:'Brise-glace',d:'Présentation de début de semaine'}, en:{n:'Ice-breakers',d:'Start-of-week intros'} },
+      { icon:'🗺️', fr:{n:'Rallyes / chasses au trésor',d:'Modèles + générateur d\'indices'}, en:{n:'Rallies / treasure hunts',d:'Templates + clue generator'} },
+      { icon:'🔥', fr:{n:'Veillée / feu de camp',d:'Activités de soirée'}, en:{n:'Evening / campfire',d:'Evening activities'} },
+      { icon:'💦', fr:{n:'Jeux d\'eau',d:'Pour les chaudes journées'}, en:{n:'Water games',d:'For hot days'} },
+      { icon:'🏅', fr:{n:'Olympiades / tournois',d:'Pointage inter-équipes'}, en:{n:'Olympics / tournaments',d:'Inter-team scoring'} },
+      { icon:'🏷️', fr:{n:'Générateur de noms de clans',d:'Noms d\'équipe aléatoires'}, en:{n:'Clan name generator',d:'Random team names'} }
+    ];
+
+    function tagHtml(tag){
+      if(!tag) return '';
+      const key = tag==='ia'?'tag.ia':tag==='new'?'tag.new':'tag.pro';
+      return `<span class="zts-tag zts-tag--${tag}">${ZTS.t(key)}</span>`;
+    }
+    function renderHub(){
+      const L = ZTS.getLang();
+      document.getElementById('gridActive').innerHTML = ACTIVE.map(a=>`
+        <a class="zts-app-card" href="${a.url}" target="_blank" rel="noopener">
+          ${tagHtml(a.tag)}
+          <span class="zts-app-card__icon">${a.icon}</span>
+          <span class="zts-app-card__name">${a[L].n}</span>
+          <span class="zts-app-card__desc">${a[L].d}</span>
+        </a>`).join('');
+      document.getElementById('gridSoon').innerHTML = SOON.map(a=>`
+        <div class="zts-app-card is-soon" aria-disabled="true">
+          <span class="zts-tag zts-tag--soon">${ZTS.t('tag.soon')}</span>
+          <span class="zts-app-card__icon">${a.icon}</span>
+          <span class="zts-app-card__name">${a[L].n}</span>
+          <span class="zts-app-card__desc">${a[L].d}</span>
+        </div>`).join('');
+    }
+    document.addEventListener('zts:ready', renderHub);
+    document.addEventListener('zts:langchange', renderHub);
+  </script>
+</body>
+</html>
