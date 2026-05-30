@@ -35,10 +35,12 @@
   --sdg:  #39FF14;  /* vert  */
   --camp: #FF6B00;  /* orange */
 
-  /* — Variable vivante : pilotée par body[data-metier] — */
-  --metier:      var(--zts-noir);
-  --metier-soft: var(--paper);
-  --metier-tint: rgba(26,26,46,0.06);
+  /* — Variable vivante : pilotée par body[data-metier]. Défaut = cyan
+       (accent de la home, hors contexte métier) pour que les éléments
+       teintés (toggle actif, etc.) restent visibles. — */
+  --metier:      var(--cyan);
+  --metier-soft: #CCFAFF;
+  --metier-tint: rgba(0,229,255,0.14);
 
   /* — Familles de polices — */
   --font-impact: 'Luckiest Guy','LuckiestGuy','Impact',sans-serif; /* gros titres */
@@ -81,7 +83,7 @@ html { background: var(--paper); }
 body[data-metier] { background: transparent; }
 body[data-metier]::before {
   content:''; position:fixed; inset:0; z-index:-1;
-  background-image:url('../bg-ep.jpg');   /* défaut gymnase */
+  background-image:url('../bg-gym.jpg');   /* défaut gymnase (nouvelle image) */
   background-size:cover; background-position:center; background-repeat:no-repeat;
   opacity:.5; filter:saturate(.92);
 }
@@ -112,27 +114,53 @@ body {
 img { max-width:100%; display:block; }
 a { color:inherit; }
 
-/* ============ HEADER PARTAGÉ (.zts-header) ============ */
+/* ============ HEADER PARTAGÉ (.zts-header) — grand bandeau bleu dégradé ============ */
 .zts-header {
   position:fixed; top:0; left:0; right:0; z-index:200;
-  background:var(--zts-noir);
+  background:linear-gradient(135deg, #00E5FF 0%, #29B6E8 48%, #1E90FF 100%);
   border-bottom:var(--bord-gros);
-  box-shadow:0 6px 20px rgba(0,0,0,.4);
-  display:flex; align-items:center; justify-content:space-between;
-  gap:var(--space-3);
-  padding:12px clamp(14px,3vw,28px);
-  flex-wrap:wrap;
+  box-shadow:0 6px 18px rgba(30,144,255,.35);
+  color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  gap:10px;
+  padding:14px clamp(16px,3vw,32px);
   transition:transform .35s cubic-bezier(.4,0,.2,1);
 }
 .zts-header.hidden { transform:translateY(-100%); }
+.zts-header__brandwrap { display:flex; flex-direction:column; align-items:center; gap:4px; }
 .zts-header__brand {
-  display:flex; align-items:baseline; gap:8px;
-  font-family:var(--font-impact); color:#fff;
-  font-size:clamp(20px,2.6vw,28px); letter-spacing:.02em;
-  text-decoration:none; white-space:nowrap;
+  display:flex; align-items:baseline; gap:10px;
+  font-family:var(--font-impact); letter-spacing:.02em;
+  font-size:clamp(48px,8.5vw,104px);         /* titre XXXL */
+  text-decoration:none; white-space:nowrap; line-height:1;
 }
-.zts-header__brand .total { color:var(--jaune); }
-.zts-header__nav { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+/* Mots fluo + contour noir épais + ombre portée BD prononcée */
+.zts-header__brand span {
+  text-shadow:
+    3px 3px 0 var(--zts-noir), -2px -2px 0 var(--zts-noir),
+    2px -2px 0 var(--zts-noir), -2px 2px 0 var(--zts-noir),
+    0 2px 0 var(--zts-noir), 2px 0 0 var(--zts-noir),
+    7px 9px 0 rgba(26,26,46,.40);
+}
+.zts-header__brand .w1 { color:var(--jaune); }   /* ZONE */
+.zts-header__brand .w2 { color:var(--rose); }    /* TOTAL */
+.zts-header__brand .w3 { color:var(--vert); }    /* SPORT */
+/* Survol PAR MOT : le mot pointé pop et reste popé tant que la souris
+   est dessus ; il reprend sa forme quand la souris le quitte. */
+.zts-header__brand span {
+  display:inline-block; transform-origin:center bottom; cursor:pointer;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.zts-header__brand span:hover { transform:translateY(-9px) rotate(-3deg) scale(1.18); }
+.zts-header__meta { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }
+.zts-header__clock {
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:var(--font-impact); color:var(--zts-noir); font-size:var(--fs-2); letter-spacing:.04em;
+}
+.zts-header__sub { font-family:var(--font-fun); font-weight:700; color:rgba(26,26,46,.72); font-size:var(--fs-1); }
+.zts-header__nav { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center; }
+/* Sur fond bleu, le bouton Accueil (cyan) deviendrait fade → on le passe en blanc */
+.zts-header .zts-btn--primary { background:#fff; color:var(--ink); }
 
 /* Boutons chunky 3D — composant partagé */
 .zts-btn {
@@ -158,18 +186,22 @@ a { color:inherit; }
   box-shadow:0 4px 0 var(--zts-noir);
 }
 
-/* Toggle langue FR/EN */
+/* Toggle langue FR/EN — pastille claire, fort contraste */
 .zts-lang {
   display:inline-flex; border:var(--bord); border-radius:var(--r-pill);
   overflow:hidden; font-family:var(--font-impact); background:#fff;
   box-shadow:var(--ombre);
 }
 .zts-lang button {
-  border:0; background:transparent; cursor:pointer;
-  padding:7px 14px; font-family:inherit; font-size:var(--fs-1);
-  color:var(--ink); letter-spacing:.04em;
+  border:0; background:#fff; cursor:pointer;
+  padding:7px 16px; font-family:inherit; font-size:var(--fs-1);
+  color:#8a8aa0; letter-spacing:.04em;   /* inactif : gris doux sur blanc */
+  transition:background .15s ease, color .15s ease;
 }
-.zts-lang button.active { background:var(--metier); color:var(--ink); }
+.zts-lang button:hover { color:var(--ink); }
+.zts-lang button.active {            /* actif : couleur métier vive + texte foncé */
+  background:var(--metier); color:var(--zts-noir);
+}
 
 /* Sous-nav « retour » des apps */
 .zts-subnav {
@@ -310,11 +342,35 @@ a { color:inherit; }
   border-top:var(--bord-gros);
   padding:var(--space-6) clamp(16px,4vw,48px) var(--space-5);
 }
+.zts-footer__pushcards {
+  display:grid; gap:var(--space-4); max-width:1200px; margin:0 auto var(--space-6);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));
+}
+.zts-footer__pushcard {
+  background:#fff; color:var(--ink); border:var(--bord-gros); border-radius:var(--r-3);
+  box-shadow:var(--ombre-xl); padding:var(--space-4); text-align:center;
+}
+.zts-footer__pushcard .em { font-size:clamp(30px,4vw,40px); }
+.zts-footer__pushcard h5 { font-family:var(--font-impact); font-size:var(--fs-3); margin:6px 0; color:var(--ink); }
+.zts-footer__pushcard p { font-family:var(--font-body); font-size:var(--fs-1); opacity:.85; margin-bottom:10px; }
+.zts-footer__pushcard a {
+  display:inline-block; font-family:var(--font-impact); font-size:var(--fs-1); text-decoration:none;
+  background:var(--jaune); color:var(--ink); border:var(--bord); border-radius:var(--r-pill);
+  padding:6px 16px; box-shadow:var(--ombre);
+}
+.zts-footer__pushcard a:hover { transform:translate(-2px,-2px); box-shadow:var(--ombre-xl); }
 .zts-footer__grid {
   display:grid; gap:var(--space-5);
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
   max-width:1200px; margin:0 auto;
 }
+.zts-footer__news { max-width:1200px; margin:var(--space-6) auto 0; }
+.zts-footer__news > h5 { font-family:var(--font-impact); font-size:var(--fs-3); color:var(--jaune); margin-bottom:var(--space-3); }
+.zts-footer__newsgrid { display:grid; gap:var(--space-4); grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); }
+.zts-footer__newsitem { background:rgba(255,255,255,.10); border:2px solid rgba(255,255,255,.25); border-radius:var(--r-2); padding:var(--space-3); }
+.zts-footer__newsitem .d { font-family:var(--font-impact); font-size:var(--fs-1); color:var(--jaune); }
+.zts-footer__newsitem .t { font-family:var(--font-fun); font-weight:700; margin:4px 0; }
+.zts-footer__newsitem .x { font-family:var(--font-body); font-size:var(--fs-1); opacity:.85; }
 .zts-footer__col h5 { font-family:var(--font-impact); font-size:var(--fs-3); margin-bottom:var(--space-3); color:var(--jaune); }
 .zts-footer__col a { display:block; text-decoration:none; color:#fff; opacity:.92; margin:6px 0; font-family:var(--font-body); }
 .zts-footer__col a:hover { opacity:1; text-decoration:underline; }

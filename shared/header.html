@@ -1,6 +1,12 @@
 <!-- HEADER PARTAGÉ — injecté par zts.js dans [data-zts-header] -->
 <header class="zts-header">
-  <a class="zts-header__brand" href="{{ROOT}}index.html" data-i18n="brand.name">ZONE TOTAL SPORT</a>
+  <div class="zts-header__brandwrap">
+    <a class="zts-header__brand" href="{{ROOT}}index.html" aria-label="Zone Total Sport"><span class="w1">ZONE</span> <span class="w2">TOTAL</span> <span class="w3">SPORT</span></a>
+    <div class="zts-header__meta">
+      <span class="zts-header__clock">🕐 <span data-clock>--:--:--</span></span>
+      <span class="zts-header__sub" data-i18n="brand.sub">Pédagogie Primaire</span>
+    </div>
+  </div>
 
   <nav class="zts-header__nav">
     <a class="zts-btn zts-btn--primary" href="{{ROOT}}index.html"><span class="em">🏠</span><span data-i18n="nav.home">Accueil</span></a>

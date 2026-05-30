@@ -1,0 +1,6 @@
+.DS_Store
+*.md.bak
+# Sources lourdes non optimisées (seules les versions optimisées sont versionnées)
+bg-gym.png
+bg-ep.png
+*copie.png

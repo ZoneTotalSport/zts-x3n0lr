@@ -21,6 +21,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- DESIGN SYSTEM PARTAGÉ (header/footer unifiés). Chargé AVANT le style
+     inline : la home garde la priorité sur les conflits de base. -->
+<link rel="stylesheet" href="shared/zts.css">
+
 <style>
   /* ============ RESET + BASE ============ */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -76,7 +80,7 @@
     content: '';
     position: fixed;
     inset: 0;
-    background-image: url('bg-hero.jpg');
+    background-image: url('bg-gym.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -102,7 +106,7 @@
   }
 
   body.metier-ep::before {
-    background-image: url('bg-ep.jpg');
+    background-image: url('bg-gym.jpg');
     opacity: 0.50;
   }
   body.metier-sdg::before {
@@ -2014,7 +2018,7 @@
   /* Background contextuel par corps de métier — réutilise les fonds existants */
   /* ÉP = gymnase, SDG = cafétéria/classe, Camp = terrain modules */
   body.metier-ep .app-card {
-    background-image: linear-gradient(rgba(0,229,255,0.85), rgba(0,196,255,0.85)), url('bg-ep.jpg');
+    background-image: linear-gradient(rgba(0,229,255,0.85), rgba(0,196,255,0.85)), url('bg-gym.jpg');
     background-size: cover;
     background-position: center;
   }
@@ -2951,19 +2955,8 @@
 </script>
 <!-- ============ FIN PASSWORD GATE ============ -->
 
-<!-- DARK NAV BAR — toujours visible en haut -->
-<div class="dark-nav" id="darkNav">
-  <a href="#stage1" class="dn-btn active" onclick="event.preventDefault(); if(document.body.className.match(/metier-/)) retourSelecteur(); window.scrollTo({top:0,behavior:'smooth'});"><span class="em">🏠</span><span data-i18n="nav.home">Accueil</span></a>
-  <a class="dn-btn is-soon" aria-disabled="true"><span class="em">📁</span><span data-i18n="nav.resources">Ressources</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
-  <a href="https://zonetotalsport.ca/blog.html" class="dn-btn"><span class="em">✏️</span>Blog</a>
-  <a href="https://zonetotalsport.ca/aidons-nous/" class="dn-btn communaute"><span class="em">🤝</span><span data-i18n="nav.community">Communauté ▼</span></a>
-  <a class="dn-btn dons is-soon" aria-disabled="true"><span class="em">💛</span><span data-i18n="nav.donate">Dons</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
-  <span class="dn-btn user"><span class="em">👋</span><span data-i18n="nav.greeting">Salut, Joey!</span></span>
-  <div class="zts-lang" role="group" aria-label="Langue / Language">
-    <button type="button" data-lang="fr" data-i18n="lang.fr">FR</button>
-    <button type="button" data-lang="en" data-i18n="lang.en">EN</button>
-  </div>
-</div>
+<!-- HEADER PARTAGÉ (injecté par zts.js) — unifié avec hubs + apps -->
+<div data-zts-header></div>
 
 <!-- SÉRIES SPORTIVES - colonne flottante à gauche -->
 <div class="series-dock">
@@ -3002,21 +2995,7 @@
   </div>
 </div>
 
-<!-- HEADER BANNIÈRE : juste Logo + Clock + Sous-titre centré -->
-<nav class="top" id="topNav">
-  <div class="header-row" id="navLinks">
-    <!-- CENTRÉ : Logo + Clock + Sub-title -->
-    <div class="header-center" style="grid-column: 1 / -1;">
-      <a href="#stage1" class="logo">ZONE <span class="total">TOTAL</span> SPORT</a>
-      <div class="clock">
-        <span class="clock-icon">🕐</span>
-        <span class="clock-time" id="clockTime">--:--:--</span>
-      </div>
-      <div class="logo-sub" data-i18n="brand.sub">Pédagogie Primaire</div>
-    </div>
-  </div>
-  <button class="burger" id="burger" aria-label="Menu" style="display: none;">☰</button>
-</nav>
+<!-- Bannière logo+horloge désormais intégrée au header partagé -->
 
 <!-- HERO STAGE 1 : SÉLECTEUR 3 PORTES -->
 <section class="hero" id="stage1">
@@ -3211,10 +3190,8 @@
 <!-- TRANSITION SWEEP -->
 <div class="color-sweep" id="sweep"></div>
 
-<!-- ============ FOOTER RICHE ============ -->
-<footer>
-
-  <!-- BANDE INSCRIPTION -->
+<!-- BANDE INSCRIPTION (conservée, propre à la home) -->
+<section class="home-signup" style="margin-top:var(--space-6);">
   <div class="foot-banner">
     <div>
       <h3 data-i18n="foot.join_title">REJOINS LA ZONE!</h3>
@@ -3226,146 +3203,11 @@
     </form>
     <div id="signupMsg" class="signup-msg" hidden></div>
   </div>
+</section>
 
-  <!-- SCORES LIVE -->
-  <div class="live-scores">
-    <span class="live-tag"><span class="dot"></span><span data-i18n="foot.live">SCORES EN DIRECT</span></span>
-    <div class="leagues">
-      <span>🏒 LNH</span>
-      <span>🏀 NBA</span>
-      <span>🏈 NFL</span>
-      <span>⚾ MLB</span>
-      <span>⚽ MLS</span>
-      <span>🏈 NCAA</span>
-    </div>
-  </div>
+<!-- FOOTER PARTAGÉ (injecté par zts.js) — unifié avec hubs + apps -->
+<div data-zts-footer></div>
 
-  <!-- PUSHCARDS : 90 cours, Aidons-nous, dons -->
-  <div class="foot-pushcards">
-    <div class="pushcard">
-      <span class="em">🎒</span>
-      <h5 data-i18n="foot.pc1_title">90 COURS MATERNELLE</h5>
-      <p data-i18n="foot.pc1_desc">Web-app gratuite, 90 séances clé en main, prêtes dès lundi. 4-6 ans, motricité, coopération.</p>
-      <a href="https://zonetotalsport.ca/apps/cours-maternelle/" target="_blank" rel="noopener" data-i18n="foot.pc1_cta">OBTENIR L'ACCÈS →</a>
-    </div>
-    <div class="pushcard">
-      <span class="em">🤝</span>
-      <h5 data-i18n="foot.pc2_title">AIDONS-NOUS</h5>
-      <p data-i18n="foot.pc2_desc">Forum pour profs ÉPS, éducatrices SDG et animateurs de camp. Partage tes trucs, pose tes questions.</p>
-      <a href="https://zonetotalsport.ca/aidons-nous/" target="_blank" rel="noopener" data-i18n="foot.pc2_cta">REJOINDRE →</a>
-    </div>
-    <div class="pushcard">
-      <span class="em">💛</span>
-      <h5 data-i18n="foot.pc3_title">SOUTIENS LA ZONE</h5>
-      <p data-i18n="foot.pc3_desc">100% gratuit, sans pub. Un petit don aide à garder les outils accessibles à tous les profs.</p>
-      <a class="is-soon" aria-disabled="true"><span data-i18n="foot.pc3_cta">FAIRE UN DON →</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
-    </div>
-  </div>
-
-  <!-- GRILLE LIENS -->
-  <div class="foot-grid">
-
-    <div class="foot-col foot-brand">
-      <div class="logo-block">⚡ ZONE TOTAL SPORT</div>
-      <p class="tag" data-i18n="foot.brand_tag">Faire bouger les enfants,<br>c'est notre mission!</p>
-      <div class="socials">
-        <a href="https://www.facebook.com/zonetotalsportparMr.Roots/" class="fb" title="Facebook">f</a>
-        <a href="https://www.instagram.com/zonetotalsportparmrroots/" class="ig" title="Instagram">◉</a>
-        <a href="https://www.youtube.com/@zonetotalsportparMrRoots" class="yt" title="YouTube">▶</a>
-        <a href="https://www.tiktok.com/@zonetotalsport" class="tt" title="TikTok">♪</a>
-      </div>
-      <div style="font-family: var(--font-fun); font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500;" data-i18n="foot.brand_stats">
-        2 300+ pros inscrits · 500+ jeux · 150+ SAÉ
-      </div>
-    </div>
-
-    <div class="foot-col">
-      <h4 data-i18n="foot.h_forwho">POUR QUI?</h4>
-      <ul>
-        <li><a href="#stage1" onclick="choisirMetier('ep'); return false;"><span>🏃</span><span data-i18n="foot.fw1">Éducation physique</span></a></li>
-        <li><a href="#stage1" onclick="choisirMetier('sdg'); return false;"><span>🧸</span><span data-i18n="foot.fw2">Service de garde</span></a></li>
-        <li><a href="#stage1" onclick="choisirMetier('camp'); return false;"><span>🏕️</span><span data-i18n="foot.fw3">Camps de jour</span></a></li>
-        <li><a href="https://zonetotalsport.ca/aidons-nous/"><span>🤝</span><span data-i18n="foot.fw4">Communauté Aidons-nous</span></a></li>
-      </ul>
-    </div>
-
-    <div class="foot-col">
-      <h4 data-i18n="foot.h_resources">RESSOURCES</h4>
-      <ul>
-        <li><a href="https://jeux.zonetotalsport.ca" target="_blank" rel="noopener"><span data-i18n="foot.r1">Banque de jeux</span> <span class="badge-hot">500+</span></a></li>
-        <li><a href="https://sae.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.r2">SAÉ PFEQ</a></li>
-        <li><a href="https://generateur.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.r3">Générateur de jeux IA</a></li>
-        <li><a href="https://zonetotalsport.ca/apps/cours-maternelle/"><span data-i18n="foot.r4">90 cours maternelle</span> <span class="badge-new">NEW</span></a></li>
-        <li><a href="https://zonetotalsport.ca/blog.html" data-i18n="foot.r5">Blog ÉPS</a></li>
-        <li><a href="https://zonetotalsport.ca/repertoire.html" data-i18n="foot.r6">Répertoire mondial</a></li>
-      </ul>
-    </div>
-
-    <div class="foot-col">
-      <h4 data-i18n="foot.h_tools">OUTILS</h4>
-      <ul>
-        <li><a class="is-soon" aria-disabled="true"><span data-i18n="foot.t1">Intervention Groupe</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a></li>
-        <li><a href="https://zonetotalsport.ca/apps/planificateur/" data-i18n="foot.t2">Planificateur EPS</a></li>
-        <li><a href="https://zonetotalsport.ca/apps/transitions/" data-i18n="foot.t3">Boîte à outils</a></li>
-        <li><a href="https://zonetotalsport.ca/apps/scoreboard/" data-i18n="foot.t4">Tableau indicateur</a></li>
-        <li><a href="https://tni.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.t5">Tableau blanc TNI</a></li>
-        <li><a href="https://grille.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.t6">Grille horaire</a></li>
-        <li><a href="https://evaluation.zonetotalsport.ca" target="_blank" rel="noopener" data-i18n="foot.t7">Carnet de notes</a></li>
-      </ul>
-    </div>
-
-    <div class="foot-col">
-      <h4 data-i18n="foot.h_extras">EXTRAS</h4>
-      <ul>
-        <li><a href="#stage1" onclick="document.getElementById('pauseModal').classList.add('open'); return false;" data-i18n="foot.e1">☕ Pause ÉPS du jour</a></li>
-        <li><a href="https://zonetotalsport.ca/avis.html" data-i18n="foot.e2">★ Avis & témoignages</a></li>
-        <li><a href="https://suppleance.zonetotalsport.ca" data-i18n="foot.e3">🦺 Ma Suppléance</a></li>
-        <li><a href="mailto:zts@hotmail.ca?subject=Suggestion%20-%20Zone%20Total%20Sport" data-i18n="foot.e4">💡 Suggérer une idée</a></li>
-        <li><a href="https://zonetotalsport.ca" onclick="if(navigator.share){navigator.share({title:'Zone Total Sport',url:'https://zonetotalsport.ca'});return false;}" data-i18n="foot.e5">📤 Partager le site</a></li>
-        <li><a href="mailto:zts@hotmail.ca" data-i18n="foot.e6">📬 Contact</a></li>
-      </ul>
-    </div>
-
-  </div>
-
-  <!-- QUOI DE NEUF -->
-  <div class="foot-news">
-    <h4 data-i18n="foot.news_head">★ QUOI DE NEUF?</h4>
-    <div class="news-list">
-      <div class="news-item">
-        <div class="date" data-i18n="foot.news1_date">2 mai 2026</div>
-        <div class="title" data-i18n="foot.news1_title">🛡️ Intervention Groupe — le couteau suisse ÉPS</div>
-        <div class="desc" data-i18n="foot.news1_desc">PWA tout-en-un : 60 jeux inclusifs, SOS crise, planificateur, dessin terrain. Fonctionne hors ligne!</div>
-      </div>
-      <div class="news-item">
-        <div class="date" data-i18n="foot.news2_date">29 avril 2026</div>
-        <div class="title" data-i18n="foot.news2_title">📖 50 jeunes, un gymnase — l'art de maîtriser!</div>
-        <div class="desc" data-i18n="foot.news2_desc">Stratégies concrètes : gestion de groupe, transitions, énergie. Pour profs ÉP, SDG et camps.</div>
-      </div>
-      <div class="news-item">
-        <div class="date" data-i18n="foot.news3_date">18 avril 2026</div>
-        <div class="title" data-i18n="foot.news3_title">🤝 Aidons-nous — la communauté d'entraide</div>
-        <div class="desc" data-i18n="foot.news3_desc">Forum type Facebook pour profs ÉPS, éducatrices SDG et animateurs de camp. Optimisé TBI!</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BANDE LANGUES / COPYRIGHT -->
-  <div class="foot-bottom">
-    <div data-i18n="foot.copyright">© 2026 Zone Total Sport · Tous droits réservés</div>
-    <div class="links">
-      <a href="#stage1" onclick="event.preventDefault(); ztsSetLang('fr');">FR</a>
-      <a href="#stage1" onclick="event.preventDefault(); ztsSetLang('en');">EN</a>
-      <a class="is-soon" aria-disabled="true">中 <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
-      <a class="is-soon" aria-disabled="true">ES <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
-      <span style="opacity:0.3;">|</span>
-      <a href="https://zonetotalsport.ca/politique.html" data-i18n="foot.privacy">Politique de confidentialité</a>
-      <a class="is-soon" aria-disabled="true"><span data-i18n="foot.about">À propos</span> <span class="soon-pill" data-i18n="state.soon">Bientôt</span></a>
-    </div>
-    <div class="made" data-i18n="foot.made">Fait avec 💛 au Québec</div>
-  </div>
-
-</footer>
 
 <script>
 
@@ -4206,9 +4048,9 @@
     document.getElementById('seriesModal').classList.add('open');
   }
 
-  // ============ MENU BURGER MOBILE ============
-  document.getElementById('burger').addEventListener('click', () => {
-    document.getElementById('navLinks').classList.toggle('open');
+  // ============ MENU BURGER MOBILE (header géré par le partagé) ============
+  document.getElementById('burger')?.addEventListener('click', () => {
+    document.getElementById('navLinks')?.classList.toggle('open');
   });
 
   // ============ HORLOGE LIVE ============
@@ -4648,14 +4490,21 @@
 
   // --- Init langue au chargement ---
   (function initLang(){
-    document.querySelectorAll('.zts-lang button').forEach(b=>{
-      b.addEventListener('click', ()=>setLang(b.dataset.lang));
-    });
-    // Applique l'état courant (gère le cas EN stocké/navigateur)
+    // Applique l'état courant aux contenus de la home (gère EN stocké/navigateur).
     setLang(ztsLang);
   })();
 
+  // --- Pont avec le moteur partagé (header/footer injectés par zts.js) ---
+  // Le toggle FR/EN vit dans le header partagé : zts.js émet 'zts:langchange'.
+  // On y branche le i18n de la home pour tout garder synchronisé.
+  document.addEventListener('zts:langchange', e => setLang(e.detail.lang));
+  document.addEventListener('zts:ready', () => { if (window.ZTS) setLang(ZTS.getLang()); });
+
 </script>
+
+<!-- DESIGN SYSTEM PARTAGÉ : injecte header/footer, horloge, toggle FR/EN.
+     Chargé APRÈS le script de la home pour que le pont soit déjà branché. -->
+<script src="shared/zts.js"></script>
 
 </body>
 </html>

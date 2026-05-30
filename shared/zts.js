@@ -112,9 +112,10 @@
   function startClock(sel) {
     const el = document.querySelector(sel || '[data-clock]');
     if (!el) return;
+    const p = n => String(n).padStart(2, '0');
     const tick = () => {
       const d = new Date();
-      el.textContent = d.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      el.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
     };
     tick(); setInterval(tick, 1000);
   }
