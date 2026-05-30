@@ -72,7 +72,8 @@
     if (!host) return;
     try {
       const res = await fetch(`${SHARED}${file}`, { cache: 'no-cache' });
-      host.innerHTML = await res.text();
+      const html = (await res.text()).split('{{ROOT}}').join(ROOT);
+      host.innerHTML = html;
     } catch (e) { console.warn('[ZTS] partial manquant:', file, e); }
   }
 
@@ -137,6 +138,13 @@
     els.forEach(el => io.observe(el));
   }
 
+  /* ---------- OFFSET sous le header fixe (hauteur variable) ---------- */
+  function adjustHeaderOffset() {
+    const h = document.querySelector('.zts-header');
+    if (!h) return;
+    document.body.style.paddingTop = h.offsetHeight + 'px';
+  }
+
   /* ---------- HEADER hide-on-scroll ---------- */
   function hideHeaderOnScroll() {
     const h = document.querySelector('.zts-header');
@@ -163,6 +171,9 @@
     startClock();
     countUp();
     hideHeaderOnScroll();
+    adjustHeaderOffset();
+    setTimeout(adjustHeaderOffset, 300); // après chargement des polices
+    addEventListener('resize', adjustHeaderOffset, { passive: true });
     // Délègue le toggle langue (fonctionne même sur header injecté)
     document.addEventListener('click', e => {
       const b = e.target.closest('.zts-lang button');

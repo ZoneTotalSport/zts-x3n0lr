@@ -46,5 +46,17 @@
   "footer.rights": "© 2026 Zone Total Sport — 100% gratuit, sans publicité.",
 
   "soon.badge": "Bientôt",
-  "soon.note": "Cette app arrive sous peu."
+  "soon.note": "Cette app arrive sous peu.",
+
+  "hub.ep.pill": "Zone ÉP",
+  "hub.ep.title": "Ton gym, tes règles.",
+  "hub.ep.intro": "Toutes tes apps d'éducation physique au primaire, réunies au même endroit.",
+  "hub.sdg.pill": "Zone SDG",
+  "hub.sdg.title": "Ta journée bien outillée.",
+  "hub.sdg.intro": "Tes outils pour animer 30 jeunes au service de garde, sans t'épuiser.",
+  "hub.camp.pill": "Zone Camp",
+  "hub.camp.title": "Des étés mémorables.",
+  "hub.camp.intro": "Tout pour animer un été de camp complet : grands jeux, thèmes et plein air.",
+  "hub.active": "Apps prêtes à l'emploi",
+  "hub.coming": "Bientôt disponibles"
 }
