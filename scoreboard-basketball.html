@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zone Total Sport — Tableau Basketball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schoolbell&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bleu:#15a8e0;          /* DOMICILE */
+    --bleu-fonce:#0a7fb0;
+    --rose:#e91e7b;          /* VISITEUR */
+    --rose-fonce:#b8155f;
+    --jaune:#ffe600;
+    --vert:#3ddc6e;
+    --orange:#ff9f1c;
+    --encre:#0e3a4f;         /* texte sombre principal */
+    --panneau:#0d1b2a;       /* fond zone chrono */
+    --fond:#dff3fc;
+    --blanc:#ffffff;
+    --crème:#fffce8;
+    --ombre:5px 5px 0 rgba(14,58,79,.85);
+    --ombre-sm:3px 3px 0 rgba(14,58,79,.7);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  body{
+    font-family:'Patrick Hand', cursive;
+    background:
+      radial-gradient(circle at 12% 22%, rgba(21,168,224,.18), transparent 38%),
+      radial-gradient(circle at 88% 78%, rgba(233,30,123,.15), transparent 42%),
+      var(--fond);
+    background-attachment:fixed;
+    color:var(--encre);
+    min-height:100vh;
+    padding:18px;
+    /* texture pointillée discrète */
+    background-image:
+      radial-gradient(circle at 12% 22%, rgba(21,168,224,.18), transparent 38%),
+      radial-gradient(circle at 88% 78%, rgba(233,30,123,.15), transparent 42%),
+      radial-gradient(rgba(14,58,79,.07) 1.2px, transparent 1.2px);
+    background-size:auto,auto,22px 22px;
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;}
+
+  /* ---------- BARRE DU HAUT ---------- */
+  .topbar{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:16px;
+  }
+  .logo{
+    font-family:'Schoolbell', cursive;
+    font-size:32px;color:var(--encre);
+    display:flex;align-items:center;gap:8px;
+    letter-spacing:1px;margin-right:auto;
+  }
+  .logo .ball{font-size:34px;}
+  .sport-tab,.tool-btn{
+    font-family:'Schoolbell', cursive;
+    border:3px solid var(--encre);
+    border-radius:14px;
+    padding:8px 16px;font-size:18px;
+    background:var(--blanc);color:var(--encre);
+    cursor:pointer;box-shadow:var(--ombre-sm);
+    transition:transform .08s ease, box-shadow .08s ease;
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .sport-tab:hover,.tool-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 rgba(14,58,79,.7);}
+  .sport-tab:active,.tool-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(14,58,79,.7);}
+  .sport-tab.active{background:var(--jaune);}
+  .tool-btn.zoom{font-size:14px;padding:8px 12px;}
+
+  /* ---------- BANDEAU CHRONO CENTRAL ---------- */
+  .chrono-bar{
+    background:var(--panneau);
+    border:4px solid var(--encre);
+    border-radius:22px;
+    box-shadow:var(--ombre);
+    padding:14px 20px;
+    margin-bottom:16px;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;gap:16px;
+  }
+  .periode{
+    font-family:'Schoolbell', cursive;
+    background:var(--jaune);color:var(--encre);
+    border:3px solid var(--encre);border-radius:30px;
+    padding:5px 18px;font-size:18px;justify-self:start;
+    box-shadow:var(--ombre-sm);
+  }
+  .chrono-main{text-align:center;}
+  .chrono-main .time{
+    font-family:'Schoolbell', cursive;
+    font-size:88px;line-height:.9;color:var(--orange);
+    text-shadow:0 0 18px rgba(255,159,28,.65), 4px 4px 0 rgba(0,0,0,.35);
+    letter-spacing:2px;
+  }
+  .chrono-controls{display:flex;gap:8px;justify-content:center;margin-top:8px;}
+  .mini{
+    font-family:'Schoolbell', cursive;font-size:13px;
+    border:2px solid var(--encre);border-radius:10px;
+    background:var(--blanc);padding:4px 10px;cursor:pointer;
+    box-shadow:2px 2px 0 rgba(14,58,79,.6);
+  }
+  .mini.go{background:var(--vert);width:42px;height:42px;border-radius:50%;font-size:18px;padding:0;}
+  .mini:hover{transform:translate(-1px,-1px);}
+  /* chrono de tir : à droite, clairement séparé et plus petit */
+  .shotclock{justify-self:end;text-align:center;}
+  .shotclock .label{
+    font-family:'Schoolbell', cursive;font-size:13px;
+    color:var(--vert);letter-spacing:2px;text-transform:uppercase;
+  }
+  .shotclock .val{
+    font-family:'Schoolbell', cursive;font-size:54px;line-height:1;
+    color:var(--vert);text-shadow:0 0 14px rgba(61,220,110,.6);
+  }
+  .shotclock .presets{display:flex;gap:6px;justify-content:center;margin-top:4px;}
+
+  /* ---------- DEUX COLONNES ÉQUIPES ---------- */
+  .teams{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  }
+  .team{
+    border:4px solid var(--encre);
+    border-radius:22px;
+    box-shadow:var(--ombre);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .team.home{background:var(--bleu);}
+  .team.away{background:var(--rose);}
+
+  /* en-tête équipe : photo + nom, compact */
+  .team-head{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 16px;
+  }
+  .team-photo{
+    width:54px;height:54px;border-radius:14px;
+    background:rgba(255,255,255,.25);
+    border:2px dashed rgba(255,255,255,.8);
+    display:flex;align-items:center;justify-content:center;
+    font-size:24px;color:#fff;flex-shrink:0;cursor:pointer;
+  }
+  .team-name{
+    font-family:'Schoolbell', cursive;
+    font-size:26px;color:#fff;letter-spacing:1px;
+    text-shadow:2px 2px 0 rgba(0,0,0,.25);
+  }
+
+  /* LE SCORE GÉANT — la vedette */
+  .score{
+    font-family:'Schoolbell', cursive;
+    font-size:150px;line-height:.85;text-align:center;
+    color:#fff;
+    text-shadow:5px 5px 0 rgba(0,0,0,.28), 0 0 30px rgba(255,255,255,.25);
+    padding:4px 0 14px;
+    user-select:none;
+  }
+
+  /* boutons de points */
+  .points{
+    display:flex;gap:10px;padding:0 16px 12px;
+  }
+  .pt{
+    flex:1;font-family:'Schoolbell', cursive;font-size:30px;
+    border:3px solid var(--encre);border-radius:16px;
+    padding:14px 0;cursor:pointer;color:var(--encre);
+    box-shadow:var(--ombre-sm);
+    transition:transform .07s ease, box-shadow .07s ease;
+  }
+  .home .pt{background:#bfe9fb;}
+  .away .pt{background:#fbcfe3;}
+  .pt:hover{transform:translate(-1px,-1px);}
+  .pt:active{transform:translate(2px,3px);box-shadow:1px 1px 0 rgba(14,58,79,.6);}
+  .retrait{
+    margin:0 16px 14px;width:calc(100% - 32px);
+    font-family:'Patrick Hand', cursive;font-size:15px;
+    background:rgba(255,255,255,.85);border:2px solid var(--encre);
+    border-radius:12px;padding:7px 0;cursor:pointer;color:var(--encre);
+  }
+  .retrait:hover{background:#fff;}
+
+  /* zone infos secondaires : fautes + temps-morts, discrète */
+  .secondary{
+    background:rgba(255,255,255,.92);
+    border-top:3px solid var(--encre);
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:6px;padding:12px 16px;
+  }
+  .stat{display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .stat .stat-label{
+    font-family:'Schoolbell', cursive;font-size:14px;
+    letter-spacing:1px;color:var(--encre);text-transform:uppercase;
+  }
+  .stat-row{display:flex;align-items:center;gap:8px;}
+  .dots{display:flex;gap:4px;}
+  .dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--encre);background:transparent;}
+  .dot.on{background:var(--orange);}
+  .stat-val{
+    font-family:'Schoolbell', cursive;font-size:22px;min-width:20px;text-align:center;
+  }
+  .step{
+    font-family:'Schoolbell', cursive;font-size:18px;
+    width:30px;height:30px;border:2px solid var(--encre);border-radius:9px;
+    background:var(--blanc);cursor:pointer;line-height:1;
+    box-shadow:2px 2px 0 rgba(14,58,79,.5);
+  }
+  .step.plus{background:var(--jaune);}
+  .step:active{transform:translate(1px,1px);}
+
+  /* barre centrale fin de période + possession */
+  .midbar{
+    display:flex;gap:10px;justify-content:center;
+    margin-top:16px;
+  }
+  .midbar button{
+    font-family:'Schoolbell', cursive;font-size:18px;
+    border:3px solid var(--encre);border-radius:14px;
+    padding:10px 22px;cursor:pointer;box-shadow:var(--ombre-sm);
+    color:var(--encre);
+  }
+  .fin{background:var(--jaune);}
+  .poss{background:var(--blanc);}
+  .midbar button:hover{transform:translate(-1px,-1px);}
+
+  /* responsive : sur tablette étroite, on empile mais le score reste roi */
+  @media(max-width:760px){
+    .chrono-bar{grid-template-columns:1fr;gap:10px;}
+    .periode{justify-self:center;}
+    .shotclock{justify-self:center;}
+    .chrono-main .time{font-size:68px;}
+    .teams{grid-template-columns:1fr;}
+    .score{font-size:120px;}
+    .logo{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- BARRE DU HAUT -->
+  <div class="topbar">
+    <div class="logo"><span class="ball">🏀</span> BASKETBALL</div>
+    <button class="sport-tab active">🏀 Basketball</button>
+    <button class="sport-tab">🏒 Hockey</button>
+    <button class="sport-tab">🏈 Football</button>
+    <button class="tool-btn" title="Klaxon">📣</button>
+    <button class="tool-btn" title="Son">🔊</button>
+    <button class="tool-btn" title="Réglages">⚙️</button>
+    <button class="tool-btn" title="Réinitialiser">🗑️</button>
+    <button class="tool-btn" style="background:var(--vert)" title="Plein écran">⛶ Ajuster</button>
+  </div>
+
+  <!-- BANDEAU CHRONO -->
+  <div class="chrono-bar">
+    <div class="periode">PÉRIODE 1 / 4</div>
+
+    <div class="chrono-main">
+      <div class="time" id="gameClock">10:00</div>
+      <div class="chrono-controls">
+        <button class="mini go">▶</button>
+        <button class="mini">↺ Reset</button>
+        <button class="mini">Chrono 100%</button>
+      </div>
+    </div>
+
+    <div class="shotclock">
+      <div class="label">Chrono tir</div>
+      <div class="val">24</div>
+      <div class="presets">
+        <button class="mini">24s</button>
+        <button class="mini">30s</button>
+        <button class="mini">35s</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEUX ÉQUIPES -->
+  <div class="teams">
+
+    <!-- DOMICILE -->
+    <div class="team home">
+      <div class="team-head">
+        <div class="team-photo">🖼️</div>
+        <div class="team-name">DOMICILE</div>
+      </div>
+      <div class="score" id="scoreHome">0</div>
+      <div class="points">
+        <button class="pt" data-team="home" data-pts="1">+1</button>
+        <button class="pt" data-team="home" data-pts="2">+2</button>
+        <button class="pt" data-team="home" data-pts="3">+3</button>
+      </div>
+      <button class="retrait" data-team="home" data-pts="-1">Retirer 1 pt</button>
+      <div class="secondary">
+        <div class="stat">
+          <span class="stat-label">⚠ Fautes</span>
+          <div class="stat-row">
+            <button class="step">−</button>
+            <span class="stat-val" id="foulHome">0</span>
+            <button class="step plus">+</button>
+          </div>
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        </div>
+        <div class="stat">
+          <span class="stat-label">⏱ Temps-morts</span>
+          <div class="stat-row">
+            <button class="step">−</button>
+            <span class="stat-val" id="toHome">0</span>
+            <button class="step plus">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISITEUR -->
+    <div class="team away">
+      <div class="team-head">
+        <div class="team-photo">🖼️</div>
+        <div class="team-name">VISITEUR</div>
+      </div>
+      <div class="score" id="scoreAway">0</div>
+      <div class="points">
+        <button class="pt" data-team="away" data-pts="1">+1</button>
+        <button class="pt" data-team="away" data-pts="2">+2</button>
+        <button class="pt" data-team="away" data-pts="3">+3</button>
+      </div>
+      <button class="retrait" data-team="away" data-pts="-1">Retirer 1 pt</button>
+      <div class="secondary">
+        <div class="stat">
+          <span class="stat-label">⚠ Fautes</span>
+          <div class="stat-row">
+            <button class="step">−</button>
+            <span class="stat-val" id="foulAway">0</span>
+            <button class="step plus">+</button>
+          </div>
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        </div>
+        <div class="stat">
+          <span class="stat-label">⏱ Temps-morts</span>
+          <div class="stat-row">
+            <button class="step">−</button>
+            <span class="stat-val" id="toAway">0</span>
+            <button class="step plus">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BARRE CENTRALE -->
+  <div class="midbar">
+    <button class="poss">⟳ Possession</button>
+    <button class="fin">Fin de période</button>
+  </div>
+
+</div>
+
+<script>
+  // démo interactive minimale : score + fautes/temps-morts
+  const scores = {home:0, away:0};
+  document.querySelectorAll('.pt, .retrait').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t=b.dataset.team, p=parseInt(b.dataset.pts);
+      scores[t]=Math.max(0,scores[t]+p);
+      document.getElementById('score'+(t==='home'?'Home':'Away')).textContent=scores[t];
+    });
+  });
+  // fautes + temps-morts génériques
+  document.querySelectorAll('.secondary').forEach(sec=>{
+    sec.querySelectorAll('.stat').forEach(stat=>{
+      const val=stat.querySelector('.stat-val');
+      const dots=stat.querySelectorAll('.dot');
+      let n=0;
+      stat.querySelectorAll('.step').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          n=Math.max(0, n + (btn.classList.contains('plus')?1:-1));
+          val.textContent=n;
+          dots.forEach((d,i)=>d.classList.toggle('on', i<n));
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>
