@@ -72,6 +72,9 @@
     .pl-edesc { font-weight:600; resize:vertical; }
     .pl-platge { display:flex; align-items:center; gap:8px; }
     .pl-platge input { font-family:var(--font-impact); font-size:var(--fs-1); border:2px solid var(--zts-noir); border-radius:8px; padding:4px 8px; max-width:180px; }
+    /* Bloc coloré : toute la case prend la couleur, les sous-cases (texte) restent blanches */
+    .pl-block.pl-tinted { gap:var(--space-3); }
+    .pl-block.pl-tinted > div { background:#fff; border-radius:10px; padding:8px 12px; }
     /* Détail cours ÉP — fiche complète style mockup */
     .pl-phase { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff;
       margin-top:var(--space-3); padding:var(--space-3) var(--space-4); border-left:10px solid var(--metier,#19B5C9); }
@@ -437,8 +440,8 @@
     }
     function editColor(key,val){
       editSet(key,'color',val);
-      var h=document.querySelector('[data-hk="'+key+'"]');
-      if(h){ h.style.background=val; h.style.color=pickText(val); h.style.borderRadius='8px'; h.style.padding='4px 8px'; }
+      var el=document.querySelector('.pl-block[data-hk="'+key+'"]');
+      if(el){ el.style.background=val; el.classList.add('pl-tinted'); }
     }
     function pickText(hex){ if(!hex) return ''; var c=hex.replace('#',''); if(c.length===3)c=c.split('').map(x=>x+x).join('');
       var r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);
@@ -452,8 +455,10 @@
     // Carte d'un bloc (vue ou édition) — m = bloc déjà fusionné avec les édits
     function cardHTML(m, key, flatIndex){
       var l=L();
+      var tint = m._color? ' pl-tinted':'';
+      var bstyle = m._color? ` style="background:${m._color};"`:'';
       if(editMode){
-        return `<div class="pl-block pl-edit">
+        return `<div class="pl-block pl-edit${tint}" data-hk="${key}"${bstyle}>
           <div class="pl-ecell">
             <input class="pl-ein pl-etime" value="${escAttr(m._hdr)}" oninput="editSet('${key}','heure',this.value)">
             <label class="pl-ecolwrap">🎨<input type="color" value="${m._color||'#cfd8e3'}" oninput="editColor('${key}',this.value)"></label>
@@ -464,10 +469,9 @@
           </div>
         </div>`;
       }
-      var hstyle = m._color? ` style="background:${m._color};color:${pickText(m._color)};border-radius:8px;padding:4px 8px;"`:'';
       var meta = (m.lieu?`<span>📍 ${esc(m.lieu)}</span>`:'')+(m.energie?`<span>⚡ ${esc(m.energie)}</span>`:'')+((m.materiel||[]).length?`<span>🎒 ${esc((m.materiel||[]).join(', '))}</span>`:'');
-      return `<div class="pl-block pl-click" role="button" tabindex="0" onclick="openBlock(${flatIndex})" onkeydown="if(event.key==='Enter')openBlock(${flatIndex})">
-        <div class="h" data-hk="${key}"${hstyle}>${esc(m._hdr)}</div>
+      return `<div class="pl-block pl-click${tint}" data-hk="${key}"${bstyle} role="button" tabindex="0" onclick="openBlock(${flatIndex})" onkeydown="if(event.key==='Enter')openBlock(${flatIndex})">
+        <div class="h">${esc(m._hdr)}</div>
         <div><div class="n">${esc(m.nom)} <span class="pl-more">${l.details} ›</span></div><div class="d">${esc(m.desc)}</div>
         <div class="pl-meta">${meta}</div></div>
       </div>`;
