@@ -33,7 +33,7 @@
     <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-4) 0 var(--space-3);" data-i18n="hub.active">Apps prêtes à l'emploi</h2>
     <div class="zts-grid" id="gridActive"></div>
 
-    <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-6) 0 var(--space-3); opacity:.8;" data-i18n="hub.coming">Bientôt disponibles</h2>
+    <h2 id="soonTitle" style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-6) 0 var(--space-3); opacity:.8;" data-i18n="hub.coming">Bientôt disponibles</h2>
     <div class="zts-grid" id="gridSoon"></div>
 
   </main>
@@ -61,16 +61,15 @@
       { icon:'🦺', url:'https://suppleance.zonetotalsport.ca', fr:{n:'Ma Suppléance',d:'Plans clé en main pour suppléants'}, en:{n:'My Substitute',d:'Turnkey plans for substitutes'} },
       { icon:'🌍', url:'https://zonetotalsport.ca/repertoire.html', fr:{n:'Répertoire mondial',d:"Profs d'ÉP du monde entier"}, en:{n:'World directory',d:'PE teachers worldwide'} },
       { icon:'✏️', url:'https://zonetotalsport.ca/blog.html', fr:{n:'Blog ÉPS',d:'23+ articles pratiques'}, en:{n:'PE Blog',d:'23+ practical articles'} },
-      { icon:'🤝', url:'https://zonetotalsport.ca/aidons-nous/', fr:{n:'Communauté ÉPS',d:'Forum Aidons-nous'}, en:{n:'PE Community',d:'Aidons-nous forum'} }
+      { icon:'🤝', url:'https://zonetotalsport.ca/aidons-nous/', fr:{n:'Communauté ÉPS',d:'Forum Aidons-nous'}, en:{n:'PE Community',d:'Aidons-nous forum'} },
+      { icon:'🏃', url:'apps/echauffements/', tag:'new', fr:{n:'Échauffements',d:'Routines par zone du corps et âge'}, en:{n:'Warm-ups',d:'Routines by body zone and age'} },
+      { icon:'🏅', url:'apps/olympiades-scolaires/', tag:'new', fr:{n:'Olympiades scolaires',d:'Épreuves clé en main + pointage'}, en:{n:'School olympics',d:'Turnkey events + scoring'} },
+      { icon:'🌧️', url:'apps/plan-b-meteo/', tag:'new', fr:{n:'Plan B météo',d:'Activités selon la météo'}, en:{n:'Weather plan B',d:'Activities by weather'} },
+      { icon:'🧩', url:'apps/enigmes/', tag:'new', fr:{n:'Énigmes & devinettes',d:'Casse-tête par âge, réponse révélée'}, en:{n:'Riddles & puzzles',d:'Brain teasers by age, reveal answer'} },
+      { icon:'🎤', url:'apps/comptines/', tag:'new', fr:{n:'Comptines & chansons',d:'Paroles originales + gestes'}, en:{n:'Rhymes & songs',d:'Original lyrics + gestures'} },
+      { icon:'🛡️', url:'apps/intervention-groupe/', tag:'new', fr:{n:'Intervention Groupe',d:'SOS crise + jeux inclusifs'}, en:{n:'Group Intervention',d:'Crisis SOS + inclusive games'} }
     ];
-    const SOON = [
-      { icon:'🏃', fr:{n:'Échauffements',d:'50+ routines par âge'}, en:{n:'Warm-ups',d:'50+ routines by age'} },
-      { icon:'🏅', fr:{n:'Olympiades scolaires',d:'Calendrier et épreuves'}, en:{n:'School olympics',d:'Schedule and events'} },
-      { icon:'🌧️', fr:{n:'Plan B météo',d:'Activités selon la météo'}, en:{n:'Weather plan B',d:'Activities by weather'} },
-      { icon:'🧩', fr:{n:'Énigmes & devinettes',d:'Casse-tête par âge'}, en:{n:'Riddles & puzzles',d:'Brain teasers by age'} },
-      { icon:'🎤', fr:{n:'Comptines & chansons',d:'Banque audio + paroles'}, en:{n:'Rhymes & songs',d:'Audio bank + lyrics'} },
-      { icon:'🛡️', fr:{n:'Intervention Groupe',d:'PWA tout-en-un : 60 jeux, SOS crise'}, en:{n:'Group Intervention',d:'All-in-one PWA: 60 games, crisis SOS'} }
-    ];
+    const SOON = [];
 
     // ===== Menu du jour ÉP (bilingue) =====
     const MENU = {
@@ -144,6 +143,9 @@
           <span class="zts-app-card__name">${a[L].n}</span>
           <span class="zts-app-card__desc">${a[L].d}</span>
         </div>`).join('');
+      const hasSoon = SOON.length>0;
+      document.getElementById('soonTitle').hidden = !hasSoon;
+      document.getElementById('gridSoon').hidden = !hasSoon;
     }
     document.addEventListener('zts:ready', renderHub);
     document.addEventListener('zts:langchange', renderHub);
