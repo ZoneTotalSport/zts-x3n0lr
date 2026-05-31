@@ -54,6 +54,11 @@
     .pl-block .h { font-family:var(--font-impact); font-size:var(--fs-2); }
     .pl-block .n { font-family:var(--font-body); font-weight:700; font-size:var(--fs-2); }
     .pl-block .d { font-family:var(--font-body); opacity:.85; font-size:var(--fs-1); margin-top:2px; }
+    .pl-block.pl-click { cursor:pointer; transition:transform .14s cubic-bezier(.34,1.56,.64,1), box-shadow .14s ease; }
+    .pl-block.pl-click:hover { transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--zts-noir); }
+    .pl-more { font-family:var(--font-fun); font-weight:700; font-size:var(--fs-1); opacity:.55; white-space:nowrap; }
+    .pl-ol { margin:6px 0 0; padding-left:20px; }
+    .pl-ol li { font-family:var(--font-body); font-weight:600; margin:4px 0; }
     /* Détail cours ÉP — fiche complète style mockup */
     .pl-phase { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff;
       margin-top:var(--space-3); padding:var(--space-3) var(--space-4); border-left:10px solid var(--metier,#19B5C9); }
@@ -143,7 +148,8 @@
         back:'↩︎ Changer de métier', search:'Rechercher…', soon:'Bientôt', count1:n=>`${n} cours`, countD:'Horaire de la journée',
         fav:'Favori', favOn:'★ Mes favoris', favOff:'☆ Mes favoris', favEmpty:'Aucun favori pour l\'instant — touche l\'étoile sur un cours pour le sauvegarder.', saved:'sauvegardé',
         print:'🖨️ Imprimer / PDF', materiel:'Matériel', intention:'Intention pédagogique', prep:'Préparation',
-        wk:'Semaine', day:'Jour', planB:'☔ Plan B météo', saison:'Saison', allSaisons:'Toute l\'année', loginNote:'(sauvegardé sur ton compte)', wdays:['Lun','Mar','Mer','Jeu','Ven'] },
+        wk:'Semaine', day:'Jour', planB:'☔ Plan B météo', saison:'Saison', allSaisons:'Toute l\'année', loginNote:'(sauvegardé sur ton compte)', wdays:['Lun','Mar','Mer','Jeu','Ven'],
+        details:'Détails', objectif:'Objectif', deroulement:'Déroulement', variantes:'Variantes', astuce:'Astuce' },
       en:{ pill:'Planning', title:'🗂️ Planning', intro:'A bank of complete, ready-to-use plans built for 3 real-world roles. Pick your role below to see what we prepared for you.',
         ep:'Physical education', epD:'360 lessons · 4 levels', epL:'60-min lesson plans, from preschool to 3rd cycle.',
         sdg:'Daycare', sdgD:'200 days · morning + evening', sdgL:'The full year, morning and evening blocks.',
@@ -151,7 +157,8 @@
         back:'↩︎ Change role', search:'Search…', soon:'Soon', count1:n=>`${n} lessons`, countD:'Day schedule',
         fav:'Favorite', favOn:'★ My favorites', favOff:'☆ My favorites', favEmpty:'No favorites yet — tap the star on a lesson to save it.', saved:'saved',
         print:'🖨️ Print / PDF', materiel:'Equipment', intention:'Teaching intent', prep:'Setup',
-        wk:'Week', day:'Day', planB:'☔ Weather plan B', saison:'Season', allSaisons:'All year', loginNote:'(saved to your account)', wdays:['Mon','Tue','Wed','Thu','Fri'] }
+        wk:'Week', day:'Day', planB:'☔ Weather plan B', saison:'Season', allSaisons:'All year', loginNote:'(saved to your account)', wdays:['Mon','Tue','Wed','Thu','Fri'],
+        details:'Details', objectif:'Goal', deroulement:'Steps', variantes:'Variations', astuce:'Tip' }
     };
     // Explication détaillée par métier (bandeau à l'entrée)
     var METIER_INFO = {
@@ -175,7 +182,7 @@
              li:['📅 Full 9 a.m.–4 p.m. schedule: 7 blocks per day','🎨 One theme per week (pirates, etc.) with big games and outdoors','☀️ Weather plan B for every week','🔎 Pick the week and age group'] } }
     };
     function L(){ return LBL[ZTS.getLang()]; }
-    var favOnly = false, UID = null;
+    var favOnly = false, UID = null, PL_BLOCKS = [];
 
     var EP_LEVELS = [
       { key:'maternelle', fr:'Maternelle', en:'Kindergarten', file:'data/ep-maternelle.json', ready:true },
@@ -372,6 +379,26 @@
     }
     window.epOpen=epOpen;
 
+    // ---------- Fiche détaillée d'un bloc (Camp / SDG) ----------
+    function openBlock(i){
+      var b=PL_BLOCKS[i]; if(!b) return; var l=L();
+      var meta=[];
+      if(b.heure) meta.push('🕐 '+b.heure); else if(b.type) meta.push('🏷️ '+b.type.replace('_',' '));
+      if(b.lieu) meta.push('📍 '+b.lieu);
+      if(b.energie) meta.push('⚡ '+b.energie);
+      document.getElementById('plModalBody').innerHTML=
+        `<h2 class="zts-modal__title">${esc(b.nom)}</h2>`+
+        `<div class="pl-meta" style="margin:8px 0;">${meta.map(m=>`<span>${m}</span>`).join('')}</div>`+
+        `<p style="font-family:var(--font-body);font-weight:600;">${esc(b.desc)}</p>`+
+        (b.but?`<span class="pl-lab">🎯 ${l.objectif}</span><p style="font-family:var(--font-body);font-weight:600;">${esc(b.but)}</p>`:'')+
+        (b.deroulement&&b.deroulement.length?`<span class="pl-lab">▶️ ${l.deroulement}</span><ol class="pl-ol">${b.deroulement.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>`:'')+
+        (b.materiel&&b.materiel.length?`<span class="pl-lab">🎒 ${l.materiel}</span><div class="pl-pills">${b.materiel.map(m=>`<span>${esc(m)}</span>`).join('')}</div>`:'')+
+        (b.variantes&&b.variantes.length?`<span class="pl-lab">🔀 ${l.variantes}</span><ul class="pl-ol">${b.variantes.map(v=>`<li>${esc(v)}</li>`).join('')}</ul>`:'')+
+        (b.astuce?`<div class="pl-extra"><span class="pl-lab">💡 ${l.astuce}</span><p style="font-family:var(--font-body);font-weight:600;margin:4px 0 0;">${esc(b.astuce)}</p></div>`:'');
+      ZTS.openModal('plModal');
+    }
+    window.openBlock=openBlock;
+
     // ---------- Camp ----------
     function renderCamp(){
       var l=L(), lang=ZTS.getLang(), out=document.getElementById('plOut');
@@ -381,9 +408,10 @@
         var w=weeks.find(x=>x.semaine===state.campWeek)||weeks[0]; var g=w.groupes[state.campAge];
         document.getElementById('plCount').textContent=`${l.wk} ${w.semaine} · ${w.theme} · ${state.campAge} ${lang==='fr'?'ans':'yrs'}`;
         out.className='';
+        PL_BLOCKS = g.blocs.slice();
         out.innerHTML=
           `<div class="pl-sched">`+
-          g.blocs.map(b=>`<div class="pl-block"><div class="h">${b.heure}</div><div><div class="n">${b.nom}</div><div class="d">${b.desc}</div>
+          g.blocs.map((b,i)=>`<div class="pl-block pl-click" role="button" tabindex="0" onclick="openBlock(${i})" onkeydown="if(event.key==='Enter')openBlock(${i})"><div class="h">${b.heure}</div><div><div class="n">${b.nom} <span class="pl-more">${l.details} ›</span></div><div class="d">${b.desc}</div>
              <div class="pl-meta"><span>📍 ${b.lieu}</span><span>⚡ ${b.energie}</span>${(b.materiel||[]).length?`<span>🎒 ${(b.materiel||[]).join(', ')}</span>`:''}</div></div></div>`).join('')+
           `</div>`+
           `<div class="pl-block" style="margin-top:var(--space-3);grid-template-columns:1fr;"><div><div class="n">${l.planB}</div><div class="d">${w.plan_b_meteo}</div></div></div>`;
@@ -397,13 +425,14 @@
         var d=days.find(x=>x.semaine===state.sdgWeek && x.jourSem===state.sdgJourSem)||days[0];
         document.getElementById('plCount').textContent=`${d.label}${d.theme?' · '+d.theme:''}`;
         out.className='';
-        function block(title,b){
+        PL_BLOCKS = [...d.blocs.matin.items, ...d.blocs.aprem.items];
+        var off=d.blocs.matin.items.length;
+        function block(title,b,base){
           return `<h3 style="font-family:var(--font-impact);font-size:var(--fs-3);margin:var(--space-4) 0 var(--space-2);">${title} · ${b.plage}</h3>`+
-            `<div class="pl-sched">`+b.items.map(it=>`<div class="pl-block"><div class="h">${it.type.replace('_',' ')}</div><div><div class="n">${it.nom}</div><div class="d">${it.desc}</div>
-              <div class="pl-meta"><span>📍 ${it.lieu}</span>${(it.materiel||[]).length?`<span>🎒 ${(it.materiel||[]).join(', ')}</span>`:''}</div></div></div>`).join('')+`</div>`;
+            `<div class="pl-sched">`+b.items.map((it,k)=>{var i=base+k;return `<div class="pl-block pl-click" role="button" tabindex="0" onclick="openBlock(${i})" onkeydown="if(event.key==='Enter')openBlock(${i})"><div class="h">${it.type.replace('_',' ')}</div><div><div class="n">${it.nom} <span class="pl-more">${l.details} ›</span></div><div class="d">${it.desc}</div>
+              <div class="pl-meta"><span>📍 ${it.lieu}</span>${(it.materiel||[]).length?`<span>🎒 ${(it.materiel||[]).join(', ')}</span>`:''}</div></div></div>`;}).join('')+`</div>`;
         }
-        out.innerHTML = block('🌅 '+(ZTS.getLang()==='fr'?'Matin':'Morning'), d.blocs.matin) + block('🌆 '+(ZTS.getLang()==='fr'?'Après-midi':'Afternoon'), d.blocs.aprem) +
-          `<p class="pl-empty">⛏️ ${l.soon} — jours 2 à 200 en préparation.</p>`;
+        out.innerHTML = block('🌅 '+(ZTS.getLang()==='fr'?'Matin':'Morning'), d.blocs.matin, 0) + block('🌆 '+(ZTS.getLang()==='fr'?'Après-midi':'Afternoon'), d.blocs.aprem, off);
       });
     }
 
