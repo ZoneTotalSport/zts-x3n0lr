@@ -238,13 +238,22 @@ a { color:inherit; }
 .zts-app-card__desc { font-family:var(--font-body); font-size:var(--fs-1); opacity:.85; }
 .zts-app-card.is-soon { opacity:.78; }
 
-/* ============ CARTES D'APP DES HUBS — couleur du métier (comme les boutons de corps de métier) ============ */
+/* ============ CARTES D'APP DES HUBS — style « porte métier » de la home : blanc + éclaboussure de couleur (pas tout coloré) ============ */
 body[data-metier] #gridActive .zts-app-card,
-body[data-metier] #gridSoon .zts-app-card {
-  background: var(--metier); color: var(--zts-noir);
+body[data-metier] #gridSoon .zts-app-card { position:relative; overflow:hidden; }
+body[data-metier] #gridActive .zts-app-card::before,
+body[data-metier] #gridSoon .zts-app-card::before {
+  content:""; position:absolute; top:-42%; right:-28%; width:165px; height:165px; border-radius:50%;
+  background:var(--metier); opacity:.22; z-index:0; pointer-events:none;
+  transition:transform .4s ease, opacity .3s ease;
 }
-body[data-metier] #gridActive .zts-app-card .zts-app-card__desc,
-body[data-metier] #gridSoon .zts-app-card .zts-app-card__desc { opacity:.9; }
+body[data-metier] #gridActive .zts-app-card:hover::before,
+body[data-metier] #gridSoon .zts-app-card:hover::before { transform:scale(1.45); opacity:.34; }
+/* le contenu reste au-dessus de l'éclaboussure */
+body[data-metier] #gridActive .zts-app-card > *,
+body[data-metier] #gridSoon .zts-app-card > * { position:relative; z-index:1; }
+body[data-metier] #gridActive .zts-app-card .zts-tag,
+body[data-metier] #gridSoon .zts-app-card .zts-tag { z-index:2; }
 
 /* ============ BOUTONS-FILTRES DES APPS — couleur métier + rebond (style cartes métier) ============ */
 /* Cascade sur toutes les apps via body[data-metier] (override les .jr-chip/.pl-chip locaux blancs). */
