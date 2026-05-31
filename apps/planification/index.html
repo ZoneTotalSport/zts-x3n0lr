@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<!-- App PLANIFICATION ZTS — squelette de validation (modèle de données + import maternelle + exemples Camp/SDG).
+     Design partagé + gate d'inscription. Contenu ÉP maternelle réel ; Camp/SDG = 1 exemple chacun. -->
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planification — Zone Total Sport</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Bangers&family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/zts.css">
+  <style>
+    /* Sélecteur de métier */
+    .pl-pick { display:grid; gap:var(--space-4); grid-template-columns:1fr; margin:var(--space-5) 0; }
+    @media(min-width:760px){ .pl-pick{ grid-template-columns:repeat(3,1fr); } }
+    .pl-metier { cursor:pointer; border:var(--bord); border-radius:var(--r-3); box-shadow:var(--ombre); background:#fff;
+      padding:var(--space-4); text-align:center; transition:transform .12s ease; }
+    .pl-metier:hover { transform:translateY(-4px); }
+    .pl-metier img { width:100%; max-width:160px; height:auto; }
+    .pl-metier h2 { font-family:var(--font-impact); font-size:var(--fs-4); margin:8px 0 4px; }
+    .pl-metier p { font-family:var(--font-body); font-weight:700; opacity:.8; margin:0; }
+    .pl-metier.ep { border-bottom:10px solid #19B5C9; }
+    .pl-metier.sdg { border-bottom:10px solid #2BB673; }
+    .pl-metier.camp { border-bottom:10px solid #FF8A3D; }
+    /* Contrôles */
+    .pl-bar { display:flex; flex-wrap:wrap; gap:var(--space-3); align-items:center; margin-bottom:var(--space-3); }
+    .pl-search { flex:1 1 200px; min-width:160px; font-family:var(--font-body); font-weight:700; font-size:var(--fs-2);
+      padding:11px 16px; border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff; }
+    .pl-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:var(--space-3); }
+    .pl-chip { font-family:var(--font-fun); font-weight:700; font-size:var(--fs-1); cursor:pointer;
+      padding:7px 14px; border:var(--bord); border-radius:var(--r-pill); background:#fff; box-shadow:var(--ombre); }
+    .pl-chip.active { background:var(--metier); color:var(--ink); }
+    .pl-chip[disabled] { opacity:.45; cursor:not-allowed; }
+    .pl-count { font-family:var(--font-fun); font-weight:700; opacity:.75; margin:0 0 var(--space-3); }
+    .pl-card { cursor:pointer; position:relative; }
+    .pl-fav { position:absolute; top:8px; right:10px; font-size:22px; cursor:pointer; background:none; border:0; line-height:1; }
+    .pl-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+    .pl-meta span { font-family:var(--font-fun); font-weight:700; font-size:var(--fs-1);
+      background:var(--metier-tint,rgba(0,0,0,.05)); border:2px solid var(--zts-noir); border-radius:var(--r-pill); padding:1px 10px; }
+    .pl-empty { font-family:var(--font-fun); font-weight:700; opacity:.7; padding:var(--space-4); }
+    .pl-back { font-family:var(--font-fun); font-weight:700; cursor:pointer; background:none; border:0; text-decoration:underline; margin-bottom:var(--space-3); }
+    /* Vues planning (Camp/SDG) */
+    .pl-sched { display:grid; gap:var(--space-3); }
+    .pl-block { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff; padding:var(--space-3) var(--space-4);
+      display:grid; grid-template-columns:96px 1fr; gap:var(--space-3); align-items:start; }
+    .pl-block .h { font-family:var(--font-impact); font-size:var(--fs-2); }
+    .pl-block .n { font-family:var(--font-body); font-weight:700; font-size:var(--fs-2); }
+    .pl-block .d { font-family:var(--font-body); opacity:.85; font-size:var(--fs-1); margin-top:2px; }
+    /* Détail cours ÉP */
+    .pl-phase { border-top:3px solid var(--zts-noir); margin-top:var(--space-3); padding-top:var(--space-3); }
+    .pl-phase h3 { font-family:var(--font-impact); font-size:var(--fs-2); margin:0 0 4px; }
+    .pl-phase ul { margin:6px 0 0 0; padding-left:20px; }
+    .pl-phase li { font-family:var(--font-body); font-weight:600; margin:4px 0; }
+    .pl-sub { font-family:var(--font-fun); font-weight:700; opacity:.7; margin-top:8px; }
+    .pl-print { font-family:var(--font-impact); font-size:var(--fs-1); cursor:pointer; padding:8px 16px;
+      border:var(--bord); border-radius:var(--r-pill); background:var(--metier); color:var(--ink); box-shadow:var(--ombre); }
+    @media print { [data-zts-header],[data-zts-footer],.zts-subnav,.pl-bar,.pl-chips,.zts-modal__close,.pl-print,#ztg-out{ display:none !important; } }
+  </style>
+</head>
+<body>
+
+  <div data-zts-header></div>
+
+  <nav class="zts-subnav">
+    <a href="../../index.html" data-i18n="subnav.back_home">← Accueil</a>
+  </nav>
+
+  <main class="zts-container" style="padding-top:var(--space-4); padding-bottom:var(--space-7);">
+    <section class="zts-metier-banner" style="margin-bottom:var(--space-4);">
+      <div>
+        <span class="zts-metier-banner__pill" id="plPill">Planification</span>
+        <h1 style="margin-top:10px;" id="plTitle">🗂️ Planification ZTS</h1>
+        <p style="margin-top:8px; font-family:var(--font-body); font-size:var(--fs-2); max-width:62ch;" id="plIntro"></p>
+      </div>
+    </section>
+
+    <!-- Sélecteur de métier -->
+    <section id="plSelect">
+      <div class="pl-pick">
+        <div class="pl-metier ep" role="button" tabindex="0" onclick="plPick('ep')" onkeydown="if(event.key==='Enter')plPick('ep')">
+          <img src="../../perso-ep.png" alt="Éducation physique"><h2 id="m-ep">Éducation physique</h2><p id="m-ep-d">360 cours · 4 niveaux</p>
+        </div>
+        <div class="pl-metier sdg" role="button" tabindex="0" onclick="plPick('sdg')" onkeydown="if(event.key==='Enter')plPick('sdg')">
+          <img src="../../perso-sdg.png" alt="Service de garde"><h2 id="m-sdg">Service de garde</h2><p id="m-sdg-d">200 jours · matin + soir</p>
+        </div>
+        <div class="pl-metier camp" role="button" tabindex="0" onclick="plPick('camp')" onkeydown="if(event.key==='Enter')plPick('camp')">
+          <img src="../../perso-camp.png" alt="Camp de jour"><h2 id="m-camp">Camp de jour</h2><p id="m-camp-d">7 semaines · 3 groupes</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vue métier -->
+    <section id="plView" hidden>
+      <button class="pl-back" id="plBack" onclick="plReset()">↩︎ Changer de métier</button>
+      <div class="pl-chips" id="plLevels"></div>
+      <div class="pl-bar"><input type="search" class="pl-search" id="plSearch" oninput="plRender()"></div>
+      <div class="pl-chips" id="plFilters"></div>
+      <p class="pl-count" id="plCount"></p>
+      <div id="plOut"></div>
+    </section>
+  </main>
+
+  <div class="zts-modal" id="plModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="zts-modal__inner">
+      <button class="zts-modal__close" data-close aria-label="Fermer">✕</button>
+      <div id="plModalBody"></div>
+    </div>
+  </div>
+
+  <div data-zts-footer></div>
+
+  <script src="../../shared/zts.js"></script>
+  <script src="../../shared/zts-gate.js"></script>
+  <script>
+    var LBL = {
+      fr:{ pill:'Planification', title:'🗂️ Planification ZTS', intro:'Choisis ton métier : des planifications complètes, prêtes à utiliser. (Aperçu : maternelle ÉP complète + 1 exemple Camp et Service de garde.)',
+        ep:'Éducation physique', epD:'360 cours · 4 niveaux', sdg:'Service de garde', sdgD:'200 jours · matin + soir', camp:'Camp de jour', campD:'7 semaines · 3 groupes',
+        back:'↩︎ Changer de métier', search:'Rechercher…', soon:'Bientôt', count1:n=>`${n} cours`, countD:'Horaire de la journée',
+        fav:'Favori (compte requis)', print:'🖨️ Imprimer / PDF', materiel:'Matériel', intention:'Intention pédagogique', prep:'Préparation',
+        wk:'Semaine', day:'Jour', planB:'☔ Plan B météo' },
+      en:{ pill:'Planning', title:'🗂️ ZTS Planning', intro:'Pick your role: complete, ready-to-use plans. (Preview: full PE kindergarten + 1 Camp and Daycare sample.)',
+        ep:'Physical education', epD:'360 lessons · 4 levels', sdg:'Daycare', sdgD:'200 days · morning + evening', camp:'Day camp', campD:'7 weeks · 3 groups',
+        back:'↩︎ Change role', search:'Search…', soon:'Soon', count1:n=>`${n} lessons`, countD:'Day schedule',
+        fav:'Favorite (account required)', print:'🖨️ Print / PDF', materiel:'Equipment', intention:'Teaching intent', prep:'Setup',
+        wk:'Week', day:'Day', planB:'☔ Weather plan B' }
+    };
+    function L(){ return LBL[ZTS.getLang()]; }
+
+    var EP_LEVELS = [
+      { key:'maternelle', fr:'Maternelle', en:'Kindergarten', file:'data/ep-maternelle.json', ready:true },
+      { key:'1er', fr:'1er cycle', en:'1st cycle', ready:false },
+      { key:'2e', fr:'2e cycle', en:'2nd cycle', ready:false },
+      { key:'3e', fr:'3e cycle', en:'3rd cycle', ready:false }
+    ];
+    var CAMP_AGES = ['5-7','8-10','11-12'];
+    var state = { metier:null, epLevel:'maternelle', campWeek:0, campAge:'5-7', cache:{} };
+    var FAV = loadFav();
+    function loadFav(){ try{ return new Set(JSON.parse(localStorage.getItem('zts_planif_fav')||'[]')); }catch(e){ return new Set(); } }
+    function saveFav(){ try{ localStorage.setItem('zts_planif_fav', JSON.stringify([...FAV])); }catch(e){} }
+
+    function getJSON(file){
+      if(state.cache[file]) return Promise.resolve(state.cache[file]);
+      return fetch(file).then(r=>r.json()).then(d=>{ state.cache[file]=d; return d; });
+    }
+
+    // ---------- statique ----------
+    function plStatic(){
+      var l=L();
+      document.getElementById('plPill').textContent=l.pill;
+      document.getElementById('plTitle').textContent=l.title;
+      document.getElementById('plIntro').textContent=l.intro;
+      document.getElementById('plSearch').placeholder=l.search;
+      document.getElementById('plBack').textContent=l.back;
+      document.getElementById('m-ep').textContent=l.ep; document.getElementById('m-ep-d').textContent=l.epD;
+      document.getElementById('m-sdg').textContent=l.sdg; document.getElementById('m-sdg-d').textContent=l.sdgD;
+      document.getElementById('m-camp').textContent=l.camp; document.getElementById('m-camp-d').textContent=l.campD;
+    }
+
+    // ---------- navigation ----------
+    function plPick(m){
+      state.metier=m;
+      document.body.setAttribute('data-metier', m);
+      document.getElementById('plSelect').hidden=true;
+      document.getElementById('plView').hidden=false;
+      buildLevels(); plRender();
+    }
+    function plReset(){
+      state.metier=null;
+      document.body.removeAttribute('data-metier');
+      document.getElementById('plView').hidden=true;
+      document.getElementById('plSelect').hidden=false;
+      document.getElementById('plSearch').value='';
+    }
+    window.plPick=plPick; window.plReset=plReset;
+
+    // ---------- chips de niveau / semaine / jour ----------
+    function buildLevels(){
+      var l=L(), lang=ZTS.getLang(), box=document.getElementById('plLevels');
+      if(state.metier==='ep'){
+        box.innerHTML = EP_LEVELS.map(lv=>{
+          var lab = lv[lang] + (lv.ready?'':' · '+l.soon);
+          return `<button class="pl-chip${state.epLevel===lv.key?' active':''}" ${lv.ready?'':'disabled'} onclick="state.epLevel='${lv.key}';buildLevels();plRender()">${lab}</button>`;
+        }).join('');
+      } else if(state.metier==='camp'){
+        box.innerHTML = CAMP_AGES.map(a=>`<button class="pl-chip${state.campAge===a?' active':''}" onclick="state.campAge='${a}';plRender()">${a} ${lang==='fr'?'ans':'yrs'}</button>`).join('');
+      } else { box.innerHTML=''; }
+    }
+    window.state=state; window.buildLevels=buildLevels;
+
+    // ---------- rendu principal ----------
+    function plRender(){
+      plStatic();
+      if(state.metier==='ep') return renderEP();
+      if(state.metier==='camp') return renderCamp();
+      if(state.metier==='sdg') return renderSDG();
+    }
+    window.plRender=plRender;
+
+    // ---------- ÉP ----------
+    function renderEP(){
+      var l=L(), lv=EP_LEVELS.find(x=>x.key===state.epLevel);
+      var out=document.getElementById('plOut'), fbox=document.getElementById('plFilters');
+      if(!lv.ready){ fbox.innerHTML=''; document.getElementById('plCount').textContent=''; out.innerHTML=`<p class="pl-empty">⛏️ ${l.soon} — niveau en préparation.</p>`; return; }
+      getJSON(lv.file).then(cours=>{
+        // filtres PFEQ dérivés
+        var pfeqs=[...new Set(cours.flatMap(c=>c.pfeq||[]))].sort();
+        fbox.dataset.pfeq = fbox.dataset.pfeq||'*';
+        fbox.innerHTML = `<button class="pl-chip${fbox.dataset.pfeq==='*'?' active':''}" onclick="document.getElementById('plFilters').dataset.pfeq='*';plRender()">PFEQ ✓</button>`+
+          pfeqs.map(p=>`<button class="pl-chip${fbox.dataset.pfeq===p?' active':''}" onclick="document.getElementById('plFilters').dataset.pfeq='${p}';plRender()">${p}</button>`).join('');
+        var q=(document.getElementById('plSearch').value||'').toLowerCase();
+        var pf=fbox.dataset.pfeq;
+        var list=cours.filter(c=>
+          (pf==='*'||(c.pfeq||[]).includes(pf)) &&
+          (!q || (c.titre+' '+(c.intention||'')).toLowerCase().includes(q)));
+        document.getElementById('plCount').textContent=l.count1(list.length);
+        out.className='zts-grid';
+        out.innerHTML=list.map(c=>`
+          <div class="zts-app-card pl-card" role="button" tabindex="0" onclick="epOpen(${c.id})" onkeydown="if(event.key==='Enter')epOpen(${c.id})">
+            <button class="pl-fav" title="${l.fav}" onclick="event.stopPropagation();toggleFav(${c.id},this)">${FAV.has('ep-'+c.id)?'★':'☆'}</button>
+            <span class="zts-app-card__icon">📋</span>
+            <span class="zts-app-card__name">#${c.id} · ${c.titre}</span>
+            <span class="zts-app-card__desc">${(c.intention||'').slice(0,90)}…</span>
+            <div class="pl-meta"><span>⏱️ ${c.duree||'60 min'}</span>${(c.pfeq||[]).slice(0,3).map(p=>`<span>${p}</span>`).join('')}</div>
+          </div>`).join('') || `<p class="pl-empty">Aucun cours.</p>`;
+      });
+    }
+    function toggleFav(id,btn){ var k='ep-'+id; if(FAV.has(k))FAV.delete(k); else FAV.add(k); saveFav(); if(btn)btn.textContent=FAV.has(k)?'★':'☆'; }
+    window.toggleFav=toggleFav;
+    function phaseHtml(p,label){
+      if(!p) return '';
+      var bits='';
+      if(p.deroulement&&p.deroulement.length) bits+='<ul>'+p.deroulement.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+      return `<div class="pl-phase"><h3>${label}${p.nom?' — '+p.nom:''}</h3>${p.but?`<p style="font-weight:700;opacity:.85;">${p.but}</p>`:''}${bits}</div>`;
+    }
+    function epOpen(id){
+      var lv=EP_LEVELS.find(x=>x.key===state.epLevel), l=L();
+      getJSON(lv.file).then(cours=>{
+        var c=cours.find(x=>x.id===id); if(!c) return;
+        document.getElementById('plModalBody').innerHTML=
+          `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+             <h2 class="zts-modal__title" style="margin:0;">📋 #${c.id} · ${c.titre}</h2>
+             <button class="pl-print" onclick="window.print()">${l.print}</button>
+           </div>
+           <div class="pl-meta" style="margin:8px 0;"><span>${c.niveau||''}</span><span>⏱️ ${c.duree||''}</span>${(c.pfeq||[]).map(p=>`<span>${p}</span>`).join('')}</div>
+           <p class="pl-sub">${l.intention}</p><p style="font-family:var(--font-body);font-weight:600;">${c.intention||''}</p>
+           ${c.materiel&&c.materiel.length?`<p class="pl-sub">${l.materiel}</p><ul class="pl-phase" style="border:0;margin:0;padding-left:20px;">${c.materiel.map(m=>`<li>${m}</li>`).join('')}</ul>`:''}
+           ${phaseHtml(c.mise_en_train,'① Mise en train')}
+           ${phaseHtml(c.activite_1,'② Activité 1')}
+           ${phaseHtml(c.activite_2,'③ Activité 2')}
+           ${phaseHtml(c.retour,'④ Retour au calme')}`;
+        ZTS.openModal('plModal');
+      });
+    }
+    window.epOpen=epOpen;
+
+    // ---------- Camp ----------
+    function renderCamp(){
+      var l=L(), out=document.getElementById('plOut'); document.getElementById('plFilters').innerHTML='';
+      getJSON('data/camp.sample.json').then(weeks=>{
+        var w=weeks[state.campWeek]; var g=w.groupes[state.campAge];
+        document.getElementById('plCount').textContent=`${l.wk} ${w.semaine} · ${w.theme} · ${state.campAge} ${ZTS.getLang()==='fr'?'ans':'yrs'}`;
+        out.className='';
+        out.innerHTML=
+          `<div class="pl-sched">`+
+          g.blocs.map(b=>`<div class="pl-block"><div class="h">${b.heure}</div><div><div class="n">${b.nom}</div><div class="d">${b.desc}</div>
+             <div class="pl-meta"><span>📍 ${b.lieu}</span><span>⚡ ${b.energie}</span>${(b.materiel||[]).length?`<span>🎒 ${(b.materiel||[]).join(', ')}</span>`:''}</div></div></div>`).join('')+
+          `</div>`+
+          `<div class="pl-block" style="margin-top:var(--space-3);grid-template-columns:1fr;"><div><div class="n">${l.planB}</div><div class="d">${w.plan_b_meteo}</div></div></div>`+
+          `<p class="pl-empty">⛏️ ${l.soon} — semaines 2 à 7 en préparation.</p>`;
+      });
+    }
+
+    // ---------- SDG ----------
+    function renderSDG(){
+      var l=L(), out=document.getElementById('plOut'); document.getElementById('plFilters').innerHTML='';
+      getJSON('data/sdg.sample.json').then(days=>{
+        var d=days[0];
+        document.getElementById('plCount').textContent=`${d.label}`;
+        out.className='';
+        function block(title,b){
+          return `<h3 style="font-family:var(--font-impact);font-size:var(--fs-3);margin:var(--space-4) 0 var(--space-2);">${title} · ${b.plage}</h3>`+
+            `<div class="pl-sched">`+b.items.map(it=>`<div class="pl-block"><div class="h">${it.type.replace('_',' ')}</div><div><div class="n">${it.nom}</div><div class="d">${it.desc}</div>
+              <div class="pl-meta"><span>📍 ${it.lieu}</span>${(it.materiel||[]).length?`<span>🎒 ${(it.materiel||[]).join(', ')}</span>`:''}</div></div></div>`).join('')+`</div>`;
+        }
+        out.innerHTML = block('🌅 '+(ZTS.getLang()==='fr'?'Matin':'Morning'), d.blocs.matin) + block('🌆 '+(ZTS.getLang()==='fr'?'Après-midi':'Afternoon'), d.blocs.aprem) +
+          `<p class="pl-empty">⛏️ ${l.soon} — jours 2 à 200 en préparation.</p>`;
+      });
+    }
+
+    document.addEventListener('zts:ready', function(){ plStatic(); });
+    document.addEventListener('zts:langchange', function(){ plStatic(); if(state.metier){ buildLevels(); plRender(); } });
+  </script>
+</body>
+</html>
