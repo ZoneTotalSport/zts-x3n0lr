@@ -238,6 +238,14 @@ a { color:inherit; }
 .zts-app-card__desc { font-family:var(--font-body); font-size:var(--fs-1); opacity:.85; }
 .zts-app-card.is-soon { opacity:.78; }
 
+/* ============ CARTES D'APP DES HUBS — couleur du métier (comme les boutons de corps de métier) ============ */
+body[data-metier] #gridActive .zts-app-card,
+body[data-metier] #gridSoon .zts-app-card {
+  background: var(--metier); color: var(--zts-noir);
+}
+body[data-metier] #gridActive .zts-app-card .zts-app-card__desc,
+body[data-metier] #gridSoon .zts-app-card .zts-app-card__desc { opacity:.9; }
+
 /* ============ BOUTONS-FILTRES DES APPS — couleur métier + rebond (style cartes métier) ============ */
 /* Cascade sur toutes les apps via body[data-metier] (override les .jr-chip/.pl-chip locaux blancs). */
 body[data-metier] .jr-chip:not([disabled]),
