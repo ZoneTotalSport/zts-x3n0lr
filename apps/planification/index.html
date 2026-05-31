@@ -47,12 +47,23 @@
     .pl-block .h { font-family:var(--font-impact); font-size:var(--fs-2); }
     .pl-block .n { font-family:var(--font-body); font-weight:700; font-size:var(--fs-2); }
     .pl-block .d { font-family:var(--font-body); opacity:.85; font-size:var(--fs-1); margin-top:2px; }
-    /* Détail cours ÉP */
-    .pl-phase { border-top:3px solid var(--zts-noir); margin-top:var(--space-3); padding-top:var(--space-3); }
-    .pl-phase h3 { font-family:var(--font-impact); font-size:var(--fs-2); margin:0 0 4px; }
-    .pl-phase ul { margin:6px 0 0 0; padding-left:20px; }
+    /* Détail cours ÉP — fiche complète style mockup */
+    .pl-phase { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff;
+      margin-top:var(--space-3); padding:var(--space-3) var(--space-4); border-left:10px solid var(--metier,#19B5C9); }
+    .pl-phase h3 { font-family:var(--font-impact); font-size:var(--fs-2); margin:0 0 2px; }
+    .pl-phase .but { font-family:var(--font-body); font-weight:700; opacity:.85; margin:2px 0 8px; }
+    .pl-phase ul, .pl-phase ol { margin:4px 0 0 0; padding-left:20px; }
     .pl-phase li { font-family:var(--font-body); font-weight:600; margin:4px 0; }
-    .pl-sub { font-family:var(--font-fun); font-weight:700; opacity:.7; margin-top:8px; }
+    .pl-lab { font-family:var(--font-fun); font-weight:700; font-size:var(--fs-1); display:block;
+      margin-top:10px; text-transform:uppercase; letter-spacing:.03em; opacity:.8; }
+    .pl-say { font-family:var(--font-hand,var(--font-body)); font-style:italic; }
+    .pl-warn li { color:#9a2820; }
+    .pl-pills { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+    .pl-pills span { font-family:var(--font-fun); font-weight:700; font-size:var(--fs-1);
+      border:2px solid var(--zts-noir); border-radius:var(--r-pill); padding:1px 10px; background:rgba(0,0,0,.04); }
+    .pl-pdur { font-family:var(--font-fun); font-weight:700; font-size:var(--fs-1); float:right; opacity:.7; }
+    .pl-extra { border:2px dashed var(--zts-noir); border-radius:var(--r-2); padding:var(--space-3); margin-top:var(--space-3); }
+    .pl-sub { font-family:var(--font-fun); font-weight:700; opacity:.7; margin-top:12px; }
     .pl-print { font-family:var(--font-impact); font-size:var(--fs-1); cursor:pointer; padding:8px 16px;
       border:var(--bord); border-radius:var(--r-pill); background:var(--metier); color:var(--ink); box-shadow:var(--ombre); }
     @media print { [data-zts-header],[data-zts-footer],.zts-subnav,.pl-bar,.pl-chips,.zts-modal__close,.pl-print,#ztg-out{ display:none !important; } }
@@ -227,28 +238,53 @@
     }
     function toggleFav(id,btn){ var k='ep-'+id; if(FAV.has(k))FAV.delete(k); else FAV.add(k); saveFav(); if(btn)btn.textContent=FAV.has(k)?'★':'☆'; }
     window.toggleFav=toggleFav;
+    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+    function listBlock(label, arr, cls){
+      if(!arr || !arr.length) return '';
+      return `<span class="pl-lab">${label}</span><ul class="${cls||''}">${arr.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+    }
+    function pillsBlock(label, arr){
+      if(!arr || !arr.length) return '';
+      return `<span class="pl-lab">${label}</span><div class="pl-pills">${arr.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`;
+    }
     function phaseHtml(p,label){
       if(!p) return '';
-      var bits='';
-      if(p.deroulement&&p.deroulement.length) bits+='<ul>'+p.deroulement.map(x=>`<li>${x}</li>`).join('')+'</ul>';
-      return `<div class="pl-phase"><h3>${label}${p.nom?' — '+p.nom:''}</h3>${p.but?`<p style="font-weight:700;opacity:.85;">${p.but}</p>`:''}${bits}</div>`;
+      return `<div class="pl-phase">
+        ${p.duree?`<span class="pl-pdur">⏱️ ${esc(p.duree)}</span>`:''}
+        <h3>${label}${p.nom?' — '+esc(p.nom):''}</h3>
+        ${p.but?`<p class="but">${esc(p.but)}</p>`:''}
+        ${p.demo?`<span class="pl-lab">👩‍🏫 Démonstration</span><p style="font-weight:600;">${esc(p.demo)}</p>`:''}
+        ${p.deroulement&&p.deroulement.length?`<span class="pl-lab">▶️ Déroulement</span><ol>${p.deroulement.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`:''}
+        ${listBlock('💬 À dire aux élèves', p.consignes && p.consignes.map(s=>`« ${s} »`), 'pl-say')}
+        ${pillsBlock('🔀 Variantes', p.variantes)}
+        ${listBlock('⚠️ Sécurité', p.securite, 'pl-warn')}
+        ${listBlock('🚫 Erreurs fréquentes', p.erreurs)}
+        ${listBlock('♿ Adaptations', p.adaptations)}
+        ${listBlock('🙋 Questions des élèves', p.questions_eleves)}
+      </div>`;
     }
     function epOpen(id){
       var lv=EP_LEVELS.find(x=>x.key===state.epLevel), l=L();
       getJSON(lv.file).then(cours=>{
         var c=cours.find(x=>x.id===id); if(!c) return;
+        var extra='';
+        if(c.astuce) extra+=`<span class="pl-lab">💡 Astuce</span><p style="font-weight:600;">${esc(c.astuce)}</p>`;
+        if(c.evaluation) extra+=`<span class="pl-lab">✅ Évaluation</span><p style="font-weight:600;">${esc(c.evaluation)}</p>`;
+        if(c.prolongement) extra+=`<span class="pl-lab">➕ Prolongement</span><p style="font-weight:600;">${esc(c.prolongement)}</p>`;
         document.getElementById('plModalBody').innerHTML=
           `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-             <h2 class="zts-modal__title" style="margin:0;">📋 #${c.id} · ${c.titre}</h2>
+             <h2 class="zts-modal__title" style="margin:0;">📋 #${c.id} · ${esc(c.titre)}</h2>
              <button class="pl-print" onclick="window.print()">${l.print}</button>
            </div>
-           <div class="pl-meta" style="margin:8px 0;"><span>${c.niveau||''}</span><span>⏱️ ${c.duree||''}</span>${(c.pfeq||[]).map(p=>`<span>${p}</span>`).join('')}</div>
-           <p class="pl-sub">${l.intention}</p><p style="font-family:var(--font-body);font-weight:600;">${c.intention||''}</p>
-           ${c.materiel&&c.materiel.length?`<p class="pl-sub">${l.materiel}</p><ul class="pl-phase" style="border:0;margin:0;padding-left:20px;">${c.materiel.map(m=>`<li>${m}</li>`).join('')}</ul>`:''}
+           <div class="pl-meta" style="margin:8px 0;"><span>${esc(c.niveau||'')}</span><span>⏱️ ${esc(c.duree||'')}</span><span>👥 ${esc(c.eleves||'')}</span>${(c.pfeq||[]).map(p=>`<span>${p}</span>`).join('')}</div>
+           <p class="pl-sub">${l.intention}</p><p style="font-family:var(--font-body);font-weight:600;">${esc(c.intention||'')}</p>
+           ${listBlock('🎒 '+l.materiel, c.materiel)}
+           ${listBlock('🛠️ '+l.prep, c.preparation)}
            ${phaseHtml(c.mise_en_train,'① Mise en train')}
            ${phaseHtml(c.activite_1,'② Activité 1')}
            ${phaseHtml(c.activite_2,'③ Activité 2')}
-           ${phaseHtml(c.retour,'④ Retour au calme')}`;
+           ${phaseHtml(c.retour,'④ Retour au calme')}
+           ${extra?`<div class="pl-extra">${extra}</div>`:''}`;
         ZTS.openModal('plModal');
       });
     }
