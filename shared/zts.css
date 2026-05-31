@@ -238,6 +238,42 @@ a { color:inherit; }
 .zts-app-card__desc { font-family:var(--font-body); font-size:var(--fs-1); opacity:.85; }
 .zts-app-card.is-soon { opacity:.78; }
 
+/* ============ BOUTONS-FILTRES DES APPS — couleur métier + rebond (style cartes métier) ============ */
+/* Cascade sur toutes les apps via body[data-metier] (override les .jr-chip/.pl-chip locaux blancs). */
+body[data-metier] .jr-chip:not([disabled]),
+body[data-metier] .pl-chip:not([disabled]),
+body[data-metier] .cc-chip:not([disabled]),
+body[data-metier] .nc-chip:not([disabled]),
+body[data-metier] .rr-preset:not([disabled]),
+body[data-metier] .ol-pt:not([disabled]) {
+  background: var(--metier); color: var(--ink);
+  transition: transform .16s cubic-bezier(.34,1.56,.64,1), box-shadow .16s ease, filter .15s ease, outline-color .15s ease;
+}
+body[data-metier] .jr-chip:not([disabled]):hover,
+body[data-metier] .pl-chip:not([disabled]):hover,
+body[data-metier] .cc-chip:not([disabled]):hover,
+body[data-metier] .nc-chip:not([disabled]):hover,
+body[data-metier] .rr-preset:not([disabled]):hover,
+body[data-metier] .ol-pt:not([disabled]):hover {
+  transform: translate(-2px,-3px); box-shadow: 5px 6px 0 var(--zts-noir); filter: brightness(1.06);
+}
+body[data-metier] .jr-chip:not([disabled]):active,
+body[data-metier] .pl-chip:not([disabled]):active,
+body[data-metier] .cc-chip:not([disabled]):active,
+body[data-metier] .nc-chip:not([disabled]):active,
+body[data-metier] .rr-preset:not([disabled]):active,
+body[data-metier] .ol-pt:not([disabled]):active {
+  transform: translate(0,2px); box-shadow: 2px 2px 0 var(--zts-noir);
+}
+/* Sélection : contour foncé + léger zoom pour rester bien distinct */
+body[data-metier] .jr-chip.active,
+body[data-metier] .pl-chip.active,
+body[data-metier] .cc-chip.active,
+body[data-metier] .nc-chip.active,
+body[data-metier] .rr-preset.active {
+  outline: 3px solid var(--zts-noir); outline-offset: -3px; transform: scale(1.05); filter: brightness(1.12);
+}
+
 /* Tags / badges */
 .zts-tag {
   position:absolute; top:-12px; right:14px;
