@@ -407,7 +407,10 @@
       });
     }
 
-    document.addEventListener('zts:ready', function(){ plStatic(); });
+    document.addEventListener('zts:ready', function(){
+      plStatic();
+      try{ var m=new URLSearchParams(location.search).get('metier'); if(['ep','sdg','camp'].indexOf(m)>=0) plPick(m); }catch(e){}
+    });
     document.addEventListener('zts:langchange', function(){ plStatic(); if(state.metier){ renderInfo(); buildLevels(); plRender(); } });
   </script>
 </body>
