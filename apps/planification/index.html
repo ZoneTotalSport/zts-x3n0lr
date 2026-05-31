@@ -302,11 +302,13 @@
       var ft=document.getElementById('plFavToggle'), et=document.getElementById('plEditToggle'),
           note=document.getElementById('plEditNote'), search=document.getElementById('plSearch');
       var isEP=state.metier==='ep';
-      // ÉP : recherche + favoris ; Camp/SDG : bouton Personnaliser (édition)
-      ft.hidden=!isEP; search.style.display=isEP?'':'none';
-      et.hidden=isEP; note.hidden=isEP||!editMode;
-      if(isEP){ ft.classList.toggle('active',favOnly); ft.textContent=(favOnly?l.favOn:l.favOff)+(FAV.size?' ('+FAV.size+')':''); }
-      else { et.textContent=editMode?l.editDone:l.edit; et.classList.toggle('editing',editMode); note.textContent=l.editNote; }
+      // Bouton « Personnaliser » sur les 3 métiers ; favoris + recherche en ÉP (hors édition)
+      ft.hidden = !isEP || editMode;
+      search.style.display = (isEP && !editMode) ? '' : 'none';
+      et.hidden = false;
+      et.textContent = editMode?l.editDone:l.edit; et.classList.toggle('editing',editMode);
+      note.hidden = !editMode; note.textContent = l.editNote;
+      if(isEP && !editMode){ ft.classList.toggle('active',favOnly); ft.textContent=(favOnly?l.favOn:l.favOff)+(FAV.size?' ('+FAV.size+')':''); }
       if(isEP) return renderEP();
       if(state.metier==='camp') return renderCamp();
       if(state.metier==='sdg') return renderSDG();
@@ -337,16 +339,35 @@
           (!favOnly || FAV.has('ep-'+c.id)) &&
           (!q || (c.titre+' '+(c.intention||'')).toLowerCase().includes(q)));
         document.getElementById('plCount').textContent=l.count1(list.length);
+        var ekey=c=>'e|'+state.epLevel+'|'+c.id;
+        // MODE ÉDITION : heure + titre éditables par cours
+        if(editMode){
+          out.className='';
+          out.innerHTML = list.map(c=>{
+            var e=EDITS[ekey(c)]||{}, key=ekey(c);
+            var heure=e.heure!=null?e.heure:'', titre=e.nom!=null?e.nom:c.titre;
+            return `<div class="pl-block pl-edit" style="grid-template-columns:1fr;">
+              <div class="pl-ecell" style="flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap;">
+                <input class="pl-ein pl-etime" placeholder="🕐 heure" value="${escAttr(heure)}" oninput="editSet('${key}','heure',this.value)">
+                <span style="font-family:var(--font-fun);font-weight:700;opacity:.6;">#${c.id}</span>
+                <input class="pl-ein pl-enom" style="flex:1;min-width:180px;" value="${escAttr(titre)}" oninput="editSet('${key}','nom',this.value)">
+              </div>
+            </div>`;
+          }).join('');
+          return;
+        }
         out.className='zts-grid';
         if(!list.length){ out.className=''; out.innerHTML=`<p class="pl-empty">${favOnly?l.favEmpty:'Aucun cours.'}</p>`; return; }
-        out.innerHTML=list.map(c=>`
+        out.innerHTML=list.map(c=>{
+          var e=EDITS[ekey(c)]||{}, titre=e.nom!=null?e.nom:c.titre;
+          return `
           <div class="zts-app-card pl-card" role="button" tabindex="0" onclick="epOpen(${c.id})" onkeydown="if(event.key==='Enter')epOpen(${c.id})">
             <button class="pl-fav" title="${l.fav}" onclick="event.stopPropagation();toggleFav(${c.id},this)">${FAV.has('ep-'+c.id)?'★':'☆'}</button>
             <span class="zts-app-card__icon">📋</span>
-            <span class="zts-app-card__name">#${c.id} · ${c.titre}</span>
+            <span class="zts-app-card__name">#${c.id} · ${esc(titre)}</span>
             <span class="zts-app-card__desc">${(c.intention||'').slice(0,90)}…</span>
-            <div class="pl-meta"><span>⏱️ ${c.duree||'60 min'}</span>${c.periode?`<span>📅 ${c.periode.split(' — ')[0]}</span>`:''}${(c.pfeq||[]).slice(0,2).map(p=>`<span>${p}</span>`).join('')}</div>
-          </div>`).join('');
+            <div class="pl-meta">${e.heure?`<span>🕐 ${esc(e.heure)}</span>`:''}<span>⏱️ ${c.duree||'60 min'}</span>${c.periode?`<span>📅 ${c.periode.split(' — ')[0]}</span>`:''}${(c.pfeq||[]).slice(0,2).map(p=>`<span>${p}</span>`).join('')}</div>
+          </div>`;}).join('');
       });
     }
     function toggleFav(id,btn){ var k='ep-'+id; if(FAV.has(k))FAV.delete(k); else FAV.add(k); saveFav();
@@ -383,16 +404,18 @@
       var lv=EP_LEVELS.find(x=>x.key===state.epLevel), l=L();
       getJSON(lv.file).then(cours=>{
         var c=cours.find(x=>x.id===id); if(!c) return;
+        var e=EDITS['e|'+state.epLevel+'|'+c.id]||{};
+        var titre=e.nom!=null?e.nom:c.titre;
         var extra='';
         if(c.astuce) extra+=`<span class="pl-lab">💡 Astuce</span><p style="font-weight:600;">${esc(c.astuce)}</p>`;
         if(c.evaluation) extra+=`<span class="pl-lab">✅ Évaluation</span><p style="font-weight:600;">${esc(c.evaluation)}</p>`;
         if(c.prolongement) extra+=`<span class="pl-lab">➕ Prolongement</span><p style="font-weight:600;">${esc(c.prolongement)}</p>`;
         document.getElementById('plModalBody').innerHTML=
           `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-             <h2 class="zts-modal__title" style="margin:0;">📋 #${c.id} · ${esc(c.titre)}</h2>
+             <h2 class="zts-modal__title" style="margin:0;">📋 #${c.id} · ${esc(titre)}</h2>
              <button class="pl-print" onclick="window.print()">${l.print}</button>
            </div>
-           <div class="pl-meta" style="margin:8px 0;"><span>${esc(c.niveau||'')}</span><span>⏱️ ${esc(c.duree||'')}</span><span>👥 ${esc(c.eleves||'')}</span>${(c.pfeq||[]).map(p=>`<span>${p}</span>`).join('')}</div>
+           <div class="pl-meta" style="margin:8px 0;">${e.heure?`<span>🕐 ${esc(e.heure)}</span>`:''}<span>${esc(c.niveau||'')}</span><span>⏱️ ${esc(c.duree||'')}</span><span>👥 ${esc(c.eleves||'')}</span>${(c.pfeq||[]).map(p=>`<span>${p}</span>`).join('')}</div>
            <p class="pl-sub">${l.intention}</p><p style="font-family:var(--font-body);font-weight:600;">${esc(c.intention||'')}</p>
            ${listBlock('🎒 '+l.materiel, c.materiel)}
            ${listBlock('🛠️ '+l.prep, c.preparation)}
@@ -469,7 +492,7 @@
           </div>
         </div>`;
       }
-      var meta = (m.lieu?`<span>📍 ${esc(m.lieu)}</span>`:'')+(m.energie?`<span>⚡ ${esc(m.energie)}</span>`:'')+((m.materiel||[]).length?`<span>🎒 ${esc((m.materiel||[]).join(', '))}</span>`:'');
+      var meta = (m._tag?`<span>📋 ${esc(m._tag)}</span>`:'')+(m.lieu?`<span>📍 ${esc(m.lieu)}</span>`:'')+(m.energie?`<span>⚡ ${esc(m.energie)}</span>`:'')+((m.materiel||[]).length?`<span>🎒 ${esc((m.materiel||[]).join(', '))}</span>`:'');
       return `<div class="pl-block pl-click${tint}" data-hk="${key}"${bstyle} role="button" tabindex="0" onclick="openBlock(${flatIndex})" onkeydown="if(event.key==='Enter')openBlock(${flatIndex})">
         <div class="h">${esc(m._hdr)}</div>
         <div><div class="n">${esc(m.nom)} <span class="pl-more">${l.details} ›</span></div><div class="d">${esc(m.desc)}</div>
@@ -504,8 +527,9 @@
         document.getElementById('plCount').textContent=`${d.label}${d.theme?' · '+d.theme:''}`;
         out.className='';
         var ctx='s|'+d.jour, lang=ZTS.getLang();
-        var mi=d.blocs.matin.items.map(b=>Object.assign({},b,{_hdr:b.type.replace('_',' ')}));
-        var ai=d.blocs.aprem.items.map(b=>Object.assign({},b,{_hdr:b.type.replace('_',' ')}));
+        var HM=['7 h 00','7 h 25','7 h 50','8 h 20','8 h 45'], HA=['15 h 00','15 h 30','16 h 15','17 h 00','17 h 30'];
+        var mi=d.blocs.matin.items.map((b,i)=>Object.assign({},b,{_hdr:HM[i]||'', _tag:b.type.replace('_',' ')}));
+        var ai=d.blocs.aprem.items.map((b,i)=>Object.assign({},b,{_hdr:HA[i]||'', _tag:b.type.replace('_',' ')}));
         var off=mi.length;
         PL_BLOCKS = mi.map((b,i)=>mergedBlock(b,ctx+'|'+i)).concat(ai.map((b,k)=>mergedBlock(b,ctx+'|'+(off+k))));
         function plageHead(sec, base){
