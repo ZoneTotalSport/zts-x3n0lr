@@ -82,6 +82,11 @@
       font-family:var(--font-impact); font-size:var(--fs-2); padding:10px 18px; border:var(--bord); border-radius:var(--r-pill);
       background:#fff; box-shadow:var(--ombre); }
     .pl-add:active { transform:translate(2px,2px); box-shadow:2px 2px 0 var(--zts-noir); }
+    @media print {
+      [data-zts-header],[data-zts-footer],.zts-subnav,.pl-bar,#plLevels,#plFilters,#plActions,#plInfo,.pl-more,.pl-del,.pl-add,#ztg-out,.zts-metier-banner { display:none !important; }
+      #plOut .pl-block { break-inside:avoid; box-shadow:none; }
+      .pl-count { font-size:18px; }
+    }
     /* Détail cours ÉP — fiche complète style mockup */
     .pl-phase { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff;
       margin-top:var(--space-3); padding:var(--space-3) var(--space-4); border-left:10px solid var(--metier,#19B5C9); }
@@ -148,6 +153,7 @@
         <span id="plEditNote" hidden style="font-family:var(--font-body);font-weight:700;font-size:var(--fs-1);opacity:.7;"></span>
       </div>
       <div class="pl-chips" id="plFilters"></div>
+      <div class="pl-chips" id="plActions" hidden style="margin-bottom:var(--space-3);"></div>
       <p class="pl-count" id="plCount"></p>
       <div id="plOut"></div>
     </section>
@@ -175,7 +181,8 @@
         print:'🖨️ Imprimer / PDF', materiel:'Matériel', intention:'Intention pédagogique', prep:'Préparation',
         wk:'Semaine', day:'Jour', planB:'☔ Plan B météo', saison:'Saison', allSaisons:'Toute l\'année', loginNote:'(sauvegardé sur ton compte)', wdays:['Lun','Mar','Mer','Jeu','Ven'],
         details:'Détails', objectif:'Objectif', deroulement:'Déroulement', variantes:'Variantes', astuce:'Astuce',
-        edit:'✏️ Personnaliser', editDone:'✓ Terminer', editNote:'Modifs sauvegardées sur ton compte', reset1:'Réinitialiser ce jour', addCase:'Ajouter une case', delCase:'Supprimer cette case', newCase:'Nouvelle activité' },
+        edit:'✏️ Personnaliser', editDone:'✓ Terminer', editNote:'Modifs sauvegardées sur ton compte', addCase:'Ajouter une case', delCase:'Supprimer cette case', newCase:'Nouvelle activité',
+        print:'Imprimer / PDF', resetView:'Réinitialiser', resetConfirm:'Annuler toutes tes personnalisations de cette vue?', duplicate:'Dupliquer', dupTitle:'Dupliquer vers…', dupWeek:'Semaine', dupDay:'Jour', dupGroup:'Groupe', dupGo:'Copier ici', dupDone:'Copié!' },
       en:{ pill:'Planning', title:'🗂️ Planning', intro:'A bank of complete, ready-to-use plans built for 3 real-world roles. Pick your role below to see what we prepared for you.',
         ep:'Physical education', epD:'360 lessons · 4 levels', epL:'60-min lesson plans, from preschool to 3rd cycle.',
         sdg:'Daycare', sdgD:'200 days · morning + evening', sdgL:'The full year, morning and evening blocks.',
@@ -185,7 +192,8 @@
         print:'🖨️ Print / PDF', materiel:'Equipment', intention:'Teaching intent', prep:'Setup',
         wk:'Week', day:'Day', planB:'☔ Weather plan B', saison:'Season', allSaisons:'All year', loginNote:'(saved to your account)', wdays:['Mon','Tue','Wed','Thu','Fri'],
         details:'Details', objectif:'Goal', deroulement:'Steps', variantes:'Variations', astuce:'Tip',
-        edit:'✏️ Customize', editDone:'✓ Done', editNote:'Changes saved to your account', reset1:'Reset this day', addCase:'Add a block', delCase:'Remove this block', newCase:'New activity' }
+        edit:'✏️ Customize', editDone:'✓ Done', editNote:'Changes saved to your account', addCase:'Add a block', delCase:'Remove this block', newCase:'New activity',
+        print:'Print / PDF', resetView:'Reset', resetConfirm:'Undo all your customizations on this view?', duplicate:'Duplicate', dupTitle:'Duplicate to…', dupWeek:'Week', dupDay:'Day', dupGroup:'Group', dupGo:'Copy here', dupDone:'Copied!' }
     };
     // Explication détaillée par métier (bandeau à l'entrée)
     var METIER_INFO = {
@@ -276,6 +284,7 @@
       document.getElementById('plView').hidden=true;
       document.getElementById('plSelect').hidden=false;
       document.getElementById('plSearch').value='';
+      document.getElementById('plActions').hidden=true;
     }
     window.plPick=plPick; window.plReset=plReset;
 
@@ -316,6 +325,14 @@
       et.textContent = editMode?l.editDone:l.edit; et.classList.toggle('editing',editMode);
       note.hidden = !editMode; note.textContent = l.editNote;
       if(isEP && !editMode){ ft.classList.toggle('active',favOnly); ft.textContent=(favOnly?l.favOn:l.favOff)+(FAV.size?' ('+FAV.size+')':''); }
+      // barre d'actions : imprimer (toujours) + réinitialiser/dupliquer (édition)
+      var act=document.getElementById('plActions');
+      var btns=`<button class="pl-chip" onclick="doPrint()">🖨️ ${l.print}</button>`;
+      if(editMode){
+        btns+=`<button class="pl-chip" onclick="resetView()">↺ ${l.resetView}</button>`;
+        if(!isEP) btns+=`<button class="pl-chip" onclick="openDuplicate()">⧉ ${l.duplicate}</button>`;
+      }
+      act.innerHTML=btns; act.hidden=false;
       if(isEP) return renderEP();
       if(state.metier==='camp') return renderCamp();
       if(state.metier==='sdg') return renderSDG();
@@ -347,36 +364,72 @@
           (!q || (c.titre+' '+(c.intention||'')).toLowerCase().includes(q)));
         document.getElementById('plCount').textContent=l.count1(list.length);
         var ekey=c=>'e|'+state.epLevel+'|'+c.id;
-        // MODE ÉDITION : heure + titre éditables par cours
+        var ectx='e|'+state.epLevel, es=EDITS['ST|'+ectx]||{removed:[],added:[]};
+        // MODE ÉDITION : heure + titre + couleur + supprimer/ajouter
         if(editMode){
           out.className='';
-          out.innerHTML = list.map(c=>{
+          var rows=list.filter(c=>(es.removed||[]).indexOf(c.id)<0).map(c=>{
             var e=EDITS[ekey(c)]||{}, key=ekey(c);
-            var heure=e.heure!=null?e.heure:'', titre=e.nom!=null?e.nom:c.titre;
-            return `<div class="pl-block pl-edit" style="grid-template-columns:1fr;">
+            var heure=e.heure!=null?e.heure:'', titre=e.nom!=null?e.nom:c.titre, col=e.color;
+            return `<div class="pl-block pl-edit${col?' pl-tinted':''}" data-hk="${key}"${col?` style="background:${col};"`:''}>
+              <button class="pl-del" title="${l.delCase}" onclick="removeBlock('${key}')">🗑️</button>
               <div class="pl-ecell" style="flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap;">
                 <input class="pl-ein pl-etime" placeholder="🕐 heure" value="${escAttr(heure)}" oninput="editSet('${key}','heure',this.value)">
+                <label class="pl-ecolwrap">🎨<input type="color" value="${col||'#cfd8e3'}" oninput="editColor('${key}',this.value)"></label>
                 <span style="font-family:var(--font-fun);font-weight:700;opacity:.6;">#${c.id}</span>
                 <input class="pl-ein pl-enom" style="flex:1;min-width:180px;" value="${escAttr(titre)}" oninput="editSet('${key}','nom',this.value)">
               </div>
             </div>`;
-          }).join('');
+          });
+          var added=(es.added||[]).map((a,j)=>{
+            var key='ST|'+ectx+'|add|'+j, col=a.color;
+            return `<div class="pl-block pl-edit${col?' pl-tinted':''}" data-hk="${key}"${col?` style="background:${col};"`:''}>
+              <button class="pl-del" title="${l.delCase}" onclick="removeBlock('${key}')">🗑️</button>
+              <div class="pl-ecell" style="flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap;">
+                <input class="pl-ein pl-etime" placeholder="🕐 heure" value="${escAttr(a.heure||'')}" oninput="editSet('${key}','heure',this.value)">
+                <label class="pl-ecolwrap">🎨<input type="color" value="${col||'#cfd8e3'}" oninput="editColor('${key}',this.value)"></label>
+                <input class="pl-ein pl-enom" style="flex:1;min-width:180px;" value="${escAttr(a.nom||'')}" oninput="editSet('${key}','nom',this.value)">
+              </div>
+            </div>`;
+          });
+          out.innerHTML='<div class="pl-sched">'+rows.concat(added).join('')+'</div>'+`<button class="pl-add" onclick="addBlock('${ectx}')">➕ ${l.addCase}</button>`;
           return;
         }
         out.className='zts-grid';
-        if(!list.length){ out.className=''; out.innerHTML=`<p class="pl-empty">${favOnly?l.favEmpty:'Aucun cours.'}</p>`; return; }
-        out.innerHTML=list.map(c=>{
+        var vis=list.filter(c=>(es.removed||[]).indexOf(c.id)<0);
+        if(!vis.length && !(es.added||[]).length){ out.className=''; out.innerHTML=`<p class="pl-empty">${favOnly?l.favEmpty:'Aucun cours.'}</p>`; return; }
+        out.innerHTML=vis.map(c=>{
           var e=EDITS[ekey(c)]||{}, titre=e.nom!=null?e.nom:c.titre;
+          var bord=e.color?` style="border-left:12px solid ${e.color};"`:'';
           return `
-          <div class="zts-app-card pl-card" role="button" tabindex="0" onclick="epOpen(${c.id})" onkeydown="if(event.key==='Enter')epOpen(${c.id})">
+          <div class="zts-app-card pl-card" role="button" tabindex="0"${bord} onclick="epOpen(${c.id})" onkeydown="if(event.key==='Enter')epOpen(${c.id})">
             <button class="pl-fav" title="${l.fav}" onclick="event.stopPropagation();toggleFav(${c.id},this)">${FAV.has('ep-'+c.id)?'★':'☆'}</button>
             <span class="zts-app-card__icon">📋</span>
             <span class="zts-app-card__name">#${c.id} · ${esc(titre)}</span>
             <span class="zts-app-card__desc">${(c.intention||'').slice(0,90)}…</span>
             <div class="pl-meta">${e.heure?`<span>🕐 ${esc(e.heure)}</span>`:''}<span>⏱️ ${c.duree||'60 min'}</span>${c.periode?`<span>📅 ${c.periode.split(' — ')[0]}</span>`:''}${(c.pfeq||[]).slice(0,2).map(p=>`<span>${p}</span>`).join('')}</div>
-          </div>`;}).join('');
+          </div>`;}).join('')
+        + (es.added||[]).map((a,j)=>{
+            var bord=a.color?` style="border-left:12px solid ${a.color};"`:'';
+            return `<div class="zts-app-card pl-card" role="button" tabindex="0"${bord} onclick="epOpenAdded(${j})" onkeydown="if(event.key==='Enter')epOpenAdded(${j})">
+              <span class="zts-tag zts-tag--new">${ZTS.t('tag.new')||'NOUVEAU'}</span>
+              <span class="zts-app-card__icon">✏️</span>
+              <span class="zts-app-card__name">${esc(a.nom||l.newCase)}</span>
+              <span class="zts-app-card__desc">${esc((a.desc||'').slice(0,90))}</span>
+              <div class="pl-meta">${a.heure?`<span>🕐 ${esc(a.heure)}</span>`:''}</div>
+            </div>`;
+          }).join('');
       });
     }
+    function epOpenAdded(j){
+      var s=EDITS['ST|e|'+state.epLevel]; if(!s||!s.added||!s.added[j]) return; var a=s.added[j];
+      document.getElementById('plModalBody').innerHTML=
+        `<h2 class="zts-modal__title">✏️ ${esc(a.nom||L().newCase)}</h2>`+
+        `<div class="pl-meta" style="margin:8px 0;">${a.heure?`<span>🕐 ${esc(a.heure)}</span>`:''}<span>${esc(state.epLevel)}</span></div>`+
+        (a.desc?`<p style="font-family:var(--font-body);font-weight:600;">${esc(a.desc)}</p>`:'');
+      ZTS.openModal('plModal');
+    }
+    window.epOpenAdded=epOpenAdded;
     function toggleFav(id,btn){ var k='ep-'+id; if(FAV.has(k))FAV.delete(k); else FAV.add(k); saveFav();
       if(btn)btn.textContent=FAV.has(k)?'★':'☆';
       var ft=document.getElementById('plFavToggle'); if(ft&&!ft.hidden) ft.textContent=(favOnly?L().favOn:L().favOff)+(FAV.size?' ('+FAV.size+')':'');
@@ -500,6 +553,58 @@
       return { html:html, blocks:gl.map(function(x){return x.block;}), count:gl.length };
     }
     window.addBlock=addBlock; window.removeBlock=removeBlock;
+
+    // ---- Imprimer / Réinitialiser / Dupliquer ----
+    function doPrint(){ window.print(); }
+    function curJour(){ return (state.sdgWeek-1)*5 + state.sdgJourSem; }
+    function curCtx(){
+      if(state.metier==='ep') return 'e|'+state.epLevel;
+      if(state.metier==='camp') return 'c|'+state.campWeek+'|'+state.campAge;
+      return 's|'+curJour();
+    }
+    function resetView(){
+      if(!confirm(L().resetConfirm)) return;
+      var ctx=curCtx();
+      Object.keys(EDITS).forEach(function(k){
+        if(k===ctx || k===('ST|'+ctx) || k.indexOf(ctx+'|')===0 || k.indexOf('ST|'+ctx+'|')===0 || k.indexOf('ST|'+ctx)===0) delete EDITS[k];
+      });
+      saveEdits(); plRender();
+    }
+    function duplicateTo(srcCtx, destCtx){
+      if(srcCtx===destCtx) return;
+      var copies={};
+      Object.keys(EDITS).forEach(function(k){
+        if(k.indexOf(srcCtx+'|')===0) copies[destCtx+k.slice(srcCtx.length)]=JSON.parse(JSON.stringify(EDITS[k]));
+        else if(k==='ST|'+srcCtx) copies['ST|'+destCtx]=JSON.parse(JSON.stringify(EDITS[k]));
+        else if(k.indexOf('ST|'+srcCtx+'|')===0) copies['ST|'+destCtx+k.slice(('ST|'+srcCtx).length)]=JSON.parse(JSON.stringify(EDITS[k]));
+      });
+      Object.assign(EDITS, copies); saveEdits();
+    }
+    function openDuplicate(){
+      var l=L(), lang=ZTS.getLang(), body='';
+      if(state.metier==='camp'){
+        var weeks=Array.from({length:7},(_,i)=>i+1);
+        body=`<label class="pl-lab">${l.dupWeek}</label><select id="dpW" class="pl-ein" style="max-width:140px;">`+weeks.map(w=>`<option value="${w}"${w===state.campWeek?' selected':''}>${l.dupWeek} ${w}</option>`).join('')+`</select>`+
+          `<label class="pl-lab">${l.dupGroup}</label><select id="dpG" class="pl-ein" style="max-width:140px;">`+CAMP_AGES.map(a=>`<option value="${a}"${a===state.campAge?' selected':''}>${a} ${lang==='fr'?'ans':'yrs'}</option>`).join('')+`</select>`+
+          `<div style="margin-top:14px;"><button class="pl-add" onclick="applyDuplicate()">📋 ${l.dupGo}</button></div>`;
+      } else {
+        var ws=Array.from({length:40},(_,i)=>i+1);
+        body=`<label class="pl-lab">${l.dupWeek}</label><select id="dpW" class="pl-ein" style="max-width:160px;">`+ws.map(w=>`<option value="${w}"${w===state.sdgWeek?' selected':''}>${l.dupWeek} ${w}</option>`).join('')+`</select>`+
+          `<label class="pl-lab">${l.dupDay}</label><select id="dpD" class="pl-ein" style="max-width:160px;">`+l.wdays.map((d,i)=>`<option value="${i+1}"${(i+1)===state.sdgJourSem?' selected':''}>${d}</option>`).join('')+`</select>`+
+          `<div style="margin-top:14px;"><button class="pl-add" onclick="applyDuplicate()">📋 ${l.dupGo}</button></div>`;
+      }
+      document.getElementById('plModalBody').innerHTML=`<h2 class="zts-modal__title">⧉ ${l.dupTitle}</h2><div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start;">${body}</div>`;
+      ZTS.openModal('plModal');
+    }
+    function applyDuplicate(){
+      var src=curCtx(), dest;
+      if(state.metier==='camp'){ dest='c|'+(+document.getElementById('dpW').value)+'|'+document.getElementById('dpG').value; }
+      else { var dj=(+document.getElementById('dpW').value-1)*5 + (+document.getElementById('dpD').value); dest='s|'+dj; }
+      duplicateTo(src, dest);
+      var c=document.querySelector('.zts-modal__close'); if(c)c.click();
+      alert(L().dupDone);
+    }
+    window.doPrint=doPrint; window.resetView=resetView; window.openDuplicate=openDuplicate; window.applyDuplicate=applyDuplicate;
     function editColor(key,val){
       editSet(key,'color',val);
       var el=document.querySelector('.pl-block[data-hk="'+key+'"]');
