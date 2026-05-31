@@ -143,7 +143,7 @@
         back:'↩︎ Changer de métier', search:'Rechercher…', soon:'Bientôt', count1:n=>`${n} cours`, countD:'Horaire de la journée',
         fav:'Favori', favOn:'★ Mes favoris', favOff:'☆ Mes favoris', favEmpty:'Aucun favori pour l\'instant — touche l\'étoile sur un cours pour le sauvegarder.', saved:'sauvegardé',
         print:'🖨️ Imprimer / PDF', materiel:'Matériel', intention:'Intention pédagogique', prep:'Préparation',
-        wk:'Semaine', day:'Jour', planB:'☔ Plan B météo', saison:'Saison', allSaisons:'Toute l\'année', loginNote:'(sauvegardé sur ton compte)' },
+        wk:'Semaine', day:'Jour', planB:'☔ Plan B météo', saison:'Saison', allSaisons:'Toute l\'année', loginNote:'(sauvegardé sur ton compte)', wdays:['Lun','Mar','Mer','Jeu','Ven'] },
       en:{ pill:'Planning', title:'🗂️ Planning', intro:'A bank of complete, ready-to-use plans built for 3 real-world roles. Pick your role below to see what we prepared for you.',
         ep:'Physical education', epD:'360 lessons · 4 levels', epL:'60-min lesson plans, from preschool to 3rd cycle.',
         sdg:'Daycare', sdgD:'200 days · morning + evening', sdgL:'The full year, morning and evening blocks.',
@@ -151,7 +151,7 @@
         back:'↩︎ Change role', search:'Search…', soon:'Soon', count1:n=>`${n} lessons`, countD:'Day schedule',
         fav:'Favorite', favOn:'★ My favorites', favOff:'☆ My favorites', favEmpty:'No favorites yet — tap the star on a lesson to save it.', saved:'saved',
         print:'🖨️ Print / PDF', materiel:'Equipment', intention:'Teaching intent', prep:'Setup',
-        wk:'Week', day:'Day', planB:'☔ Weather plan B', saison:'Season', allSaisons:'All year', loginNote:'(saved to your account)' }
+        wk:'Week', day:'Day', planB:'☔ Weather plan B', saison:'Season', allSaisons:'All year', loginNote:'(saved to your account)', wdays:['Mon','Tue','Wed','Thu','Fri'] }
     };
     // Explication détaillée par métier (bandeau à l'entrée)
     var METIER_INFO = {
@@ -185,8 +185,7 @@
     ];
     var CAMP_AGES = ['5-7','8-10','11-12'];
     var CAMP_WEEKS = [{n:1,ready:true},{n:2},{n:3},{n:4},{n:5},{n:6},{n:7}];
-    var SDG_DAYS = [{n:1,ready:true}];
-    var state = { metier:null, epLevel:'maternelle', epSaison:'*', campWeek:1, campAge:'5-7', sdgDay:1, cache:{} };
+    var state = { metier:null, epLevel:'maternelle', epSaison:'*', campWeek:1, campAge:'5-7', sdgWeek:1, sdgJourSem:1, cache:{} };
     // Favoris persistés — par compte (UID) si connecté, sinon clé locale partagée
     function favKey(){ return 'zts_planif_fav' + (UID ? '_'+UID : ''); }
     var FAV = loadFav();
@@ -257,8 +256,11 @@
           return `<button class="pl-chip${state.campWeek===w.n?' active':''}" ${w.ready?'':'disabled'} onclick="state.campWeek=${w.n};buildLevels();plRender()">${lab}</button>`;
         }).join('');
       } else if(state.metier==='sdg'){
-        box.innerHTML = SDG_DAYS.map(d=>`<button class="pl-chip${state.sdgDay===d.n?' active':''}" onclick="state.sdgDay=${d.n};plRender()">${l.day} ${d.n}</button>`).join('')
-          + `<button class="pl-chip" disabled>${l.day} 2–200 · ${l.soon}</button>`;
+        var weeks=Array.from({length:40},(_,i)=>i+1);
+        box.innerHTML =
+          `<label class="pl-chip" style="cursor:default;">${l.wk}&nbsp;<select id="sdgWeekSel" onchange="state.sdgWeek=+this.value;buildLevels();plRender()" style="border:0;font-family:inherit;font-weight:700;font-size:inherit;background:transparent;cursor:pointer;">`+
+          weeks.map(w=>`<option value="${w}"${state.sdgWeek===w?' selected':''}>${w} / 40</option>`).join('')+`</select></label>`+
+          l.wdays.map((d,i)=>`<button class="pl-chip${state.sdgJourSem===i+1?' active':''}" onclick="state.sdgJourSem=${i+1};plRender()">${d}</button>`).join('');
       } else { box.innerHTML=''; }
     }
     window.state=state; window.buildLevels=buildLevels;
@@ -392,9 +394,9 @@
     // ---------- SDG ----------
     function renderSDG(){
       var l=L(), out=document.getElementById('plOut'); document.getElementById('plFilters').innerHTML='';
-      getJSON('data/sdg.sample.json').then(days=>{
-        var d=days.find(x=>x.jour===state.sdgDay)||days[0];
-        document.getElementById('plCount').textContent=`${d.label}`;
+      getJSON('data/sdg.json').then(days=>{
+        var d=days.find(x=>x.semaine===state.sdgWeek && x.jourSem===state.sdgJourSem)||days[0];
+        document.getElementById('plCount').textContent=`${d.label}${d.theme?' · '+d.theme:''}`;
         out.className='';
         function block(title,b){
           return `<h3 style="font-family:var(--font-impact);font-size:var(--fs-3);margin:var(--space-4) 0 var(--space-2);">${title} · ${b.plage}</h3>`+
