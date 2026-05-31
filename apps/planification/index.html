@@ -40,6 +40,13 @@
       background:var(--metier-tint,rgba(0,0,0,.05)); border:2px solid var(--zts-noir); border-radius:var(--r-pill); padding:1px 10px; }
     .pl-empty { font-family:var(--font-fun); font-weight:700; opacity:.7; padding:var(--space-4); }
     .pl-back { font-family:var(--font-fun); font-weight:700; cursor:pointer; background:none; border:0; text-decoration:underline; margin-bottom:var(--space-3); }
+    .pl-info { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff;
+      border-left:10px solid var(--metier,#19B5C9); padding:var(--space-3) var(--space-4); margin-bottom:var(--space-4); }
+    .pl-info h2 { font-family:var(--font-impact); font-size:var(--fs-3); margin:0 0 4px; }
+    .pl-info p { font-family:var(--font-body); font-weight:600; margin:0 0 6px; }
+    .pl-info ul { margin:6px 0 0; padding-left:20px; }
+    .pl-info li { font-family:var(--font-body); font-weight:700; margin:3px 0; }
+    .pl-metier .long { font-family:var(--font-body); font-weight:600; opacity:.75; font-size:var(--fs-1); margin-top:6px; display:block; }
     /* Vues planning (Camp/SDG) */
     .pl-sched { display:grid; gap:var(--space-3); }
     .pl-block { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff; padding:var(--space-3) var(--space-4);
@@ -90,13 +97,13 @@
     <section id="plSelect">
       <div class="pl-pick">
         <div class="pl-metier ep" role="button" tabindex="0" onclick="plPick('ep')" onkeydown="if(event.key==='Enter')plPick('ep')">
-          <img src="../../perso-ep.png" alt="Éducation physique"><h2 id="m-ep">Éducation physique</h2><p id="m-ep-d">360 cours · 4 niveaux</p>
+          <img src="../../perso-ep.png" alt="Éducation physique"><h2 id="m-ep">Éducation physique</h2><p id="m-ep-d"></p><span class="long" id="m-ep-l"></span>
         </div>
         <div class="pl-metier sdg" role="button" tabindex="0" onclick="plPick('sdg')" onkeydown="if(event.key==='Enter')plPick('sdg')">
-          <img src="../../perso-sdg.png" alt="Service de garde"><h2 id="m-sdg">Service de garde</h2><p id="m-sdg-d">200 jours · matin + soir</p>
+          <img src="../../perso-sdg.png" alt="Service de garde"><h2 id="m-sdg">Service de garde</h2><p id="m-sdg-d"></p><span class="long" id="m-sdg-l"></span>
         </div>
         <div class="pl-metier camp" role="button" tabindex="0" onclick="plPick('camp')" onkeydown="if(event.key==='Enter')plPick('camp')">
-          <img src="../../perso-camp.png" alt="Camp de jour"><h2 id="m-camp">Camp de jour</h2><p id="m-camp-d">7 semaines · 3 groupes</p>
+          <img src="../../perso-camp.png" alt="Camp de jour"><h2 id="m-camp">Camp de jour</h2><p id="m-camp-d"></p><span class="long" id="m-camp-l"></span>
         </div>
       </div>
     </section>
@@ -104,8 +111,12 @@
     <!-- Vue métier -->
     <section id="plView" hidden>
       <button class="pl-back" id="plBack" onclick="plReset()">↩︎ Changer de métier</button>
+      <div id="plInfo" class="pl-info"></div>
       <div class="pl-chips" id="plLevels"></div>
-      <div class="pl-bar"><input type="search" class="pl-search" id="plSearch" oninput="plRender()"></div>
+      <div class="pl-bar">
+        <input type="search" class="pl-search" id="plSearch" oninput="plRender()">
+        <button class="pl-chip" id="plFavToggle" onclick="favOnly=!favOnly;plRender()"></button>
+      </div>
       <div class="pl-chips" id="plFilters"></div>
       <p class="pl-count" id="plCount"></p>
       <div id="plOut"></div>
@@ -125,18 +136,46 @@
   <script src="../../shared/zts-gate.js"></script>
   <script>
     var LBL = {
-      fr:{ pill:'Planification', title:'🗂️ Planification ZTS', intro:'Choisis ton métier : des planifications complètes, prêtes à utiliser. (Aperçu : maternelle ÉP complète + 1 exemple Camp et Service de garde.)',
-        ep:'Éducation physique', epD:'360 cours · 4 niveaux', sdg:'Service de garde', sdgD:'200 jours · matin + soir', camp:'Camp de jour', campD:'7 semaines · 3 groupes',
+      fr:{ pill:'Planification', title:'🗂️ Planification', intro:'Une banque de planifications complètes et prêtes à utiliser, pensée pour 3 réalités de terrain. Choisis ton métier ci-dessous pour découvrir ce qu\'on a préparé pour toi.',
+        ep:'Éducation physique', epD:'360 cours · 4 niveaux', epL:'Des plans de cours de 60 min, du préscolaire au 3e cycle.',
+        sdg:'Service de garde', sdgD:'200 jours · matin + soir', sdgL:'L\'année complète, bloc matin et bloc soir.',
+        camp:'Camp de jour', campD:'7 semaines · 3 groupes', campL:'Des semaines thématiques, journée par journée.',
         back:'↩︎ Changer de métier', search:'Rechercher…', soon:'Bientôt', count1:n=>`${n} cours`, countD:'Horaire de la journée',
-        fav:'Favori (compte requis)', print:'🖨️ Imprimer / PDF', materiel:'Matériel', intention:'Intention pédagogique', prep:'Préparation',
-        wk:'Semaine', day:'Jour', planB:'☔ Plan B météo' },
-      en:{ pill:'Planning', title:'🗂️ ZTS Planning', intro:'Pick your role: complete, ready-to-use plans. (Preview: full PE kindergarten + 1 Camp and Daycare sample.)',
-        ep:'Physical education', epD:'360 lessons · 4 levels', sdg:'Daycare', sdgD:'200 days · morning + evening', camp:'Day camp', campD:'7 weeks · 3 groups',
+        fav:'Favori', favOn:'★ Mes favoris', favOff:'☆ Mes favoris', favEmpty:'Aucun favori pour l\'instant — touche l\'étoile sur un cours pour le sauvegarder.', saved:'sauvegardé',
+        print:'🖨️ Imprimer / PDF', materiel:'Matériel', intention:'Intention pédagogique', prep:'Préparation',
+        wk:'Semaine', day:'Jour', planB:'☔ Plan B météo', saison:'Saison', allSaisons:'Toute l\'année', loginNote:'(sauvegardé sur ton compte)' },
+      en:{ pill:'Planning', title:'🗂️ Planning', intro:'A bank of complete, ready-to-use plans built for 3 real-world roles. Pick your role below to see what we prepared for you.',
+        ep:'Physical education', epD:'360 lessons · 4 levels', epL:'60-min lesson plans, from preschool to 3rd cycle.',
+        sdg:'Daycare', sdgD:'200 days · morning + evening', sdgL:'The full year, morning and evening blocks.',
+        camp:'Day camp', campD:'7 weeks · 3 groups', campL:'Themed weeks, day by day.',
         back:'↩︎ Change role', search:'Search…', soon:'Soon', count1:n=>`${n} lessons`, countD:'Day schedule',
-        fav:'Favorite (account required)', print:'🖨️ Print / PDF', materiel:'Equipment', intention:'Teaching intent', prep:'Setup',
-        wk:'Week', day:'Day', planB:'☔ Weather plan B' }
+        fav:'Favorite', favOn:'★ My favorites', favOff:'☆ My favorites', favEmpty:'No favorites yet — tap the star on a lesson to save it.', saved:'saved',
+        print:'🖨️ Print / PDF', materiel:'Equipment', intention:'Teaching intent', prep:'Setup',
+        wk:'Week', day:'Day', planB:'☔ Weather plan B', saison:'Season', allSaisons:'All year', loginNote:'(saved to your account)' }
+    };
+    // Explication détaillée par métier (bandeau à l'entrée)
+    var METIER_INFO = {
+      ep:{ fr:{ h:'🏃 Planification en éducation physique',
+             p:'Une banque de cours de 60 minutes clés en main pour le gymnase, du préscolaire au 3e cycle. Chaque cours suit la même structure éprouvée et est lié au Programme de formation (PFEQ).',
+             li:['📋 Structure complète : mise en train · 2 activités · retour au calme','🎯 Intention pédagogique + compétences PFEQ pour chaque cours','💬 Démonstration, consignes « à dire aux élèves », sécurité, adaptations','🔎 Filtre par niveau, saison et compétence + impression/PDF'] },
+           en:{ h:'🏃 Physical education planning',
+             p:'A bank of turnkey 60-minute gym lessons, from preschool to 3rd cycle. Every lesson follows the same proven structure and maps to the Quebec program (PFEQ).',
+             li:['📋 Full structure: warm-up · 2 activities · wind-down','🎯 Teaching intent + PFEQ competencies per lesson','💬 Demo, "what to say to students", safety, adaptations','🔎 Filter by level, season and competency + print/PDF'] } },
+      sdg:{ fr:{ h:'🧸 Planification en service de garde',
+             p:'La programmation de l\'année scolaire (jusqu\'à 200 jours), pensée pour les deux moments clés : le bloc du matin (7 h – 9 h) et le bloc du soir (15 h – 18 h).',
+             li:['🌅 Chaque jour : accueil · jeu calme · jeu actif · retour au calme','☔ Plan pluie intégré pour chaque bloc','👶 Adapté aux groupes multiâges de la cour d\'école','🔎 Navigation par jour (et bientôt par semaine)'] },
+           en:{ h:'🧸 Daycare planning',
+             p:'The school-year program (up to 200 days), built around the two key moments: the morning block (7–9 a.m.) and the evening block (3–6 p.m.).',
+             li:['🌅 Each day: welcome · calm game · active game · wind-down','☔ Built-in rainy-day plan for each block','👶 Suited to mixed-age schoolyard groups','🔎 Browse by day (and soon by week)'] } },
+      camp:{ fr:{ h:'🏕️ Planification de camp de jour',
+             p:'Des semaines thématiques complètes (7 semaines), planifiées journée par journée et déclinées pour 3 groupes d\'âge : 5-7, 8-10 et 11-12 ans.',
+             li:['📅 Horaire complet 9 h – 16 h : 7 blocs par jour','🎨 Un thème par semaine (pirates, etc.) avec grands jeux et plein air','☀️ Plan B météo pour chaque semaine','🔎 Choisis la semaine et le groupe d\'âge'] },
+           en:{ h:'🏕️ Day-camp planning',
+             p:'Complete themed weeks (7 weeks), planned day by day and split into 3 age groups: 5-7, 8-10 and 11-12.',
+             li:['📅 Full 9 a.m.–4 p.m. schedule: 7 blocks per day','🎨 One theme per week (pirates, etc.) with big games and outdoors','☀️ Weather plan B for every week','🔎 Pick the week and age group'] } }
     };
     function L(){ return LBL[ZTS.getLang()]; }
+    var favOnly = false, UID = null;
 
     var EP_LEVELS = [
       { key:'maternelle', fr:'Maternelle', en:'Kindergarten', file:'data/ep-maternelle.json', ready:true },
@@ -145,10 +184,22 @@
       { key:'3e', fr:'3e cycle', en:'3rd cycle', ready:false }
     ];
     var CAMP_AGES = ['5-7','8-10','11-12'];
-    var state = { metier:null, epLevel:'maternelle', campWeek:0, campAge:'5-7', cache:{} };
+    var CAMP_WEEKS = [{n:1,ready:true},{n:2},{n:3},{n:4},{n:5},{n:6},{n:7}];
+    var SDG_DAYS = [{n:1,ready:true}];
+    var state = { metier:null, epLevel:'maternelle', epSaison:'*', campWeek:1, campAge:'5-7', sdgDay:1, cache:{} };
+    // Favoris persistés — par compte (UID) si connecté, sinon clé locale partagée
+    function favKey(){ return 'zts_planif_fav' + (UID ? '_'+UID : ''); }
     var FAV = loadFav();
-    function loadFav(){ try{ return new Set(JSON.parse(localStorage.getItem('zts_planif_fav')||'[]')); }catch(e){ return new Set(); } }
-    function saveFav(){ try{ localStorage.setItem('zts_planif_fav', JSON.stringify([...FAV])); }catch(e){} }
+    function loadFav(){ try{ return new Set(JSON.parse(localStorage.getItem(favKey())||'[]')); }catch(e){ return new Set(); } }
+    function saveFav(){ try{ localStorage.setItem(favKey(), JSON.stringify([...FAV])); }catch(e){} }
+    // Quand l'utilisateur se connecte, recharge SES favoris (et migre ceux faits avant connexion)
+    document.addEventListener('zts:auth', function(e){
+      var u = e && e.detail && e.detail.user; if(!u) return;
+      var anon = [...FAV]; UID = u.uid;
+      FAV = loadFav();
+      if(anon.length){ anon.forEach(x=>FAV.add(x)); saveFav(); }
+      if(state.metier) plRender();
+    });
 
     function getJSON(file){
       if(state.cache[file]) return Promise.resolve(state.cache[file]);
@@ -163,21 +214,28 @@
       document.getElementById('plIntro').textContent=l.intro;
       document.getElementById('plSearch').placeholder=l.search;
       document.getElementById('plBack').textContent=l.back;
-      document.getElementById('m-ep').textContent=l.ep; document.getElementById('m-ep-d').textContent=l.epD;
-      document.getElementById('m-sdg').textContent=l.sdg; document.getElementById('m-sdg-d').textContent=l.sdgD;
-      document.getElementById('m-camp').textContent=l.camp; document.getElementById('m-camp-d').textContent=l.campD;
+      document.getElementById('m-ep').textContent=l.ep; document.getElementById('m-ep-d').textContent=l.epD; document.getElementById('m-ep-l').textContent=l.epL;
+      document.getElementById('m-sdg').textContent=l.sdg; document.getElementById('m-sdg-d').textContent=l.sdgD; document.getElementById('m-sdg-l').textContent=l.sdgL;
+      document.getElementById('m-camp').textContent=l.camp; document.getElementById('m-camp-d').textContent=l.campD; document.getElementById('m-camp-l').textContent=l.campL;
+    }
+
+    function renderInfo(){
+      var info=METIER_INFO[state.metier]; if(!info) return;
+      var d=info[ZTS.getLang()];
+      document.getElementById('plInfo').innerHTML =
+        `<h2>${d.h}</h2><p>${d.p}</p><ul>${d.li.map(x=>`<li>${x}</li>`).join('')}</ul>`;
     }
 
     // ---------- navigation ----------
     function plPick(m){
-      state.metier=m;
+      state.metier=m; favOnly=false;
       document.body.setAttribute('data-metier', m);
       document.getElementById('plSelect').hidden=true;
       document.getElementById('plView').hidden=false;
-      buildLevels(); plRender();
+      renderInfo(); buildLevels(); plRender();
     }
     function plReset(){
-      state.metier=null;
+      state.metier=null; favOnly=false;
       document.body.removeAttribute('data-metier');
       document.getElementById('plView').hidden=true;
       document.getElementById('plSelect').hidden=false;
@@ -191,10 +249,16 @@
       if(state.metier==='ep'){
         box.innerHTML = EP_LEVELS.map(lv=>{
           var lab = lv[lang] + (lv.ready?'':' · '+l.soon);
-          return `<button class="pl-chip${state.epLevel===lv.key?' active':''}" ${lv.ready?'':'disabled'} onclick="state.epLevel='${lv.key}';buildLevels();plRender()">${lab}</button>`;
+          return `<button class="pl-chip${state.epLevel===lv.key?' active':''}" ${lv.ready?'':'disabled'} onclick="state.epLevel='${lv.key}';state.epSaison='*';buildLevels();plRender()">${lab}</button>`;
         }).join('');
       } else if(state.metier==='camp'){
-        box.innerHTML = CAMP_AGES.map(a=>`<button class="pl-chip${state.campAge===a?' active':''}" onclick="state.campAge='${a}';plRender()">${a} ${lang==='fr'?'ans':'yrs'}</button>`).join('');
+        box.innerHTML = CAMP_WEEKS.map(w=>{
+          var lab = l.wk+' '+w.n + (w.ready?'':' · '+l.soon);
+          return `<button class="pl-chip${state.campWeek===w.n?' active':''}" ${w.ready?'':'disabled'} onclick="state.campWeek=${w.n};buildLevels();plRender()">${lab}</button>`;
+        }).join('');
+      } else if(state.metier==='sdg'){
+        box.innerHTML = SDG_DAYS.map(d=>`<button class="pl-chip${state.sdgDay===d.n?' active':''}" onclick="state.sdgDay=${d.n};plRender()">${l.day} ${d.n}</button>`).join('')
+          + `<button class="pl-chip" disabled>${l.day} 2–200 · ${l.soon}</button>`;
       } else { box.innerHTML=''; }
     }
     window.state=state; window.buildLevels=buildLevels;
@@ -202,6 +266,11 @@
     // ---------- rendu principal ----------
     function plRender(){
       plStatic();
+      // toggle « Mes favoris » : seulement en ÉP (les cours sont favorisables)
+      var ft=document.getElementById('plFavToggle');
+      if(state.metier==='ep'){ ft.hidden=false; ft.classList.toggle('active',favOnly);
+        ft.textContent=(favOnly?L().favOn:L().favOff)+(FAV.size?' ('+FAV.size+')':''); }
+      else { ft.hidden=true; }
       if(state.metier==='ep') return renderEP();
       if(state.metier==='camp') return renderCamp();
       if(state.metier==='sdg') return renderSDG();
@@ -214,29 +283,40 @@
       var out=document.getElementById('plOut'), fbox=document.getElementById('plFilters');
       if(!lv.ready){ fbox.innerHTML=''; document.getElementById('plCount').textContent=''; out.innerHTML=`<p class="pl-empty">⛏️ ${l.soon} — niveau en préparation.</p>`; return; }
       getJSON(lv.file).then(cours=>{
-        // filtres PFEQ dérivés
+        // filtres : saisons (periode) + PFEQ
+        var saisons=[...new Set(cours.map(c=>c.periode).filter(Boolean))];
         var pfeqs=[...new Set(cours.flatMap(c=>c.pfeq||[]))].sort();
         fbox.dataset.pfeq = fbox.dataset.pfeq||'*';
-        fbox.innerHTML = `<button class="pl-chip${fbox.dataset.pfeq==='*'?' active':''}" onclick="document.getElementById('plFilters').dataset.pfeq='*';plRender()">PFEQ ✓</button>`+
+        fbox.innerHTML =
+          `<button class="pl-chip${state.epSaison==='*'?' active':''}" onclick="state.epSaison='*';plRender()">📅 ${l.allSaisons}</button>`+
+          saisons.map(s=>`<button class="pl-chip${state.epSaison===s?' active':''}" onclick="state.epSaison=this.dataset.s;plRender()" data-s="${s}">${s}</button>`).join('')+
+          `<span style="width:10px"></span>`+
+          `<button class="pl-chip${fbox.dataset.pfeq==='*'?' active':''}" onclick="document.getElementById('plFilters').dataset.pfeq='*';plRender()">PFEQ ✓</button>`+
           pfeqs.map(p=>`<button class="pl-chip${fbox.dataset.pfeq===p?' active':''}" onclick="document.getElementById('plFilters').dataset.pfeq='${p}';plRender()">${p}</button>`).join('');
         var q=(document.getElementById('plSearch').value||'').toLowerCase();
         var pf=fbox.dataset.pfeq;
         var list=cours.filter(c=>
+          (state.epSaison==='*'||c.periode===state.epSaison) &&
           (pf==='*'||(c.pfeq||[]).includes(pf)) &&
+          (!favOnly || FAV.has('ep-'+c.id)) &&
           (!q || (c.titre+' '+(c.intention||'')).toLowerCase().includes(q)));
         document.getElementById('plCount').textContent=l.count1(list.length);
         out.className='zts-grid';
+        if(!list.length){ out.className=''; out.innerHTML=`<p class="pl-empty">${favOnly?l.favEmpty:'Aucun cours.'}</p>`; return; }
         out.innerHTML=list.map(c=>`
           <div class="zts-app-card pl-card" role="button" tabindex="0" onclick="epOpen(${c.id})" onkeydown="if(event.key==='Enter')epOpen(${c.id})">
             <button class="pl-fav" title="${l.fav}" onclick="event.stopPropagation();toggleFav(${c.id},this)">${FAV.has('ep-'+c.id)?'★':'☆'}</button>
             <span class="zts-app-card__icon">📋</span>
             <span class="zts-app-card__name">#${c.id} · ${c.titre}</span>
             <span class="zts-app-card__desc">${(c.intention||'').slice(0,90)}…</span>
-            <div class="pl-meta"><span>⏱️ ${c.duree||'60 min'}</span>${(c.pfeq||[]).slice(0,3).map(p=>`<span>${p}</span>`).join('')}</div>
-          </div>`).join('') || `<p class="pl-empty">Aucun cours.</p>`;
+            <div class="pl-meta"><span>⏱️ ${c.duree||'60 min'}</span>${c.periode?`<span>📅 ${c.periode.split(' — ')[0]}</span>`:''}${(c.pfeq||[]).slice(0,2).map(p=>`<span>${p}</span>`).join('')}</div>
+          </div>`).join('');
       });
     }
-    function toggleFav(id,btn){ var k='ep-'+id; if(FAV.has(k))FAV.delete(k); else FAV.add(k); saveFav(); if(btn)btn.textContent=FAV.has(k)?'★':'☆'; }
+    function toggleFav(id,btn){ var k='ep-'+id; if(FAV.has(k))FAV.delete(k); else FAV.add(k); saveFav();
+      if(btn)btn.textContent=FAV.has(k)?'★':'☆';
+      var ft=document.getElementById('plFavToggle'); if(ft&&!ft.hidden) ft.textContent=(favOnly?L().favOn:L().favOff)+(FAV.size?' ('+FAV.size+')':'');
+      if(favOnly) plRender(); }
     window.toggleFav=toggleFav;
     function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
     function listBlock(label, arr, cls){
@@ -292,10 +372,12 @@
 
     // ---------- Camp ----------
     function renderCamp(){
-      var l=L(), out=document.getElementById('plOut'); document.getElementById('plFilters').innerHTML='';
+      var l=L(), lang=ZTS.getLang(), out=document.getElementById('plOut');
+      // chips de groupe d'âge dans la barre de filtres
+      document.getElementById('plFilters').innerHTML = CAMP_AGES.map(a=>`<button class="pl-chip${state.campAge===a?' active':''}" onclick="state.campAge='${a}';plRender()">👥 ${a} ${lang==='fr'?'ans':'yrs'}</button>`).join('');
       getJSON('data/camp.sample.json').then(weeks=>{
-        var w=weeks[state.campWeek]; var g=w.groupes[state.campAge];
-        document.getElementById('plCount').textContent=`${l.wk} ${w.semaine} · ${w.theme} · ${state.campAge} ${ZTS.getLang()==='fr'?'ans':'yrs'}`;
+        var w=weeks.find(x=>x.semaine===state.campWeek)||weeks[0]; var g=w.groupes[state.campAge];
+        document.getElementById('plCount').textContent=`${l.wk} ${w.semaine} · ${w.theme} · ${state.campAge} ${lang==='fr'?'ans':'yrs'}`;
         out.className='';
         out.innerHTML=
           `<div class="pl-sched">`+
@@ -311,7 +393,7 @@
     function renderSDG(){
       var l=L(), out=document.getElementById('plOut'); document.getElementById('plFilters').innerHTML='';
       getJSON('data/sdg.sample.json').then(days=>{
-        var d=days[0];
+        var d=days.find(x=>x.jour===state.sdgDay)||days[0];
         document.getElementById('plCount').textContent=`${d.label}`;
         out.className='';
         function block(title,b){
@@ -325,7 +407,7 @@
     }
 
     document.addEventListener('zts:ready', function(){ plStatic(); });
-    document.addEventListener('zts:langchange', function(){ plStatic(); if(state.metier){ buildLevels(); plRender(); } });
+    document.addEventListener('zts:langchange', function(){ plStatic(); if(state.metier){ renderInfo(); buildLevels(); plRender(); } });
   </script>
 </body>
 </html>
