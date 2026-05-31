@@ -33,7 +33,7 @@
     <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-4) 0 var(--space-3);" data-i18n="hub.active">Apps prêtes à l'emploi</h2>
     <div class="zts-grid" id="gridActive"></div>
 
-    <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-6) 0 var(--space-3); opacity:.8;" data-i18n="hub.coming">Bientôt disponibles</h2>
+    <h2 id="soonTitle" style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-6) 0 var(--space-3); opacity:.8;" data-i18n="hub.coming">Bientôt disponibles</h2>
     <div class="zts-grid" id="gridSoon"></div>
 
   </main>
@@ -55,14 +55,13 @@
       { icon:'⚡', url:'apps/jeux-rapides/', tag:'new', fr:{n:'Jeux rapides',d:'< 10 min, sans matériel, par âge'}, en:{n:'Quick games',d:'<10 min, no gear, by age'} },
       { icon:'🧘', url:'apps/jeux-calmes/', tag:'new', fr:{n:'Jeux calmes',d:'Transitions et retour au calme'}, en:{n:'Calm games',d:'Transitions and winding down'} },
       { icon:'🌧️', url:'apps/plan-b-pluie/', tag:'new', fr:{n:'Plan B jours de pluie',d:'Activités intérieures grand groupe'}, en:{n:'Rainy-day plan B',d:'Indoor large-group activities'} },
-      { icon:'🛡️', url:'apps/sos-conflits/', tag:'new', fr:{n:'SOS conflits',d:'Médiation rapide + scénarios'}, en:{n:'Conflict SOS',d:'Quick mediation + scenarios'} }
+      { icon:'🛡️', url:'apps/sos-conflits/', tag:'new', fr:{n:'SOS conflits',d:'Médiation rapide + scénarios'}, en:{n:'Conflict SOS',d:'Quick mediation + scenarios'} },
+      { icon:'⏳', url:'apps/activites-duree/', tag:'new', fr:{n:'Activités par durée',d:'Filtre 15 / 30 / 60 min'}, en:{n:'Activities by length',d:'Filter 15 / 30 / 60 min'} },
+      { icon:'🎨', url:'apps/journee-pedago/', tag:'new', fr:{n:'Journées pédagogiques',d:'Programmation de journée complète'}, en:{n:'PD days',d:'Full-day programming'} },
+      { icon:'✂️', url:'apps/bricolages/', tag:'new', fr:{n:'Bricolages sans préparation',d:'Idées à matériel minimal'}, en:{n:'No-prep crafts',d:'Minimal-material ideas'} },
+      { icon:'🎡', url:'apps/roue-responsabilites/', tag:'new', fr:{n:'Roue de responsabilités',d:'Routines : collation, jeu libre'}, en:{n:'Responsibility wheel',d:'Routines: snack, free play'} }
     ];
-    const SOON = [
-      { icon:'⏳', fr:{n:'Activités par durée',d:'Filtre 15 / 30 / 60 min'}, en:{n:'Activities by length',d:'Filter 15 / 30 / 60 min'} },
-      { icon:'🎨', fr:{n:'Journées pédagogiques',d:'Programmation de journée complète'}, en:{n:'PD days',d:'Full-day programming'} },
-      { icon:'✂️', fr:{n:'Bricolages sans préparation',d:'Idées à matériel minimal'}, en:{n:'No-prep crafts',d:'Minimal-material ideas'} },
-      { icon:'🎡', fr:{n:'Roue de responsabilités',d:'Routines : collation, jeu libre'}, en:{n:'Responsibility wheel',d:'Routines: snack, free play'} }
-    ];
+    const SOON = [];
 
     // ===== Menu du jour SDG (bilingue) =====
     const MENU = {
@@ -136,6 +135,9 @@
           <span class="zts-app-card__name">${a[L].n}</span>
           <span class="zts-app-card__desc">${a[L].d}</span>
         </div>`).join('');
+      const hasSoon = SOON.length>0;
+      document.getElementById('soonTitle').hidden = !hasSoon;
+      document.getElementById('gridSoon').hidden = !hasSoon;
     }
     document.addEventListener('zts:ready', renderHub);
     document.addEventListener('zts:langchange', renderHub);
