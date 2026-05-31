@@ -75,6 +75,13 @@
     /* Bloc coloré : toute la case prend la couleur, les sous-cases (texte) restent blanches */
     .pl-block.pl-tinted { gap:var(--space-3); }
     .pl-block.pl-tinted > div { background:#fff; border-radius:10px; padding:8px 12px; }
+    .pl-del { position:absolute; top:8px; right:10px; border:2px solid var(--zts-noir); background:#fff; border-radius:50%;
+      width:30px; height:30px; cursor:pointer; font-size:15px; line-height:1; box-shadow:2px 2px 0 var(--zts-noir); z-index:3; }
+    .pl-block.pl-edit { position:relative; }
+    .pl-add { display:inline-flex; align-items:center; gap:6px; margin-top:var(--space-2); cursor:pointer;
+      font-family:var(--font-impact); font-size:var(--fs-2); padding:10px 18px; border:var(--bord); border-radius:var(--r-pill);
+      background:#fff; box-shadow:var(--ombre); }
+    .pl-add:active { transform:translate(2px,2px); box-shadow:2px 2px 0 var(--zts-noir); }
     /* Détail cours ÉP — fiche complète style mockup */
     .pl-phase { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff;
       margin-top:var(--space-3); padding:var(--space-3) var(--space-4); border-left:10px solid var(--metier,#19B5C9); }
@@ -168,7 +175,7 @@
         print:'🖨️ Imprimer / PDF', materiel:'Matériel', intention:'Intention pédagogique', prep:'Préparation',
         wk:'Semaine', day:'Jour', planB:'☔ Plan B météo', saison:'Saison', allSaisons:'Toute l\'année', loginNote:'(sauvegardé sur ton compte)', wdays:['Lun','Mar','Mer','Jeu','Ven'],
         details:'Détails', objectif:'Objectif', deroulement:'Déroulement', variantes:'Variantes', astuce:'Astuce',
-        edit:'✏️ Personnaliser', editDone:'✓ Terminer', editNote:'Modifs sauvegardées sur ton compte', reset1:'Réinitialiser ce jour' },
+        edit:'✏️ Personnaliser', editDone:'✓ Terminer', editNote:'Modifs sauvegardées sur ton compte', reset1:'Réinitialiser ce jour', addCase:'Ajouter une case', delCase:'Supprimer cette case', newCase:'Nouvelle activité' },
       en:{ pill:'Planning', title:'🗂️ Planning', intro:'A bank of complete, ready-to-use plans built for 3 real-world roles. Pick your role below to see what we prepared for you.',
         ep:'Physical education', epD:'360 lessons · 4 levels', epL:'60-min lesson plans, from preschool to 3rd cycle.',
         sdg:'Daycare', sdgD:'200 days · morning + evening', sdgL:'The full year, morning and evening blocks.',
@@ -178,7 +185,7 @@
         print:'🖨️ Print / PDF', materiel:'Equipment', intention:'Teaching intent', prep:'Setup',
         wk:'Week', day:'Day', planB:'☔ Weather plan B', saison:'Season', allSaisons:'All year', loginNote:'(saved to your account)', wdays:['Mon','Tue','Wed','Thu','Fri'],
         details:'Details', objectif:'Goal', deroulement:'Steps', variantes:'Variations', astuce:'Tip',
-        edit:'✏️ Customize', editDone:'✓ Done', editNote:'Changes saved to your account', reset1:'Reset this day' }
+        edit:'✏️ Customize', editDone:'✓ Done', editNote:'Changes saved to your account', reset1:'Reset this day', addCase:'Add a block', delCase:'Remove this block', newCase:'New activity' }
     };
     // Explication détaillée par métier (bandeau à l'entrée)
     var METIER_INFO = {
@@ -456,11 +463,43 @@
     function loadEdits(){ try{ return JSON.parse(localStorage.getItem(editsKey())||'{}'); }catch(e){ return {}; } }
     function saveEdits(){ try{ localStorage.setItem(editsKey(), JSON.stringify(EDITS)); }catch(e){} }
     function editSet(key,field,val){
+      var m=key.match(/^ST\|(.+)\|add\|(\d+)$/);
+      if(m){ editAddSet(m[1], +m[2], field, val); return; }   // case ajoutée
       if(!EDITS[key]) EDITS[key]={};
       if(val==null||val==='') delete EDITS[key][field]; else EDITS[key][field]=val;
       if(!Object.keys(EDITS[key]).length) delete EDITS[key];
       saveEdits();
     }
+    // ---- Structure : ajouter / enlever des cases (par groupe) ----
+    function st(ctx){ var k='ST|'+ctx; if(!EDITS[k]) EDITS[k]={removed:[],added:[]}; return EDITS[k]; }
+    function cleanSt(ctx){ var k='ST|'+ctx,s=EDITS[k]; if(s && !(s.removed&&s.removed.length) && !(s.added&&s.added.length)) delete EDITS[k]; }
+    function editAddSet(ctx,j,field,val){ var s=st(ctx); if(s.added[j]){ if(val==null||val==='') delete s.added[j][field]; else s.added[j][field]=val; saveEdits(); } }
+    function addBlock(ctx){ var s=st(ctx); s.added.push({heure:'',nom:L().newCase,desc:'',color:null,lieu:'local'}); saveEdits(); plRender(); }
+    function removeBlock(key){
+      var m=key.match(/^ST\|(.+)\|add\|(\d+)$/);
+      if(m){ var s=st(m[1]); s.added.splice(+m[2],1); cleanSt(m[1]); saveEdits(); plRender(); return; }
+      var p=key.lastIndexOf('|'), ctx=key.slice(0,p), i=+key.slice(p+1);
+      var s2=st(ctx); if(s2.removed.indexOf(i)<0) s2.removed.push(i); saveEdits(); plRender();
+    }
+    function groupBlocks(ctx, base){
+      var s=EDITS['ST|'+ctx]||{removed:[],added:[]}, list=[];
+      base.forEach(function(b,i){
+        if(s.removed && s.removed.indexOf(i)>=0) return;
+        var e=EDITS[ctx+'|'+i]||{};
+        list.push({ key:ctx+'|'+i, block:Object.assign({},b,{ _hdr:(e.heure!=null?e.heure:b._hdr), nom:(e.nom!=null?e.nom:b.nom), desc:(e.desc!=null?e.desc:b.desc), _color:e.color }) });
+      });
+      (s.added||[]).forEach(function(a,j){
+        list.push({ key:'ST|'+ctx+'|add|'+j, block:{ _hdr:a.heure||'', nom:a.nom||'', desc:a.desc||'', _color:a.color, lieu:a.lieu||'local', materiel:a.materiel||[], _added:true } });
+      });
+      return list;
+    }
+    function groupHTML(ctx, base, flatStart){
+      var gl=groupBlocks(ctx, base);
+      var html='<div class="pl-sched">'+ gl.map(function(it,k){ return cardHTML(it.block, it.key, flatStart+k); }).join('') +'</div>';
+      if(editMode) html += `<button class="pl-add" onclick="addBlock('${ctx}')">➕ ${L().addCase}</button>`;
+      return { html:html, blocks:gl.map(function(x){return x.block;}), count:gl.length };
+    }
+    window.addBlock=addBlock; window.removeBlock=removeBlock;
     function editColor(key,val){
       editSet(key,'color',val);
       var el=document.querySelector('.pl-block[data-hk="'+key+'"]');
@@ -482,6 +521,7 @@
       var bstyle = m._color? ` style="background:${m._color};"`:'';
       if(editMode){
         return `<div class="pl-block pl-edit${tint}" data-hk="${key}"${bstyle}>
+          <button class="pl-del" title="${L().delCase}" onclick="removeBlock('${key}')">🗑️</button>
           <div class="pl-ecell">
             <input class="pl-ein pl-etime" value="${escAttr(m._hdr)}" oninput="editSet('${key}','heure',this.value)">
             <label class="pl-ecolwrap">🎨<input type="color" value="${m._color||'#cfd8e3'}" oninput="editColor('${key}',this.value)"></label>
@@ -510,11 +550,10 @@
         document.getElementById('plCount').textContent=`${l.wk} ${w.semaine} · ${w.theme} · ${state.campAge} ${lang==='fr'?'ans':'yrs'}`;
         out.className='';
         var ctx='c|'+w.semaine+'|'+state.campAge;
-        PL_BLOCKS = g.blocs.map((b,i)=>mergedBlock(Object.assign({},b,{_hdr:b.heure}), ctx+'|'+i));
-        out.innerHTML=
-          `<div class="pl-sched">`+
-          PL_BLOCKS.map((m,i)=>cardHTML(m, ctx+'|'+i, i)).join('')+
-          `</div>`+
+        var base=g.blocs.map(b=>Object.assign({},b,{_hdr:b.heure}));
+        var grp=groupHTML(ctx, base, 0);
+        PL_BLOCKS=grp.blocks;
+        out.innerHTML= grp.html +
           `<div class="pl-block" style="margin-top:var(--space-3);grid-template-columns:1fr;"><div><div class="n">${l.planB}</div><div class="d">${w.plan_b_meteo}</div></div></div>`;
       });
     }
@@ -528,18 +567,20 @@
         out.className='';
         var ctx='s|'+d.jour, lang=ZTS.getLang();
         var HM=['7 h 00','7 h 25','7 h 50','8 h 20','8 h 45'], HA=['15 h 00','15 h 30','16 h 15','17 h 00','17 h 30'];
-        var mi=d.blocs.matin.items.map((b,i)=>Object.assign({},b,{_hdr:HM[i]||'', _tag:b.type.replace('_',' ')}));
-        var ai=d.blocs.aprem.items.map((b,i)=>Object.assign({},b,{_hdr:HA[i]||'', _tag:b.type.replace('_',' ')}));
-        var off=mi.length;
-        PL_BLOCKS = mi.map((b,i)=>mergedBlock(b,ctx+'|'+i)).concat(ai.map((b,k)=>mergedBlock(b,ctx+'|'+(off+k))));
-        function plageHead(sec, base){
-          var pk=ctx+'|plage|'+sec, pv=(EDITS[pk]&&EDITS[pk].heure!=null)?EDITS[pk].heure:base, ic=sec==='m'?'🌅':'🌆', lab=sec==='m'?(lang==='fr'?'Matin':'Morning'):(lang==='fr'?'Après-midi':'Afternoon');
+        var mbase=d.blocs.matin.items.map((b,i)=>Object.assign({},b,{_hdr:HM[i]||'', _tag:b.type.replace('_',' ')}));
+        var abase=d.blocs.aprem.items.map((b,i)=>Object.assign({},b,{_hdr:HA[i]||'', _tag:b.type.replace('_',' ')}));
+        var mctx=ctx+'|m', actx=ctx+'|a';
+        function plageHead(sec, basep){
+          var pk=ctx+'|plage|'+sec, pv=(EDITS[pk]&&EDITS[pk].heure!=null)?EDITS[pk].heure:basep, ic=sec==='m'?'🌅':'🌆', lab=sec==='m'?(lang==='fr'?'Matin':'Morning'):(lang==='fr'?'Après-midi':'Afternoon');
           if(editMode) return `<div class="pl-platge" style="margin:var(--space-4) 0 var(--space-2);"><b style="font-family:var(--font-impact);font-size:var(--fs-3);">${ic} ${lab}</b><input value="${escAttr(pv)}" oninput="editSet('${pk}','heure',this.value)"></div>`;
           return `<h3 style="font-family:var(--font-impact);font-size:var(--fs-3);margin:var(--space-4) 0 var(--space-2);">${ic} ${lab} · ${esc(pv)}</h3>`;
         }
+        var gm=groupHTML(mctx, mbase, 0);
+        var ga=groupHTML(actx, abase, gm.count);
+        PL_BLOCKS = gm.blocks.concat(ga.blocks);
         out.innerHTML =
-          plageHead('m', d.blocs.matin.plage) + `<div class="pl-sched">`+ PL_BLOCKS.slice(0,off).map((m,i)=>cardHTML(m,ctx+'|'+i,i)).join('') +`</div>`+
-          plageHead('a', d.blocs.aprem.plage) + `<div class="pl-sched">`+ PL_BLOCKS.slice(off).map((m,k)=>cardHTML(m,ctx+'|'+(off+k),off+k)).join('') +`</div>`;
+          plageHead('m', d.blocs.matin.plage) + gm.html +
+          plageHead('a', d.blocs.aprem.plage) + ga.html;
       });
     }
 
