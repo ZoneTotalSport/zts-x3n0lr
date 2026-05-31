@@ -10,7 +10,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zone Total Sport — Mockup nouvelle home (Primaire)</title>
+<title>Zone Total Sport — Outils et planifications pour l'éducation physique, le service de garde et le camp de jour</title>
 
 <!-- POLICES GOOGLE FONTS : Combo Luckiest Guy + Bangers + Fredoka + Quicksand + Caveat -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2895,65 +2895,7 @@
 </head>
 <body>
 
-<!-- ============ PASSWORD GATE — Protection mot de passe ============ -->
-<div id="passwordGate" style="
-  position: fixed; inset: 0; z-index: 99999;
-  background: linear-gradient(135deg, #00D9FF 0%, #00C4FF 50%, #00A8E8 100%);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Luckiest Guy', cursive;
-">
-  <div style="
-    background: white; border: 5px solid #1a1a2e; border-radius: 24px;
-    padding: 48px 36px; max-width: 460px; width: 90%;
-    box-shadow: 14px 14px 0 #1a1a2e;
-    text-align: center;
-  ">
-    <div style="font-size: 80px; margin-bottom: 8px;">🔒</div>
-    <h2 style="font-family: 'Luckiest Guy', cursive; font-size: 38px; color: #1a1a2e; margin-bottom: 8px; text-shadow: 3px 3px 0 #FFEA00;" data-i18n="gate.title">ACCÈS PROTÉGÉ</h2>
-    <p style="font-family: 'DynaPuff', cursive; font-size: 17px; color: #555; margin-bottom: 24px;" data-i18n="gate.sub">Aperçu privé de Zone Total Sport.<br>Entre le mot de passe pour continuer.</p>
-    <input type="password" id="passwordInput" data-i18n-attr="placeholder:gate.ph" placeholder="Mot de passe" style="
-      width: 100%; padding: 14px 18px; border: 3px solid #1a1a2e;
-      border-radius: 12px; font-size: 18px; font-family: inherit;
-      text-align: center; margin-bottom: 14px; box-sizing: border-box;
-    " autofocus>
-    <button onclick="checkPassword()" style="
-      background: #FF6B00; color: white; border: 3px solid #1a1a2e;
-      padding: 14px 32px; border-radius: 14px; font-family: 'Luckiest Guy', cursive;
-      font-size: 22px; cursor: pointer; box-shadow: 5px 5px 0 #1a1a2e;
-      letter-spacing: 0.04em; width: 100%;
-    " data-i18n="gate.btn">DÉVERROUILLER</button>
-    <div id="passwordError" style="
-      display: none; color: #FF2D87; font-family: 'DynaPuff', cursive;
-      font-weight: 700; margin-top: 14px; font-size: 16px;
-    " data-i18n="gate.err">❌ Mot de passe incorrect</div>
-  </div>
-</div>
-
-<script>
-  // ============ MOT DE PASSE — change-le ici ============
-  const CORRECT_PASSWORD = 'mrroot2026';
-
-  function checkPassword() {
-    const input = document.getElementById('passwordInput').value;
-    if (input === CORRECT_PASSWORD) {
-      sessionStorage.setItem('zts-unlocked', 'yes');
-      document.getElementById('passwordGate').style.display = 'none';
-    } else {
-      document.getElementById('passwordError').style.display = 'block';
-      document.getElementById('passwordInput').value = '';
-      document.getElementById('passwordInput').focus();
-    }
-  }
-  // Déjà déverrouillé dans cette session?
-  if (sessionStorage.getItem('zts-unlocked') === 'yes') {
-    document.getElementById('passwordGate').style.display = 'none';
-  }
-  // Touche Enter = soumet
-  document.getElementById('passwordInput').addEventListener('keypress', e => {
-    if (e.key === 'Enter') checkPassword();
-  });
-</script>
-<!-- ============ FIN PASSWORD GATE ============ -->
+<!-- Mot de passe d'aperçu (préprod) retiré pour la mise en ligne de la v2 publique. -->
 
 <!-- HEADER PARTAGÉ (injecté par zts.js) — unifié avec hubs + apps -->
 <div data-zts-header></div>
