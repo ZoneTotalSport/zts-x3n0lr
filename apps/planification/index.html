@@ -179,12 +179,12 @@
 
     var EP_LEVELS = [
       { key:'maternelle', fr:'Maternelle', en:'Kindergarten', file:'data/ep-maternelle.json', ready:true },
-      { key:'1er', fr:'1er cycle', en:'1st cycle', ready:false },
-      { key:'2e', fr:'2e cycle', en:'2nd cycle', ready:false },
-      { key:'3e', fr:'3e cycle', en:'3rd cycle', ready:false }
+      { key:'1er', fr:'1er cycle', en:'1st cycle', file:'data/ep-1er.json', ready:true },
+      { key:'2e', fr:'2e cycle', en:'2nd cycle', file:'data/ep-2e.json', ready:true },
+      { key:'3e', fr:'3e cycle', en:'3rd cycle', file:'data/ep-3e.json', ready:true }
     ];
     var CAMP_AGES = ['5-7','8-10','11-12'];
-    var CAMP_WEEKS = [{n:1,ready:true},{n:2},{n:3},{n:4},{n:5},{n:6},{n:7}];
+    var CAMP_WEEKS = [{n:1,ready:true},{n:2,ready:true},{n:3,ready:true},{n:4,ready:true},{n:5,ready:true},{n:6,ready:true},{n:7,ready:true}];
     var state = { metier:null, epLevel:'maternelle', epSaison:'*', campWeek:1, campAge:'5-7', sdgWeek:1, sdgJourSem:1, cache:{} };
     // Favoris persistés — par compte (UID) si connecté, sinon clé locale partagée
     function favKey(){ return 'zts_planif_fav' + (UID ? '_'+UID : ''); }
@@ -377,7 +377,7 @@
       var l=L(), lang=ZTS.getLang(), out=document.getElementById('plOut');
       // chips de groupe d'âge dans la barre de filtres
       document.getElementById('plFilters').innerHTML = CAMP_AGES.map(a=>`<button class="pl-chip${state.campAge===a?' active':''}" onclick="state.campAge='${a}';plRender()">👥 ${a} ${lang==='fr'?'ans':'yrs'}</button>`).join('');
-      getJSON('data/camp.sample.json').then(weeks=>{
+      getJSON('data/camp.json').then(weeks=>{
         var w=weeks.find(x=>x.semaine===state.campWeek)||weeks[0]; var g=w.groupes[state.campAge];
         document.getElementById('plCount').textContent=`${l.wk} ${w.semaine} · ${w.theme} · ${state.campAge} ${lang==='fr'?'ans':'yrs'}`;
         out.className='';
@@ -386,8 +386,7 @@
           g.blocs.map(b=>`<div class="pl-block"><div class="h">${b.heure}</div><div><div class="n">${b.nom}</div><div class="d">${b.desc}</div>
              <div class="pl-meta"><span>📍 ${b.lieu}</span><span>⚡ ${b.energie}</span>${(b.materiel||[]).length?`<span>🎒 ${(b.materiel||[]).join(', ')}</span>`:''}</div></div></div>`).join('')+
           `</div>`+
-          `<div class="pl-block" style="margin-top:var(--space-3);grid-template-columns:1fr;"><div><div class="n">${l.planB}</div><div class="d">${w.plan_b_meteo}</div></div></div>`+
-          `<p class="pl-empty">⛏️ ${l.soon} — semaines 2 à 7 en préparation.</p>`;
+          `<div class="pl-block" style="margin-top:var(--space-3);grid-template-columns:1fr;"><div><div class="n">${l.planB}</div><div class="d">${w.plan_b_meteo}</div></div></div>`;
       });
     }
 
