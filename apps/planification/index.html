@@ -59,6 +59,19 @@
     .pl-more { font-family:var(--font-fun); font-weight:700; font-size:var(--fs-1); opacity:.55; white-space:nowrap; }
     .pl-ol { margin:6px 0 0; padding-left:20px; }
     .pl-ol li { font-family:var(--font-body); font-weight:600; margin:4px 0; }
+    /* Édition */
+    .pl-chip.editing { background:var(--zts-rouge,#e63329); color:#fff; }
+    .pl-block.pl-edit { cursor:default; }
+    .pl-ecell { display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
+    .pl-ecolwrap { display:inline-flex; align-items:center; gap:4px; font-size:var(--fs-1); cursor:pointer; }
+    .pl-ecolwrap input[type=color] { width:34px; height:26px; border:2px solid var(--zts-noir); border-radius:6px; padding:0; cursor:pointer; background:none; }
+    .pl-ein { width:100%; box-sizing:border-box; font-family:var(--font-body); font-weight:700; font-size:var(--fs-1);
+      border:2px solid var(--zts-noir); border-radius:8px; padding:6px 8px; }
+    .pl-etime { font-family:var(--font-impact); max-width:130px; }
+    .pl-enom { font-size:var(--fs-2); margin-bottom:6px; }
+    .pl-edesc { font-weight:600; resize:vertical; }
+    .pl-platge { display:flex; align-items:center; gap:8px; }
+    .pl-platge input { font-family:var(--font-impact); font-size:var(--fs-1); border:2px solid var(--zts-noir); border-radius:8px; padding:4px 8px; max-width:180px; }
     /* Détail cours ÉP — fiche complète style mockup */
     .pl-phase { border:var(--bord); border-radius:var(--r-2); box-shadow:var(--ombre); background:#fff;
       margin-top:var(--space-3); padding:var(--space-3) var(--space-4); border-left:10px solid var(--metier,#19B5C9); }
@@ -121,6 +134,8 @@
       <div class="pl-bar">
         <input type="search" class="pl-search" id="plSearch" oninput="plRender()">
         <button class="pl-chip" id="plFavToggle" onclick="favOnly=!favOnly;plRender()"></button>
+        <button class="pl-chip" id="plEditToggle" hidden onclick="toggleEdit()"></button>
+        <span id="plEditNote" hidden style="font-family:var(--font-body);font-weight:700;font-size:var(--fs-1);opacity:.7;"></span>
       </div>
       <div class="pl-chips" id="plFilters"></div>
       <p class="pl-count" id="plCount"></p>
@@ -149,7 +164,8 @@
         fav:'Favori', favOn:'★ Mes favoris', favOff:'☆ Mes favoris', favEmpty:'Aucun favori pour l\'instant — touche l\'étoile sur un cours pour le sauvegarder.', saved:'sauvegardé',
         print:'🖨️ Imprimer / PDF', materiel:'Matériel', intention:'Intention pédagogique', prep:'Préparation',
         wk:'Semaine', day:'Jour', planB:'☔ Plan B météo', saison:'Saison', allSaisons:'Toute l\'année', loginNote:'(sauvegardé sur ton compte)', wdays:['Lun','Mar','Mer','Jeu','Ven'],
-        details:'Détails', objectif:'Objectif', deroulement:'Déroulement', variantes:'Variantes', astuce:'Astuce' },
+        details:'Détails', objectif:'Objectif', deroulement:'Déroulement', variantes:'Variantes', astuce:'Astuce',
+        edit:'✏️ Personnaliser', editDone:'✓ Terminer', editNote:'Modifs sauvegardées sur ton compte', reset1:'Réinitialiser ce jour' },
       en:{ pill:'Planning', title:'🗂️ Planning', intro:'A bank of complete, ready-to-use plans built for 3 real-world roles. Pick your role below to see what we prepared for you.',
         ep:'Physical education', epD:'360 lessons · 4 levels', epL:'60-min lesson plans, from preschool to 3rd cycle.',
         sdg:'Daycare', sdgD:'200 days · morning + evening', sdgL:'The full year, morning and evening blocks.',
@@ -158,7 +174,8 @@
         fav:'Favorite', favOn:'★ My favorites', favOff:'☆ My favorites', favEmpty:'No favorites yet — tap the star on a lesson to save it.', saved:'saved',
         print:'🖨️ Print / PDF', materiel:'Equipment', intention:'Teaching intent', prep:'Setup',
         wk:'Week', day:'Day', planB:'☔ Weather plan B', saison:'Season', allSaisons:'All year', loginNote:'(saved to your account)', wdays:['Mon','Tue','Wed','Thu','Fri'],
-        details:'Details', objectif:'Goal', deroulement:'Steps', variantes:'Variations', astuce:'Tip' }
+        details:'Details', objectif:'Goal', deroulement:'Steps', variantes:'Variations', astuce:'Tip',
+        edit:'✏️ Customize', editDone:'✓ Done', editNote:'Changes saved to your account', reset1:'Reset this day' }
     };
     // Explication détaillée par métier (bandeau à l'entrée)
     var METIER_INFO = {
@@ -201,9 +218,12 @@
     // Quand l'utilisateur se connecte, recharge SES favoris (et migre ceux faits avant connexion)
     document.addEventListener('zts:auth', function(e){
       var u = e && e.detail && e.detail.user; if(!u) return;
-      var anon = [...FAV]; UID = u.uid;
+      var anon = [...FAV]; var anonEdits = EDITS; UID = u.uid;
       FAV = loadFav();
       if(anon.length){ anon.forEach(x=>FAV.add(x)); saveFav(); }
+      // édits : recharge ceux du compte + migre ceux faits avant connexion
+      EDITS = loadEdits();
+      if(anonEdits && Object.keys(anonEdits).length){ Object.keys(anonEdits).forEach(k=>{ if(!EDITS[k]) EDITS[k]=anonEdits[k]; }); saveEdits(); }
       if(state.metier) plRender();
     });
 
@@ -234,7 +254,7 @@
 
     // ---------- navigation ----------
     function plPick(m){
-      state.metier=m; favOnly=false;
+      state.metier=m; favOnly=false; editMode=false;
       document.body.setAttribute('data-metier', m);
       document.getElementById('plSelect').hidden=true;
       document.getElementById('plView').hidden=false;
@@ -275,12 +295,16 @@
     // ---------- rendu principal ----------
     function plRender(){
       plStatic();
-      // toggle « Mes favoris » : seulement en ÉP (les cours sont favorisables)
-      var ft=document.getElementById('plFavToggle');
-      if(state.metier==='ep'){ ft.hidden=false; ft.classList.toggle('active',favOnly);
-        ft.textContent=(favOnly?L().favOn:L().favOff)+(FAV.size?' ('+FAV.size+')':''); }
-      else { ft.hidden=true; }
-      if(state.metier==='ep') return renderEP();
+      var l=L();
+      var ft=document.getElementById('plFavToggle'), et=document.getElementById('plEditToggle'),
+          note=document.getElementById('plEditNote'), search=document.getElementById('plSearch');
+      var isEP=state.metier==='ep';
+      // ÉP : recherche + favoris ; Camp/SDG : bouton Personnaliser (édition)
+      ft.hidden=!isEP; search.style.display=isEP?'':'none';
+      et.hidden=isEP; note.hidden=isEP||!editMode;
+      if(isEP){ ft.classList.toggle('active',favOnly); ft.textContent=(favOnly?l.favOn:l.favOff)+(FAV.size?' ('+FAV.size+')':''); }
+      else { et.textContent=editMode?l.editDone:l.edit; et.classList.toggle('editing',editMode); note.textContent=l.editNote; }
+      if(isEP) return renderEP();
       if(state.metier==='camp') return renderCamp();
       if(state.metier==='sdg') return renderSDG();
     }
@@ -383,7 +407,8 @@
     function openBlock(i){
       var b=PL_BLOCKS[i]; if(!b) return; var l=L();
       var meta=[];
-      if(b.heure) meta.push('🕐 '+b.heure); else if(b.type) meta.push('🏷️ '+b.type.replace('_',' '));
+      var head=b._hdr || b.heure || (b.type?b.type.replace('_',' '):'');
+      if(head) meta.push((/\d/.test(head)?'🕐 ':'🏷️ ')+head);
       if(b.lieu) meta.push('📍 '+b.lieu);
       if(b.energie) meta.push('⚡ '+b.energie);
       document.getElementById('plModalBody').innerHTML=
@@ -399,6 +424,55 @@
     }
     window.openBlock=openBlock;
 
+    // ---------- Personnalisation (édition + sauvegarde par compte) ----------
+    var editMode=false, EDITS=loadEdits();
+    function editsKey(){ return 'zts_planif_edits'+(UID?'_'+UID:''); }
+    function loadEdits(){ try{ return JSON.parse(localStorage.getItem(editsKey())||'{}'); }catch(e){ return {}; } }
+    function saveEdits(){ try{ localStorage.setItem(editsKey(), JSON.stringify(EDITS)); }catch(e){} }
+    function editSet(key,field,val){
+      if(!EDITS[key]) EDITS[key]={};
+      if(val==null||val==='') delete EDITS[key][field]; else EDITS[key][field]=val;
+      if(!Object.keys(EDITS[key]).length) delete EDITS[key];
+      saveEdits();
+    }
+    function editColor(key,val){
+      editSet(key,'color',val);
+      var h=document.querySelector('[data-hk="'+key+'"]');
+      if(h){ h.style.background=val; h.style.color=pickText(val); h.style.borderRadius='8px'; h.style.padding='4px 8px'; }
+    }
+    function pickText(hex){ if(!hex) return ''; var c=hex.replace('#',''); if(c.length===3)c=c.split('').map(x=>x+x).join('');
+      var r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);
+      return (0.299*r+0.587*g+0.114*b)>150?'#1a1a1a':'#fff'; }
+    function mergedBlock(b,key){ var e=EDITS[key]||{}; return Object.assign({},b,{
+      _hdr:(e.heure!=null?e.heure:b._hdr), nom:(e.nom!=null?e.nom:b.nom), desc:(e.desc!=null?e.desc:b.desc), _color:e.color }); }
+    function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+    function toggleEdit(){ editMode=!editMode; plRender(); }
+    window.editSet=editSet; window.editColor=editColor; window.toggleEdit=toggleEdit;
+
+    // Carte d'un bloc (vue ou édition) — m = bloc déjà fusionné avec les édits
+    function cardHTML(m, key, flatIndex){
+      var l=L();
+      if(editMode){
+        return `<div class="pl-block pl-edit">
+          <div class="pl-ecell">
+            <input class="pl-ein pl-etime" value="${escAttr(m._hdr)}" oninput="editSet('${key}','heure',this.value)">
+            <label class="pl-ecolwrap">🎨<input type="color" value="${m._color||'#cfd8e3'}" oninput="editColor('${key}',this.value)"></label>
+          </div>
+          <div>
+            <input class="pl-ein pl-enom" value="${escAttr(m.nom)}" oninput="editSet('${key}','nom',this.value)">
+            <textarea class="pl-ein pl-edesc" rows="2" oninput="editSet('${key}','desc',this.value)">${esc(m.desc)}</textarea>
+          </div>
+        </div>`;
+      }
+      var hstyle = m._color? ` style="background:${m._color};color:${pickText(m._color)};border-radius:8px;padding:4px 8px;"`:'';
+      var meta = (m.lieu?`<span>📍 ${esc(m.lieu)}</span>`:'')+(m.energie?`<span>⚡ ${esc(m.energie)}</span>`:'')+((m.materiel||[]).length?`<span>🎒 ${esc((m.materiel||[]).join(', '))}</span>`:'');
+      return `<div class="pl-block pl-click" role="button" tabindex="0" onclick="openBlock(${flatIndex})" onkeydown="if(event.key==='Enter')openBlock(${flatIndex})">
+        <div class="h" data-hk="${key}"${hstyle}>${esc(m._hdr)}</div>
+        <div><div class="n">${esc(m.nom)} <span class="pl-more">${l.details} ›</span></div><div class="d">${esc(m.desc)}</div>
+        <div class="pl-meta">${meta}</div></div>
+      </div>`;
+    }
+
     // ---------- Camp ----------
     function renderCamp(){
       var l=L(), lang=ZTS.getLang(), out=document.getElementById('plOut');
@@ -408,11 +482,11 @@
         var w=weeks.find(x=>x.semaine===state.campWeek)||weeks[0]; var g=w.groupes[state.campAge];
         document.getElementById('plCount').textContent=`${l.wk} ${w.semaine} · ${w.theme} · ${state.campAge} ${lang==='fr'?'ans':'yrs'}`;
         out.className='';
-        PL_BLOCKS = g.blocs.slice();
+        var ctx='c|'+w.semaine+'|'+state.campAge;
+        PL_BLOCKS = g.blocs.map((b,i)=>mergedBlock(Object.assign({},b,{_hdr:b.heure}), ctx+'|'+i));
         out.innerHTML=
           `<div class="pl-sched">`+
-          g.blocs.map((b,i)=>`<div class="pl-block pl-click" role="button" tabindex="0" onclick="openBlock(${i})" onkeydown="if(event.key==='Enter')openBlock(${i})"><div class="h">${b.heure}</div><div><div class="n">${b.nom} <span class="pl-more">${l.details} ›</span></div><div class="d">${b.desc}</div>
-             <div class="pl-meta"><span>📍 ${b.lieu}</span><span>⚡ ${b.energie}</span>${(b.materiel||[]).length?`<span>🎒 ${(b.materiel||[]).join(', ')}</span>`:''}</div></div></div>`).join('')+
+          PL_BLOCKS.map((m,i)=>cardHTML(m, ctx+'|'+i, i)).join('')+
           `</div>`+
           `<div class="pl-block" style="margin-top:var(--space-3);grid-template-columns:1fr;"><div><div class="n">${l.planB}</div><div class="d">${w.plan_b_meteo}</div></div></div>`;
       });
@@ -425,14 +499,19 @@
         var d=days.find(x=>x.semaine===state.sdgWeek && x.jourSem===state.sdgJourSem)||days[0];
         document.getElementById('plCount').textContent=`${d.label}${d.theme?' · '+d.theme:''}`;
         out.className='';
-        PL_BLOCKS = [...d.blocs.matin.items, ...d.blocs.aprem.items];
-        var off=d.blocs.matin.items.length;
-        function block(title,b,base){
-          return `<h3 style="font-family:var(--font-impact);font-size:var(--fs-3);margin:var(--space-4) 0 var(--space-2);">${title} · ${b.plage}</h3>`+
-            `<div class="pl-sched">`+b.items.map((it,k)=>{var i=base+k;return `<div class="pl-block pl-click" role="button" tabindex="0" onclick="openBlock(${i})" onkeydown="if(event.key==='Enter')openBlock(${i})"><div class="h">${it.type.replace('_',' ')}</div><div><div class="n">${it.nom} <span class="pl-more">${l.details} ›</span></div><div class="d">${it.desc}</div>
-              <div class="pl-meta"><span>📍 ${it.lieu}</span>${(it.materiel||[]).length?`<span>🎒 ${(it.materiel||[]).join(', ')}</span>`:''}</div></div></div>`;}).join('')+`</div>`;
+        var ctx='s|'+d.jour, lang=ZTS.getLang();
+        var mi=d.blocs.matin.items.map(b=>Object.assign({},b,{_hdr:b.type.replace('_',' ')}));
+        var ai=d.blocs.aprem.items.map(b=>Object.assign({},b,{_hdr:b.type.replace('_',' ')}));
+        var off=mi.length;
+        PL_BLOCKS = mi.map((b,i)=>mergedBlock(b,ctx+'|'+i)).concat(ai.map((b,k)=>mergedBlock(b,ctx+'|'+(off+k))));
+        function plageHead(sec, base){
+          var pk=ctx+'|plage|'+sec, pv=(EDITS[pk]&&EDITS[pk].heure!=null)?EDITS[pk].heure:base, ic=sec==='m'?'🌅':'🌆', lab=sec==='m'?(lang==='fr'?'Matin':'Morning'):(lang==='fr'?'Après-midi':'Afternoon');
+          if(editMode) return `<div class="pl-platge" style="margin:var(--space-4) 0 var(--space-2);"><b style="font-family:var(--font-impact);font-size:var(--fs-3);">${ic} ${lab}</b><input value="${escAttr(pv)}" oninput="editSet('${pk}','heure',this.value)"></div>`;
+          return `<h3 style="font-family:var(--font-impact);font-size:var(--fs-3);margin:var(--space-4) 0 var(--space-2);">${ic} ${lab} · ${esc(pv)}</h3>`;
         }
-        out.innerHTML = block('🌅 '+(ZTS.getLang()==='fr'?'Matin':'Morning'), d.blocs.matin, 0) + block('🌆 '+(ZTS.getLang()==='fr'?'Après-midi':'Afternoon'), d.blocs.aprem, off);
+        out.innerHTML =
+          plageHead('m', d.blocs.matin.plage) + `<div class="pl-sched">`+ PL_BLOCKS.slice(0,off).map((m,i)=>cardHTML(m,ctx+'|'+i,i)).join('') +`</div>`+
+          plageHead('a', d.blocs.aprem.plage) + `<div class="pl-sched">`+ PL_BLOCKS.slice(off).map((m,k)=>cardHTML(m,ctx+'|'+(off+k),off+k)).join('') +`</div>`;
       });
     }
 
