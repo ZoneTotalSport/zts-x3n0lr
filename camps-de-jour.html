@@ -33,7 +33,7 @@
     <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-4) 0 var(--space-3);" data-i18n="hub.active">Apps prêtes à l'emploi</h2>
     <div class="zts-grid" id="gridActive"></div>
 
-    <h2 style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-6) 0 var(--space-3); opacity:.8;" data-i18n="hub.coming">Bientôt disponibles</h2>
+    <h2 id="soonTitle" style="font-family:var(--font-impact); font-size:var(--fs-4); margin:var(--space-6) 0 var(--space-3); opacity:.8;" data-i18n="hub.coming">Bientôt disponibles</h2>
     <div class="zts-grid" id="gridSoon"></div>
 
   </main>
@@ -57,12 +57,11 @@
       { icon:'😄', url:'apps/brise-glace/', tag:'new', fr:{n:'Brise-glace',d:'Présentation de début de semaine'}, en:{n:'Ice-breakers',d:'Start-of-week intros'} },
       { icon:'🔥', url:'apps/veillee-feu-de-camp/', tag:'new', fr:{n:'Veillée / feu de camp',d:'Activités de soirée'}, en:{n:'Evening / campfire',d:'Evening activities'} },
       { icon:'💦', url:'apps/jeux-eau/', tag:'new', fr:{n:'Jeux d\'eau',d:'Pour les chaudes journées'}, en:{n:'Water games',d:'For hot days'} },
-      { icon:'🏷️', url:'apps/noms-de-clans/', tag:'new', fr:{n:'Générateur de noms de clans',d:'Noms d\'équipe aléatoires'}, en:{n:'Clan name generator',d:'Random team names'} }
+      { icon:'🏷️', url:'apps/noms-de-clans/', tag:'new', fr:{n:'Générateur de noms de clans',d:'Noms d\'équipe aléatoires'}, en:{n:'Clan name generator',d:'Random team names'} },
+      { icon:'🗺️', url:'apps/rallyes/', tag:'new', fr:{n:'Rallyes / chasses au trésor',d:'Modèles + générateur d\'indices'}, en:{n:'Rallies / treasure hunts',d:'Templates + clue generator'} },
+      { icon:'🏅', url:'apps/olympiades/', tag:'new', fr:{n:'Olympiades / tournois',d:'Pointage inter-équipes'}, en:{n:'Olympics / tournaments',d:'Inter-team scoring'} }
     ];
-    const SOON = [
-      { icon:'🗺️', fr:{n:'Rallyes / chasses au trésor',d:'Modèles + générateur d\'indices'}, en:{n:'Rallies / treasure hunts',d:'Templates + clue generator'} },
-      { icon:'🏅', fr:{n:'Olympiades / tournois',d:'Pointage inter-équipes'}, en:{n:'Olympics / tournaments',d:'Inter-team scoring'} }
-    ];
+    const SOON = [];
 
     // ===== Menu du jour Camp (bilingue) =====
     const MENU = {
@@ -136,6 +135,9 @@
           <span class="zts-app-card__name">${a[L].n}</span>
           <span class="zts-app-card__desc">${a[L].d}</span>
         </div>`).join('');
+      const hasSoon = SOON.length>0;
+      document.getElementById('soonTitle').hidden = !hasSoon;
+      document.getElementById('gridSoon').hidden = !hasSoon;
     }
     document.addEventListener('zts:ready', renderHub);
     document.addEventListener('zts:langchange', renderHub);
