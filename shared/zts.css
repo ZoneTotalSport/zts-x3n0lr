@@ -117,17 +117,27 @@ a { color:inherit; }
 /* ============ HEADER PARTAGÉ (.zts-header) — grand bandeau bleu dégradé ============ */
 .zts-header {
   position:fixed; top:0; left:0; right:0; z-index:200;
-  background:linear-gradient(135deg, #00E5FF 0%, #29B6E8 48%, #1E90FF 100%);
-  border-bottom:var(--bord-gros);
-  box-shadow:0 6px 18px rgba(30,144,255,.35);
+  margin:14px clamp(12px,2.5vw,28px);
+  background:radial-gradient(circle at top right, #00C4FF 0%, #004A61 100%);
+  border:5px solid var(--zts-noir);
+  border-radius:var(--r-4);
+  box-shadow:8px 8px 0 var(--zts-noir);
   color:var(--ink);
+  overflow:hidden;
   display:flex; flex-direction:column; align-items:center; text-align:center;
-  gap:10px;
-  padding:14px clamp(16px,3vw,32px);
+  gap:20px;
+  padding:18px clamp(16px,3vw,40px) 24px;
   transition:transform .35s cubic-bezier(.4,0,.2,1);
 }
-.zts-header.hidden { transform:translateY(-100%); }
-.zts-header__brandwrap { display:flex; flex-direction:column; align-items:center; gap:4px; }
+/* Trame de points façon sticker (comme la fiche) */
+.zts-header::before {
+  content:""; position:absolute; inset:0; opacity:.12; pointer-events:none;
+  background-image:radial-gradient(#fff 2px, transparent 2px);
+  background-size:30px 30px;
+}
+.zts-header > * { position:relative; z-index:1; }
+.zts-header.hidden { transform:translateY(-130%); }
+.zts-header__brandwrap { display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:14px; }
 .zts-header__brand {
   display:flex; align-items:baseline; gap:10px;
   font-family:var(--font-impact); letter-spacing:.02em;
@@ -152,13 +162,24 @@ a { color:inherit; }
   transition:transform .25s cubic-bezier(.34,1.56,.64,1);
 }
 .zts-header__brand span:hover { transform:translateY(-9px) rotate(-3deg) scale(1.18); }
-.zts-header__meta { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }
+.zts-header__meta { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; }
 .zts-header__clock {
-  display:inline-flex; align-items:center; gap:5px;
-  font-family:var(--font-impact); color:var(--zts-noir); font-size:var(--fs-2); letter-spacing:.04em;
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font-impact); color:var(--zts-noir);
+  font-size:clamp(22px,2.6vw,32px); letter-spacing:.05em;
+  background:rgba(255,255,255,.92);
+  border:3px solid var(--zts-noir); border-radius:var(--r-pill);
+  padding:5px 18px; box-shadow:3px 3px 0 var(--zts-noir);
+  font-variant-numeric:tabular-nums;
 }
-.zts-header__sub { font-family:var(--font-fun); font-weight:700; color:rgba(26,26,46,.72); font-size:var(--fs-1); }
-.zts-header__nav { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center; }
+.zts-header__sub { font-family:var(--font-fun); font-weight:700; color:rgba(255,255,255,.88); font-size:var(--fs-1); }
+.zts-header__nav { display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:center; }
+/* Boutons en angle façon stickers (rotation indépendante du hover) */
+.zts-header__nav > *:nth-child(1) { rotate:-3deg; }
+.zts-header__nav > *:nth-child(2) { rotate:2deg; }
+.zts-header__nav > *:nth-child(3) { rotate:-2deg; }
+.zts-header__nav > *:nth-child(4) { rotate:2.5deg; }
+.zts-header__nav > *:nth-child(5) { rotate:-2deg; }
 /* Sur fond bleu, le bouton Accueil (cyan) deviendrait fade → on le passe en blanc */
 .zts-header .zts-btn--primary { background:#fff; color:var(--ink); }
 

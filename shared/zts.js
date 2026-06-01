@@ -143,7 +143,8 @@
   function adjustHeaderOffset() {
     const h = document.querySelector('.zts-header');
     if (!h) return;
-    document.body.style.paddingTop = h.offsetHeight + 'px';
+    // La carte flotte (marge + ombre décalée) → on cale sur son bord bas réel.
+    document.body.style.paddingTop = (h.getBoundingClientRect().bottom + 12) + 'px';
   }
 
   /* ---------- HEADER hide-on-scroll ---------- */
