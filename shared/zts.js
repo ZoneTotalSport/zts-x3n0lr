@@ -159,8 +159,47 @@
     }, { passive: true });
   }
 
+  /* ---------- NOTIF VISITE (Telegram via Worker zts-notify) ----------
+     Envoie un "ping" au Worker à chaque visiteur, 1 fois par session.
+     Se mettre en sourdine sur TON appareil :
+       visite https://zonetotalsport.ca/?ztsnotif=off   (…=on pour réactiver)
+  */
+  const NOTIFY_URL = 'https://zonetotalsport.ca/api/notify';
+  function notifyVisit() {
+    try {
+      // Interrupteur "m'ignorer", mémorisé sur l'appareil du proprio.
+      const q = new URLSearchParams(location.search);
+      if (q.get('ztsnotif') === 'off') localStorage.setItem('zts_owner_mute', '1');
+      if (q.get('ztsnotif') === 'on')  localStorage.removeItem('zts_owner_mute');
+      if (localStorage.getItem('zts_owner_mute') === '1') return;
+
+      // 1 notif par visiteur par session.
+      if (sessionStorage.getItem('zts_visit_sent') === '1') return;
+      sessionStorage.setItem('zts_visit_sent', '1');
+
+      // Ignore les robots évidents.
+      if (/bot|crawl|spider|preview|headless/i.test(navigator.userAgent)) return;
+
+      const page = location.pathname + location.search;
+      const ref  = document.referrer || 'direct';
+      fetch(NOTIFY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({
+          type: 'visit',
+          title: '👀 Nouvelle visite',
+          message: 'Page : ' + page + '\nSource : ' + ref,
+          priority: 3,
+          tags: 'eyes'
+        })
+      }).catch(function () {});
+    } catch (e) { /* silencieux : ne bloque jamais la page */ }
+  }
+
   /* ---------- INIT ---------- */
   async function init() {
+    notifyVisit();
     lang = detectLang();
     // Injecte header/footer si des hôtes existent, puis traduit l'ensemble.
     await Promise.all([
